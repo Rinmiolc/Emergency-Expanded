@@ -219,7 +219,7 @@ namespace EmergencyExpanded
             GUI.color = Color.white;
 
             // --- 从左至右扫描的波形渲染逻辑 (环形缓冲区防止抽动) ---
-            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 12f, 105f, 53f);
+            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 15f, 105f, 50f);
             float centerY = waveRect.y + waveRect.height / 2f;
             float waveWidth = waveRect.width;
 
@@ -301,7 +301,7 @@ namespace EmergencyExpanded
 
             // 绘制扫描头亮线
             float headX = waveRect.x + vitals.sweepX;
-            Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.8f), 1.5f);
+            Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.15f), 1f);
 
 
             // --- 绘制右侧数值面板与精美排版 ---
@@ -323,29 +323,29 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperRight;
             GUI.color = new Color(0.5f, 0.6f, 0.5f, 0.8f);
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 1f, rightPanel.width - 4f, 12f), "HR");
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 1f, rightPanel.width - 4f, 11f), "HR");
             
             // 心率数值
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperRight;
             GUI.color = coreColor;
             string bpmStr = (bpm < 0.1f) ? "---" : Mathf.RoundToInt(bpm).ToString();
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 11f, rightPanel.width - 2f, 26f), bpmStr);
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 11f, rightPanel.width - 2f, 25f), bpmStr);
 
-            // SpO2
+            // SPO2
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperRight;
             Color spo2Color = new Color(0.2f, 0.8f, 1.0f); // 医疗蓝
             if (spo2 < 90) spo2Color = new Color(1.0f, 0.3f, 0.3f);
             GUI.color = spo2Color * new Color(1f, 1f, 1f, 0.7f);
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 38f, rightPanel.width - 4f, 12f), "SpO2");
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 39f, rightPanel.width - 4f, 11f), "SPO2");
             
             // 血氧数值
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperRight;
             GUI.color = spo2Color;
             string spo2Str = (bpm < 0.1f) ? "--" : spo2.ToString() + "%";
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 49f, rightPanel.width - 2f, 19f), spo2Str);
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 51f, rightPanel.width - 2f, 17f), spo2Str);
 
             // 还原状态
             Text.Anchor = origAnchor;
