@@ -22,16 +22,78 @@ namespace EmergencyExpanded
         {
             this.FailOnDespawnedOrNull(PatientIndex);
             this.FailOn(() => Patient.Dead);
-            this.FailOn(() => Medicine == null || !pawn.inventory.innerContainer.Contains(Medicine));
 
             yield return Toils_Goto.GotoThing(PatientIndex, PathEndMode.Touch);
 
+            Toil checkCondition = new Toil();
+            Toil extractMedicine = new Toil();
             Toil treatToil = ToilMaker.MakeToil("ApplyFirstAid");
+
+            checkCondition.initAction = () =>
+            {
+                ThingDef medDef = job.GetTarget(MedicineIndex).Thing?.def;
+                if (medDef == null)
+                {
+                    this.EndJobWith(JobCondition.Incompletable);
+                    return;
+                }
+
+                EmergencyItemType type = EE_FirstAidUtility.GetEmergencyItemType(medDef);
+                if (!EE_FirstAidUtility.CanApplyToTarget(Patient, type, medDef))
+                {
+                    this.EndJobWith(JobCondition.Succeeded);
+                    return;
+                }
+
+                Thing carried = pawn.carryTracker.CarriedThing;
+                if (carried == null || carried.def != medDef)
+                {
+                    bool hasMedInInv = false;
+                    foreach (Thing t in pawn.inventory.innerContainer)
+                    {
+                        if (t.def == medDef)
+                        {
+                            hasMedInInv = true;
+                            break;
+                        }
+                    }
+                    if (!hasMedInInv)
+                    {
+                        this.EndJobWith(JobCondition.Succeeded);
+                        return;
+                    }
+                    this.JumpToToil(extractMedicine);
+                }
+            };
+
+            extractMedicine.initAction = () =>
+            {
+                ThingDef medDef = job.GetTarget(MedicineIndex).Thing?.def;
+                Thing carried = pawn.carryTracker.CarriedThing;
+                if (carried != null && carried.def == medDef) return;
+
+                Thing invMed = null;
+                foreach (Thing t in pawn.inventory.innerContainer)
+                {
+                    if (t.def == medDef)
+                    {
+                        invMed = t;
+                        break;
+                    }
+                }
+
+                if (invMed != null)
+                {
+                    pawn.inventory.innerContainer.TryTransferToContainer(invMed, pawn.carryTracker.innerContainer, 1, out Thing carriedThing);
+                    job.SetTarget(MedicineIndex, carriedThing);
+                }
+            };
+
             treatToil.defaultCompleteMode = ToilCompleteMode.Never;
-            
             treatToil.initAction = () =>
             {
-                int duration = CalculateTreatmentTicks(Medicine.def, Patient);
+                ThingDef medDef = job.GetTarget(MedicineIndex).Thing?.def;
+                int duration = CalculateTreatmentTicks(medDef, Patient);
                 treatToil.defaultDuration = duration;
                 ticksLeftThisToil = duration;
             };
@@ -47,19 +109,17 @@ namespace EmergencyExpanded
             treatToil.tickAction = () =>
             {
                 pawn.rotationTracker.FaceCell(Patient.Position);
-                if (pawn.IsHashIntervalTick(30))
-                {
-                    // 播放基础微光或通过 Tend 音效表达
-                }
                 
                 ticksLeftThisToil--;
                 if (ticksLeftThisToil <= 0)
                 {
-                    EE_FirstAidUtility.ApplyFirstAidEffect(pawn, Patient, Medicine);
-                    ReadyForNextToil();
+                    EE_FirstAidUtility.ApplyFirstAidEffect(pawn, Patient, job.GetTarget(MedicineIndex).Thing);
+                    this.JumpToToil(checkCondition);
                 }
             };
 
+            yield return checkCondition;
+            yield return extractMedicine;
             yield return treatToil;
         }
 
