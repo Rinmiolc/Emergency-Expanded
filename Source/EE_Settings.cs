@@ -36,7 +36,7 @@ namespace EmergencyExpanded
         // ================= 物理流血 (Blood Loss) =================
         public static float MinBleedMultiplier = 0.1f;         // 心跳骤停时的保底流血率
         // ================= 动脉破裂 (Arterial Rupture) =================
-        public static float ArterialRuptureChanceTorso = 0.25f; // 躯干部位触发基础几率
-        public static float ArterialRuptureChanceLimb = 0.1f;  // 四肢部位触发基础几率
+        public static float ArterialRuptureChanceTorso = 0.9f; // 躯干部位触发基础几率
+        public static float ArterialRuptureChanceLimb = 0.9f;  // 四肢部位触发基础几率
     }
 }

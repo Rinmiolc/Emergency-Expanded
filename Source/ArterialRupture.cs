@@ -9,15 +9,22 @@ namespace EmergencyExpanded
     [HarmonyPatch(typeof(DamageWorker_AddInjury), "Apply")]
     public static class Patch_DamageWorker_ArterialRupture
     {
+        // 注意：参数必须是 Thing thing，不可更改为其他名字，否则会导致 Harmony 找不到参数报错
         public static void Postfix(DamageInfo dinfo, Thing thing, DamageWorker.DamageResult __result)
         {
-            // 如果没有造成任何伤口，直接跳过
+            // 1. 基础过滤：如果没有造成任何伤口，直接跳过
             if (__result == null || __result.hediffs == null || !__result.hediffs.Any()) return;
             
+            // 将受击物体转换为 Pawn (生物)
             Pawn pawn = thing as Pawn; 
-            if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh) return;
+            
+            // 2. 生理过滤：必须是活的、有血肉的、体内有设定血液的、且不是异常活死人(蹒跚怪)的生物
+            if (pawn == null || pawn.Dead) return;
+            if (!pawn.RaceProps.IsFlesh) return;        // 排除机械族、石头人等
+            if (pawn.RaceProps.BloodDef == null) return;// 排除任何没有设定血液的异星生物
+            if (pawn.IsShambler) return;                // 排除 1.5 异常 DLC 的蹒跚怪(死尸驱动)
 
-            // 过滤伤害类型：只有枪击、穿刺、切割、撕裂等动能伤害会引发动脉破裂 (排除烧伤、钝器等)
+            // 3. 伤害类型过滤：只有动能穿透伤害会引发动脉破裂 (排除烧伤、钝器、毒素等)
             if (dinfo.Def != DamageDefOf.Bullet && 
                 dinfo.Def != DamageDefOf.Cut && 
                 dinfo.Def != DamageDefOf.Stab && 
@@ -25,42 +32,47 @@ namespace EmergencyExpanded
 
             bool ruptureAdded = false;
 
-            // 遍历刚刚造成的伤口
+            // 4. 遍历刚刚结算生成的伤口
             foreach (Hediff hediff in __result.hediffs)
             {
-                if (ruptureAdded) break; // 单次受击最多生成一个动脉破裂
+                if (ruptureAdded) break; // 保证单次受击(例如一颗子弹)最多只引发一次动脉破裂
 
                 if (hediff is Hediff_Injury injury && injury.Part != null)
                 {
                     string partName = injury.Part.def.defName;
                     float ruptureChance = 0f;
 
-                    // 躯干大概率
-                    if (partName == "Torso")
+                    // 【部位判定 1：核心躯干】
+                    // 使用底层的 corePart，完美兼容人类(Torso)以及所有动物/异种(Body)
+                    if (injury.Part == pawn.RaceProps.body.corePart)
                     {
-                        ruptureChance = EE_Settings.ArterialRuptureChanceTorso; // 15% 概率
+                        ruptureChance = EE_Settings.ArterialRuptureChanceTorso; 
                     }
-                    // 手臂和腿小概率 (可以根据需要加上 Shoulder, Femur 等更细分的骨骼部位)
-                    else if (partName == "Arm" || partName == "Leg")
+                    // 【部位判定 2：四肢】
+                    // 使用 Contains 模糊匹配，兼容 Arm, Leg, FrontLeftLeg, HindRightLeg 等所有变体
+                    else if (partName.Contains("Arm") || partName.Contains("Leg"))
                     {
-                        ruptureChance = EE_Settings.ArterialRuptureChanceLimb; // 5% 概率
+                        ruptureChance = EE_Settings.ArterialRuptureChanceLimb; 
                     }
 
-                    // 掷骰子判定
+                    // 5. 掷骰子判定是否破裂
                     if (ruptureChance > 0f && Rand.Chance(ruptureChance))
                     {
                         HediffDef ruptureDef = HediffDef.Named("ArterialRupture");
                         if (ruptureDef != null)
                         {
-                            // 往同一部位添加动脉破裂
+                            // 往受伤部位添加“动脉破裂”状态
                             Hediff rupture = HediffMaker.MakeHediff(ruptureDef, pawn, injury.Part);
                             rupture.Severity = 1.0f; // 初始严重度
                             pawn.health.AddHediff(rupture, injury.Part, dinfo, __result);
                             
                             ruptureAdded = true;
                             
-                            // 游戏内抛出红色警示飘字，增强战斗反馈
-                            MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "动脉破裂!", Color.red);
+                            // 游戏内抛出红色警示飘字，增强战场视觉反馈,只有小人真实生成在地图上（不是在远行队里、不是在休眠舱缓存里）才抛出文字
+                            if (pawn.Spawned && pawn.Map != null)
+                            {
+                                MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "动脉破裂!", Color.red);
+                            }
                         }
                     }
                 }
