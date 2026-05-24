@@ -39,17 +39,20 @@ namespace EmergencyExpanded
 
                 if (hediff is Hediff_Injury injury && injury.Part != null)
                 {
+                    if (pawn.health.hediffSet.PartIsMissing(injury.Part))
+                    {
+                        continue;
+                    }
+
                     string partName = injury.Part.def.defName;
                     float ruptureChance = 0f;
 
                     // 【部位判定 1：核心躯干】
-                    // 使用底层的 corePart，完美兼容人类(Torso)以及所有动物/异种(Body)
                     if (injury.Part == pawn.RaceProps.body.corePart)
                     {
                         ruptureChance = EE_Settings.ArterialRuptureChanceTorso; 
                     }
                     // 【部位判定 2：四肢】
-                    // 使用 Contains 模糊匹配，兼容 Arm, Leg, FrontLeftLeg, HindRightLeg 等所有变体
                     else if (partName.Contains("Arm") || partName.Contains("Leg"))
                     {
                         ruptureChance = EE_Settings.ArterialRuptureChanceLimb; 
@@ -68,10 +71,10 @@ namespace EmergencyExpanded
                             
                             ruptureAdded = true;
                             
-                            // 游戏内抛出红色警示飘字，增强战场视觉反馈,只有小人真实生成在地图上（不是在远行队里、不是在休眠舱缓存里）才抛出文字
+                            // 游戏内抛出红色警示飘字，增强战场视觉反馈
                             if (pawn.Spawned && pawn.Map != null)
                             {
-                                MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "动脉破裂!", Color.red);
+                                MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "动脉破裂!", UnityEngine.Color.red);
                             }
                         }
                     }

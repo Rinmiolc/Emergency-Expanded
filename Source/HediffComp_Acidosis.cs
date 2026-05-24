@@ -31,11 +31,30 @@ namespace EmergencyExpanded
             
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
+            float bleedRate = Pawn.health.hediffSet.BleedRateTotal; // 获取当前全身流血速率
             
-            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold)
+            // 触发条件放宽：不仅看泵血，如果正在大出血(>0.5/天)，也会强制引发酸中毒恶化
+            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bleedRate > 0.5f)
             {
-                float severityFactor = (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
-                    ? EE_Settings.VitalCriticalMultiplier : 1f;
+                float severityFactor = 1f;
+
+                // 1. 基础维生极低时的翻倍
+                if (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
+                {
+                    severityFactor *= EE_Settings.VitalCriticalMultiplier;
+                }
+
+                // 2. 根据流血速率提供巨额指数级补偿
+                // 动脉破裂 (出血率 2.5) 会在这里提供 2.5 * 4 = 10倍 的酸中毒恶化速度！
+                if (bleedRate > 0f)
+                {
+                    severityFactor += (bleedRate * 4f); 
+                }
+
+                // 3. 泵血缺口线性惩罚：泵血越低，恶化越快
+                float pumpingDeficit = UnityEngine.Mathf.Clamp01(Props.bloodPumpingThreshold - pumping);
+                severityFactor += (pumpingDeficit * 3f);
+
                 severityAdjustment += (Props.severityIncreasePerDay * severityFactor / 1000f); 
             }
             else

@@ -150,7 +150,7 @@
         </capMods>
       </li>
       <li>
-        <minSeverity>0.3</minSeverity>
+        <minSeverity>0.25</minSeverity>
         <label>中度 - 神经紊乱</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.5</setMax></li>
@@ -158,14 +158,14 @@
         </capMods>
       </li>
       <li>
-        <minSeverity>0.6</minSeverity>
+        <minSeverity>0.5</minSeverity>
         <label>重度 - 昏迷边缘</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.2</setMax></li>
         </capMods>
       </li>
       <li>
-        <minSeverity>0.85</minSeverity>
+        <minSeverity>0.7</minSeverity>
         <label>极重度 - 深昏迷</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
@@ -255,7 +255,7 @@
     <hediffClass>Hediff_Injury</hediffClass>
     <defaultLabelColor>(1.0, 0.2, 0.2)</defaultLabelColor> <injuryProps>
       <painPerSeverity>0.02</painPerSeverity>
-      <bleedRate>2.5</bleedRate> 
+      <bleedRate>3.0</bleedRate> 
       <canMerge>false</canMerge>
       <destroyedLabel>血管彻底断裂</destroyedLabel>
     </injuryProps>

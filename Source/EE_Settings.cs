@@ -7,11 +7,11 @@ namespace EmergencyExpanded
         public static float HypoxiaMonitorThreshold = 0.55f;// 触发系统危机的呼吸/泵血阈值
         
         // ================= 致命维生阈值 =================
-        public static float VitalCriticalThreshold = 0.1f;  // 极低维生阈值 (触发恶化翻倍)
+        public static float VitalCriticalThreshold = 0.2f;  // 极低维生阈值 (触发恶化翻倍)
         public static float VitalCriticalMultiplier = 2.0f; // 极低维生时的恶化倍率
 
         // ================= 脑缺氧 (Cerebral Hypoxia) =================
-        public static float ComaSeverityThreshold = 0.6f;   // 进入深昏迷的严重度门槛
+        public static float ComaSeverityThreshold = 0.5f;   // 进入深昏迷的严重度门槛
         public static float ComaSeverityFactor = 0.35f;     // 深昏迷时的恶化放缓倍率
         public static float VegStateThreshold = 1.0f;       // 触发脑死亡(植物人)的严重度
         
