@@ -19,12 +19,13 @@ namespace EmergencyExpanded
 
             if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold)
             {
-                HediffDef vegStateDef = HediffDef.Named("VegetativeState");
+                // 1. 使用 EE_DefOf 预置定义，极大地提升高频执行性能，避免高频哈希碰撞
+                HediffDef vegStateDef = EE_DefOf.VegetativeState;
                 bool isVegetative = vegStateDef != null && __instance.hediffSet.HasHediff(vegStateDef);
 
                 if (!isVegetative)
                 {
-                    HediffDef brainHypoxiaDef = HediffDef.Named("CerebralHypoxia");
+                    HediffDef brainHypoxiaDef = EE_DefOf.CerebralHypoxia;
                     if (brainHypoxiaDef != null && !__instance.hediffSet.HasHediff(brainHypoxiaDef))
                     {
                         BodyPartRecord brain = __instance.hediffSet.GetBrain();
@@ -37,7 +38,7 @@ namespace EmergencyExpanded
                     }
                 }
 
-                HediffDef acidosisDef = HediffDef.Named("MetabolicAcidosis");
+                HediffDef acidosisDef = EE_DefOf.MetabolicAcidosis;
                 if (acidosisDef != null && !__instance.hediffSet.HasHediff(acidosisDef))
                 {
                     Hediff acidosis = HediffMaker.MakeHediff(acidosisDef, pawn, null); 

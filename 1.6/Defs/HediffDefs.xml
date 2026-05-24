@@ -6,7 +6,7 @@
     <label>组织缺氧</label>
     <labelNoun>缺氧组织</labelNoun>
     <description>由于严重缺氧和代谢性酸中毒导致的局部组织损伤。像冻伤一样，它会持续破坏组织扣减血量，如果不及早恢复血液循环，会导致部位永久脱落。</description>
-    <hediffClass>Hediff_Injury</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_TissueHypoxia</hediffClass>
     <initialSeverity>3.0</initialSeverity> 
     <injuryProps>
       <painPerSeverity>0.015</painPerSeverity>
@@ -35,7 +35,8 @@
       <li Class="EmergencyExpanded.HediffCompProperties_Acidosis">
         <severityIncreasePerDay>6.0</severityIncreasePerDay>
         <severityDecreasePerDay>0.8</severityDecreasePerDay>
-        <bloodPumpingThreshold>0.2</bloodPumpingThreshold>
+        <bloodPumpingThreshold>0.55</bloodPumpingThreshold>
+        <breathingThreshold>0.55</breathingThreshold>
         <hypoxiaDamage>2.5</hypoxiaDamage>
       </li>
     </comps>

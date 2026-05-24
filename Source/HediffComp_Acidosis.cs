@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using RimWorld;
 using Verse;
 
@@ -24,6 +23,10 @@ namespace EmergencyExpanded
     public class HediffComp_Acidosis : HediffComp
     {
         public HediffCompProperties_Acidosis Props => (HediffCompProperties_Acidosis)this.props;
+
+        // 使用静态 List 缓存机制，完全规避 Tick 中的 GC 垃圾回收（Zero-alloc LINQ optimization）
+        private static readonly List<BodyPartRecord> tmpExtremities = new List<BodyPartRecord>();
+        private static readonly List<BodyPartRecord> tmpCoreOrgans = new List<BodyPartRecord>();
 
         public override void CompPostTick(ref float severityAdjustment)
         {
@@ -78,36 +81,71 @@ namespace EmergencyExpanded
 
         private void ApplySilentHypoxia()
         {
-            IEnumerable<BodyPartRecord> extremities = Pawn.health.hediffSet.GetNotMissingParts()
-                .Where(p => p.def.defName == "Finger" || p.def.defName == "Toe" || 
-                            p.def.defName == "Nose" || p.def.defName == "Ear");
+            tmpExtremities.Clear();
+            tmpCoreOrgans.Clear();
 
-            IEnumerable<BodyPartRecord> coreOrgans = Pawn.health.hediffSet.GetNotMissingParts()
-                .Where(p => p.def.defName == "Brain" || p.def.defName == "Heart" || 
-                            p.def.defName == "Liver" || p.def.defName == "Kidney");
+            // 替代 LINQ .Where 筛选，不分配多余的 Enumerator 和 List 空间
+            foreach (BodyPartRecord part in Pawn.health.hediffSet.GetNotMissingParts())
+            {
+                string defName = part.def.defName;
+                if (defName == "Finger" || defName == "Toe" || defName == "Nose" || defName == "Ear")
+                {
+                    tmpExtremities.Add(part);
+                }
+                else if (defName == "Brain" || defName == "Heart" || defName == "Liver" || defName == "Kidney")
+                {
+                    tmpCoreOrgans.Add(part);
+                }
+            }
 
             BodyPartRecord partToAffect = null;
             bool isCoreOrgan = false; 
 
-            if (parent.Severity >= EE_Settings.AcidosisHighThreshold && coreOrgans.Any() && Rand.Chance(EE_Settings.AcidosisCoreAttackChance))
+            if (parent.Severity >= EE_Settings.AcidosisHighThreshold && tmpCoreOrgans.Count > 0 && Rand.Chance(EE_Settings.AcidosisCoreAttackChance))
             {
-                partToAffect = coreOrgans.RandomElement();
+                partToAffect = tmpCoreOrgans.RandomElement();
                 isCoreOrgan = true;
             }
-            else if (extremities.Any())
+            else if (tmpExtremities.Count > 0)
             {
-                partToAffect = extremities.RandomElement();
+                partToAffect = tmpExtremities.RandomElement();
             }
 
             if (partToAffect == null) return;
 
-            HediffDef hypoxiaDef = HediffDef.Named(Props.hypoxiaDefName);
-            if (hypoxiaDef == null) return;
+            // 如果受影响部位是大脑，统一转化为增加“缺氧性脑损伤”（HypoxicBrainDamage），避免大脑上并存两种冲突的缺氧Hediff
+            if (partToAffect.def == EE_DefOf.Brain)
+            {
+                HediffDef brainDamageDef = EE_DefOf.HypoxicBrainDamage;
+                if (brainDamageDef != null)
+                {
+                    // 缩放伤口物理值到脑损伤严重度比例（除以 25。5.0 的伤害值转化为 0.20 严重度增量）
+                    float rawDamage = isCoreOrgan ? (Props.hypoxiaDamage * EE_Settings.AcidosisCoreDamageMultiplier) : Props.hypoxiaDamage;
+                    float brainDamageIncrement = rawDamage / 25f;
 
-            Hediff hypoxia = HediffMaker.MakeHediff(hypoxiaDef, Pawn, partToAffect);
-            
-            hypoxia.Severity = isCoreOrgan ? (Props.hypoxiaDamage * EE_Settings.AcidosisCoreDamageMultiplier) : Props.hypoxiaDamage;
-            Pawn.health.AddHediff(hypoxia, partToAffect, null, null);
+                    Hediff existingDamage = Pawn.health.hediffSet.GetFirstHediffOfDef(brainDamageDef);
+                    if (existingDamage != null)
+                    {
+                        existingDamage.Severity += brainDamageIncrement;
+                    }
+                    else
+                    {
+                        Hediff damage = HediffMaker.MakeHediff(brainDamageDef, Pawn, partToAffect);
+                        damage.Severity = brainDamageIncrement;
+                        Pawn.health.AddHediff(damage, partToAffect, null, null);
+                    }
+                }
+            }
+            else
+            {
+                // 其他常规器官或末梢部位继续使用原生的 TissueHypoxia（组织缺氧）外伤
+                HediffDef hypoxiaDef = EE_DefOf.TissueHypoxia;
+                if (hypoxiaDef == null) return;
+
+                Hediff hypoxia = HediffMaker.MakeHediff(hypoxiaDef, Pawn, partToAffect);
+                hypoxia.Severity = isCoreOrgan ? (Props.hypoxiaDamage * EE_Settings.AcidosisCoreDamageMultiplier) : Props.hypoxiaDamage;
+                Pawn.health.AddHediff(hypoxia, partToAffect, null, null);
+            }
         }
     }
 }

@@ -32,49 +32,53 @@ namespace EmergencyExpanded
 
             bool ruptureAdded = false;
 
-            // 4. 遍历刚刚结算生成的伤口
+            // 4. 遍历刚刚结算生成的伤口（包括普通外伤与断肢）
             foreach (Hediff hediff in __result.hediffs)
             {
                 if (ruptureAdded) break; // 保证单次受击(例如一颗子弹)最多只引发一次动脉破裂
 
-                if (hediff is Hediff_Injury injury && injury.Part != null)
+                if (hediff.Part != null && (hediff is Hediff_Injury || hediff is Hediff_MissingPart))
                 {
-                    if (pawn.health.hediffSet.PartIsMissing(injury.Part))
+                    // 检查受损部位是否是大血管分布区
+                    if (EE_MedicalUtility.IsMajorVesselPart(hediff.Part, pawn))
                     {
-                        continue;
-                    }
+                        float ruptureChance = 0f;
 
-                    string partName = injury.Part.def.defName;
-                    float ruptureChance = 0f;
-
-                    // 【部位判定 1：核心躯干】
-                    if (injury.Part == pawn.RaceProps.body.corePart)
-                    {
-                        ruptureChance = EE_Settings.ArterialRuptureChanceTorso; 
-                    }
-                    // 【部位判定 2：四肢】
-                    else if (partName.Contains("Arm") || partName.Contains("Leg"))
-                    {
-                        ruptureChance = EE_Settings.ArterialRuptureChanceLimb; 
-                    }
-
-                    // 5. 掷骰子判定是否破裂
-                    if (ruptureChance > 0f && Rand.Chance(ruptureChance))
-                    {
-                        HediffDef ruptureDef = HediffDef.Named("ArterialRupture");
-                        if (ruptureDef != null)
+                        // 部位判定
+                        if (hediff.Part == pawn.RaceProps.body.corePart)
                         {
-                            // 往受伤部位添加“动脉破裂”状态
-                            Hediff rupture = HediffMaker.MakeHediff(ruptureDef, pawn, injury.Part);
-                            rupture.Severity = 1.0f; // 初始严重度
-                            pawn.health.AddHediff(rupture, injury.Part, dinfo, __result);
-                            
-                            ruptureAdded = true;
-                            
-                            // 游戏内抛出红色警示飘字，增强战场视觉反馈
-                            if (pawn.Spawned && pawn.Map != null)
+                            ruptureChance = EE_Settings.ArterialRuptureChanceTorso; 
+                        }
+                        else
+                        {
+                            ruptureChance = EE_Settings.ArterialRuptureChanceLimb; 
+                        }
+
+                        // 【硬核几率平衡】几率与单次伤害量线性挂钩：伤害量以 15（突击步枪级别）为 100% 基础几率，最小 4 点起判
+                        float damageScale = Mathf.Clamp01(dinfo.Amount / 15f);
+                        float finalChance = ruptureChance * damageScale;
+
+                        // 5. 掷骰子判定是否破裂
+                        if (dinfo.Amount >= 4f && Rand.Chance(finalChance))
+                        {
+                            HediffDef ruptureDef = EE_DefOf.ArterialRupture;
+                            if (ruptureDef != null)
                             {
-                                MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "动脉破裂!", UnityEngine.Color.red);
+                                // 安全地获取最近的未缺失身体部分（如果该部位已断开，则加到其母体断面上，防止原版引擎报错）
+                                BodyPartRecord targetPart = EE_MedicalUtility.GetNearestNonMissingPart(pawn, hediff.Part);
+
+                                // 往该部位添加“动脉破裂”状态
+                                Hediff rupture = HediffMaker.MakeHediff(ruptureDef, pawn, targetPart);
+                                rupture.Severity = 1.0f; // 初始严重度
+                                pawn.health.AddHediff(rupture, targetPart, dinfo, __result);
+                                
+                                ruptureAdded = true;
+                                
+                                // 游戏内抛出红色警示飘字，增强战场视觉反馈
+                                if (pawn.Spawned && pawn.Map != null)
+                                {
+                                    MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "动脉破裂!", UnityEngine.Color.red);
+                                }
                             }
                         }
                     }

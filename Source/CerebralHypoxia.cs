@@ -21,15 +21,37 @@ namespace EmergencyExpanded
         public override string SeverityLabel => (this.Severity * 100f).ToString("F0") + "%";
     }
 
+    // ================= 组织缺氧局部外伤 =================
+    // 在系统性窒息或全身循环崩溃（血泵或呼吸低于安全门槛）时，强行冻结局部组织坏死伤口的自愈与治疗愈合！
+    public class Hediff_TissueHypoxia : Hediff_Injury
+    {
+        public override void Heal(float amount)
+        {
+            if (pawn == null || pawn.Dead)
+            {
+                base.Heal(amount);
+                return;
+            }
+
+            // 获取全身循环和呼吸能力，如果血泵或呼吸低于安全阈值 (默认0.55)，组织处于缺氧瘫痪中，无法被自愈/包扎治愈
+            float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+            float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+            
+            if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold)
+            {
+                return; // 直接拦截 Heal，冻结伤口恶化/愈合进度
+            }
+
+            base.Heal(amount);
+        }
+    }
+
     public class HediffCompProperties_CerebralHypoxia : HediffCompProperties
     {
         public float hypoxiaPerDay = 8.0f; 
         public float recoveryPerDay = 3.0f; 
         public float safePumpingThreshold = 0.55f;
         public float safeBreathingThreshold = 0.55f;
-        
-        public string brainDamageDefName = "HypoxicBrainDamage"; 
-        public string vegetativeStateDefName = "VegetativeState"; 
 
         public HediffCompProperties_CerebralHypoxia()
         {
@@ -67,22 +89,19 @@ namespace EmergencyExpanded
                 severityAdjustment -= Props.recoveryPerDay / 1000f;
             }
 
-            // 2. 达到阈值触发植物人
+            // 2. 达到阈值触发植物人 (脑死亡)
             if (parent.Severity >= EE_Settings.VegStateThreshold)
             {
                 TriggerVegetativeState();
                 return;
             }
 
-            // 3. 大脑发生不可逆损伤
+            // 3. 大脑发生不可逆损伤 (平滑且确定性的持续累加，避免随机大跨度跃升)
             if (parent.Severity >= EE_Settings.BrainDamageStartThreshold)
             {
-                float currentChance = EE_Settings.BrainDamageBaseChance * (parent.Severity >= EE_Settings.BrainDamageCriticalThreshold ? EE_Settings.BrainDamageCriticalMultiplier : 1f);
-                
-                if (Rand.Chance(currentChance))
-                {
-                    ApplyPermanentBrainDamage();
-                }
+                float severityFactor = parent.Severity >= EE_Settings.BrainDamageCriticalThreshold ? EE_Settings.BrainDamageCriticalMultiplier : 1f;
+                float increment = EE_Settings.BrainDamageBaseChance * severityFactor * EE_Settings.BrainDamageSeverityIncrement;
+                ApplySmoothBrainDamage(increment);
             }
         }
 
@@ -91,7 +110,7 @@ namespace EmergencyExpanded
             BodyPartRecord brain = Pawn.health.hediffSet.GetBrain();
             if (brain == null) return;
 
-            HediffDef vegDef = HediffDef.Named(Props.vegetativeStateDefName);
+            HediffDef vegDef = EE_DefOf.VegetativeState;
             if (vegDef != null && !Pawn.health.hediffSet.HasHediff(vegDef))
             {
                 Hediff vegHediff = HediffMaker.MakeHediff(vegDef, Pawn, brain);
@@ -102,23 +121,23 @@ namespace EmergencyExpanded
             Pawn.health.RemoveHediff(parent);
         }
 
-        private void ApplyPermanentBrainDamage()
+        private void ApplySmoothBrainDamage(float increment)
         {
             BodyPartRecord brain = Pawn.health.hediffSet.GetBrain();
             if (brain == null) return;
 
-            HediffDef damageDef = HediffDef.Named(Props.brainDamageDefName);
+            HediffDef damageDef = EE_DefOf.HypoxicBrainDamage;
             if (damageDef == null) return;
 
             Hediff existingDamage = Pawn.health.hediffSet.GetFirstHediffOfDef(damageDef);
             if (existingDamage != null)
             {
-                existingDamage.Severity += EE_Settings.BrainDamageSeverityIncrement; 
+                existingDamage.Severity += increment; 
             }
             else
             {
                 Hediff damage = HediffMaker.MakeHediff(damageDef, Pawn, brain);
-                damage.Severity = EE_Settings.BrainDamageSeverityIncrement; 
+                damage.Severity = increment; 
                 Pawn.health.AddHediff(damage, brain, null, null);
             }
         }

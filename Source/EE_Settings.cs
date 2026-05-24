@@ -3,40 +3,41 @@ namespace EmergencyExpanded
     public static class EE_Settings
     {
         // ================= 基础与系统设定 =================
-        public static float InitialHediffSeverity = 0.05f;  // 疾病生成的初始严重度
-        public static float HypoxiaMonitorThreshold = 0.55f;// 触发系统危机的呼吸/泵血阈值
+        public static float InitialHediffSeverity => EE_Mod.Settings?.initialHediffSeverity ?? 0.05f;
+        public static float HypoxiaMonitorThreshold => EE_Mod.Settings?.hypoxiaMonitorThreshold ?? 0.55f;
         
         // ================= 致命维生阈值 =================
-        public static float VitalCriticalThreshold = 0.2f;  // 极低维生阈值 (触发恶化翻倍)
-        public static float VitalCriticalMultiplier = 2.0f; // 极低维生时的恶化倍率
+        public static float VitalCriticalThreshold => EE_Mod.Settings?.vitalCriticalThreshold ?? 0.2f;
+        public static float VitalCriticalMultiplier => EE_Mod.Settings?.vitalCriticalMultiplier ?? 2.0f;
 
         // ================= 脑缺氧 (Cerebral Hypoxia) =================
-        public static float ComaSeverityThreshold = 0.5f;   // 进入深昏迷的严重度门槛
-        public static float ComaSeverityFactor = 0.35f;     // 深昏迷时的恶化放缓倍率
-        public static float VegStateThreshold = 1.0f;       // 触发脑死亡(植物人)的严重度
+        public static float ComaSeverityThreshold => EE_Mod.Settings?.comaSeverityThreshold ?? 0.5f;
+        public static float ComaSeverityFactor => EE_Mod.Settings?.comaSeverityFactor ?? 0.35f;
+        public static float VegStateThreshold => EE_Mod.Settings?.vegStateThreshold ?? 1.0f;
         
-        public static float BrainDamageStartThreshold = 0.6f;// 脑损伤开始判定的严重度
-        public static float BrainDamageBaseChance = 0.02f;   // 脑损伤基础几率
-        public static float BrainDamageCriticalThreshold = 0.85f; // 脑损伤极高危门槛
-        public static float BrainDamageCriticalMultiplier = 2.5f; // 极高危状态下的几率倍率
-        public static float BrainDamageSeverityIncrement = 0.15f; // 每次脑损伤叠加的严重度
+        public static float BrainDamageStartThreshold => EE_Mod.Settings?.brainDamageStartThreshold ?? 0.6f;
+        public static float BrainDamageBaseChance => EE_Mod.Settings?.brainDamageBaseChance ?? 0.02f;
+        public static float BrainDamageCriticalThreshold => EE_Mod.Settings?.brainDamageCriticalThreshold ?? 0.85f;
+        public static float BrainDamageCriticalMultiplier => EE_Mod.Settings?.brainDamageCriticalMultiplier ?? 2.5f;
+        public static float BrainDamageSeverityIncrement => EE_Mod.Settings?.brainDamageSeverityIncrement ?? 0.15f;
 
         // ================= 代谢性酸中毒 (Metabolic Acidosis) =================
-        public static float AcidosisSilentHypoxiaStart = 0.4f; // 触发静默缺氧的严重度门槛
-        public static float AcidosisMidThreshold = 0.6f;       // 缺氧中概率门槛
-        public static float AcidosisHighThreshold = 0.85f;     // 缺氧高概率/攻击核心门槛
+        public static float AcidosisSilentHypoxiaStart => EE_Mod.Settings?.acidosisSilentHypoxiaStart ?? 0.4f;
+        public static float AcidosisMidThreshold => EE_Mod.Settings?.acidosisMidThreshold ?? 0.6f;
+        public static float AcidosisHighThreshold => EE_Mod.Settings?.acidosisHighThreshold ?? 0.85f;
         
-        public static float AcidosisChanceLow = 0.02f;         // 静默缺氧低几率
-        public static float AcidosisChanceMid = 0.08f;         // 静默缺氧中几率
-        public static float AcidosisChanceHigh = 0.25f;        // 静默缺氧高几率
+        public static float AcidosisChanceLow => EE_Mod.Settings?.acidosisChanceLow ?? 0.02f;
+        public static float AcidosisChanceMid => EE_Mod.Settings?.acidosisChanceMid ?? 0.08f;
+        public static float AcidosisChanceHigh => EE_Mod.Settings?.acidosisChanceHigh ?? 0.25f;
         
-        public static float AcidosisCoreAttackChance = 0.3f;   // 防线崩溃时，攻击核心脏器的几率
-        public static float AcidosisCoreDamageMultiplier = 2.0f;// 核心脏器受到的伤害倍率
+        public static float AcidosisCoreAttackChance => EE_Mod.Settings?.acidosisCoreAttackChance ?? 0.3f;
+        public static float AcidosisCoreDamageMultiplier => EE_Mod.Settings?.acidosisCoreDamageMultiplier ?? 2.0f;
 
         // ================= 物理流血 (Blood Loss) =================
-        public static float MinBleedMultiplier = 0.1f;         // 心跳骤停时的保底流血率
+        public static float MinBleedMultiplier => EE_Mod.Settings?.minBleedMultiplier ?? 0.1f;
+        
         // ================= 动脉破裂 (Arterial Rupture) =================
-        public static float ArterialRuptureChanceTorso = 0.9f; // 躯干部位触发基础几率
-        public static float ArterialRuptureChanceLimb = 0.9f;  // 四肢部位触发基础几率
+        public static float ArterialRuptureChanceTorso => EE_Mod.Settings?.arterialRuptureChanceTorso ?? 0.90f;
+        public static float ArterialRuptureChanceLimb => EE_Mod.Settings?.arterialRuptureChanceLimb ?? 0.90f;
     }
 }
