@@ -3,7 +3,7 @@
   <Operation Class="PatchOperationReplace">
     <xpath>Defs/HediffDef[defName="BloodLoss"]/lethalSeverity</xpath>
     <value>
-      <lethalSeverity>0.65</lethalSeverity>
+      <lethalSeverity>0.9</lethalSeverity>
     </value>
   </Operation>
 
@@ -37,18 +37,25 @@
           <capMods>
             <li>
               <capacity>Consciousness</capacity>
-              <setMax>0.30</setMax>
+              <setMax>0.35</setMax>
             </li>
           </capMods>
           <hediffGivers>
             <li Class="HediffGiver_Random">
               <hediff>MetabolicAcidosis</hediff>
               <mtbDays>0.1</mtbDays> </li>
+            <li Class="HediffGiver_Random">
+              <hediff>CerebralHypoxia</hediff>
+              <mtbDays>0.02</mtbDays> 
+              <partsToAffect>
+                <li>Brain</li>
+              </partsToAffect>
+            </li>
           </hediffGivers>
         </li>
         
         <li>
-          <minSeverity>0.45</minSeverity>
+          <minSeverity>0.5</minSeverity>
           <label>失血性休克 - 濒死</label>
           <lifeThreatening>true</lifeThreatening>
           <capMods>
@@ -71,6 +78,13 @@
               <mtbDays>0.005</mtbDays>
               <partsToAffect>
                 <li>Heart</li>
+              </partsToAffect>
+            </li>
+            <li Class="HediffGiver_Random">
+              <hediff>CerebralHypoxia</hediff>
+              <mtbDays>0.02</mtbDays> 
+              <partsToAffect>
+                <li>Brain</li>
               </partsToAffect>
             </li>
           </hediffGivers>

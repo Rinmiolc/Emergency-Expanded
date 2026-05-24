@@ -10,14 +10,14 @@ namespace EmergencyExpanded
     {
         static EmergencyExpandedMain()
         {
-            // 初始化 Harmony，字符串换成你自己的专属ID
+            // 初始化 Harmony 实例并应用所有标记了 [HarmonyPatch] 的补丁
             var harmony = new Harmony("com.rinmiolc.emergencyexpanded");
             harmony.PatchAll(); 
             Log.Message("[EE] Harmony patch has been successfully loaded.");
         }
     }
 
-    // 这里放上一回合提到的拦截代码
+    // 拦截代码
     [HarmonyPatch(typeof(HealthUtility), "TicksUntilDeathDueToBloodLoss")]
     public static class Patch_TicksUntilDeathDueToBloodLoss
     {
