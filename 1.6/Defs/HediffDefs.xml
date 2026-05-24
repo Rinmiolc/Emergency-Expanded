@@ -21,9 +21,10 @@
     <defName>MetabolicAcidosis</defName>
     <label>代谢性酸中毒</label>
     <description>因组织灌注不足导致的酸碱平衡崩盘。系统一旦崩溃，酸中毒将持续恶化啃食机体。发展到晚期时，会引发不可逆的多脏器缺血衰竭并导致死亡。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_MetabolicAcidosis</hediffClass>
     <defaultLabelColor>(0.8, 0.8, 0.3)</defaultLabelColor>
-    <maxSeverity>1.0</maxSeverity> <initialSeverity>0.1</initialSeverity>
+    <maxSeverity>1.0</maxSeverity> 
+    <initialSeverity>0.1</initialSeverity>
     <makesSickThought>true</makesSickThought>
     <tendable>true</tendable>
     <comps>
@@ -61,8 +62,8 @@
         <lifeThreatening>true</lifeThreatening>
         <painOffset>0.25</painOffset>
         <capMods>
-          <li><capacity>Consciousness</capacity><offset>-0.4</offset></li>
-          <li><capacity>BloodPumping</capacity><offset>-0.4</offset></li> 
+          <li><capacity>Consciousness</capacity><setMax>0.5</setMax></li>
+          <li><capacity>BloodPumping</capacity><setMax>0.5</setMax></li> 
         </capMods>
         <hediffGivers>
           <li Class="HediffGiver_Random">
@@ -130,11 +131,11 @@
     </stages>
   </HediffDef>
 
-<HediffDef>
+  <HediffDef>
     <defName>CerebralHypoxia</defName>
     <label>脑缺氧</label>
     <description>大脑供血或供氧不足导致的急性神经系统损伤。随着缺氧加剧，意识会逐渐丧失，并伴随不可逆的脑部器质性损伤。如果达到极限，将导致彻底的脑死亡。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_CerebralHypoxia</hediffClass>
     <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity> 
     <initialSeverity>0.05</initialSeverity>
@@ -152,8 +153,8 @@
         <minSeverity>0.3</minSeverity>
         <label>中度 - 神经紊乱</label>
         <capMods>
-          <li><capacity>Consciousness</capacity><offset>-0.4</offset></li>
-          <li><capacity>Talking</capacity><offset>-0.3</offset></li>
+          <li><capacity>Consciousness</capacity><setMax>0.5</setMax></li>
+          <li><capacity>Talking</capacity><setMax>0.5</setMax></li>
         </capMods>
       </li>
       <li>
@@ -178,7 +179,7 @@
     <defName>HypoxicBrainDamage</defName>
     <label>缺氧性脑损伤</label>
     <description>由于严重脑缺氧导致的不可逆脑组织永久性坏死。这会实质性地且不可逆地摧毁小人的认知、语言和运动运动能力。</description>
-    <hediffClass>Hediff</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_HypoxicBrainDamage</hediffClass>
     <defaultLabelColor>(0.85, 0.3, 0.3)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <isBad>true</isBad>
@@ -231,7 +232,8 @@
         <capMods>
           <li>
             <capacity>Consciousness</capacity>
-            <setMax>0.01</setMax> </li>
+            <setMax>0.01</setMax> 
+          </li>
           <li>
             <capacity>Talking</capacity>
             <setMax>0.0</setMax>

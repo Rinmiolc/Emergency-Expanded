@@ -3,14 +3,20 @@ using Verse;
 
 namespace EmergencyExpanded
 {
-    // 重写脑缺氧类，使其在 UI 上自带百分比后缀
+    // 脑缺氧百分比显示
     public class Hediff_CerebralHypoxia : HediffWithComps
     {
         public override string SeverityLabel => (this.Severity * 100f).ToString("F0") + "%";
     }
 
-    // 重写脑损伤类，使其在 UI 上自带百分比后缀
+    // 脑损伤百分比显示
     public class Hediff_HypoxicBrainDamage : Hediff
+    {
+        public override string SeverityLabel => (this.Severity * 100f).ToString("F0") + "%";
+    }
+
+    // 代谢性酸中毒百分比显示
+    public class Hediff_MetabolicAcidosis : HediffWithComps
     {
         public override string SeverityLabel => (this.Severity * 100f).ToString("F0") + "%";
     }
@@ -24,7 +30,6 @@ namespace EmergencyExpanded
         
         public string brainDamageDefName = "HypoxicBrainDamage"; 
         public string vegetativeStateDefName = "VegetativeState"; 
-        public float damageChancePerSecond = 0.015f; 
 
         public HediffCompProperties_CerebralHypoxia()
         {
@@ -47,11 +52,12 @@ namespace EmergencyExpanded
             if (pumping < Props.safePumpingThreshold || breathing < Props.safeBreathingThreshold)
             {
                 float severityFactor = 1f;
-                if (pumping <= 0.1f || breathing <= 0.1f) severityFactor = 2f; 
+                if (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
+                    severityFactor = EE_Settings.VitalCriticalMultiplier; 
 
-                if (parent.Severity >= 0.6f)
+                if (parent.Severity >= EE_Settings.ComaSeverityThreshold)
                 {
-                    severityFactor *= 0.35f; 
+                    severityFactor *= EE_Settings.ComaSeverityFactor; 
                 }
 
                 severityAdjustment += (Props.hypoxiaPerDay * severityFactor) / 1000f;
@@ -61,18 +67,17 @@ namespace EmergencyExpanded
                 severityAdjustment -= Props.recoveryPerDay / 1000f;
             }
 
-            // 2. 达到 100% 时触发植物人
-            if (parent.Severity >= 1.0f)
+            // 2. 达到阈值触发植物人
+            if (parent.Severity >= EE_Settings.VegStateThreshold)
             {
                 TriggerVegetativeState();
                 return;
             }
 
-            // 3. 达到重度阶段 (0.6以上)，大脑开始发生不可逆损伤
-            if (parent.Severity >= 0.6f)
+            // 3. 大脑发生不可逆损伤
+            if (parent.Severity >= EE_Settings.BrainDamageStartThreshold)
             {
-                float baseChance = 0.02f; // 还原判定概率，确保窗口期内能摇出脑损伤
-                float currentChance = baseChance * (parent.Severity >= 0.85f ? 2.5f : 1f);
+                float currentChance = EE_Settings.BrainDamageBaseChance * (parent.Severity >= EE_Settings.BrainDamageCriticalThreshold ? EE_Settings.BrainDamageCriticalMultiplier : 1f);
                 
                 if (Rand.Chance(currentChance))
                 {
@@ -105,18 +110,15 @@ namespace EmergencyExpanded
             HediffDef damageDef = HediffDef.Named(Props.brainDamageDefName);
             if (damageDef == null) return;
 
-            // 查找小人脑部是否已经有这个损伤了
             Hediff existingDamage = Pawn.health.hediffSet.GetFirstHediffOfDef(damageDef);
             if (existingDamage != null)
             {
-                // 如果有了，每次累加 0.15 的严重度（慢慢跨越你 XML 里的 4 个阶段）
-                existingDamage.Severity += 0.15f; 
+                existingDamage.Severity += EE_Settings.BrainDamageSeverityIncrement; 
             }
             else
             {
-                // 如果没有，新建一个并给予初始严重度
                 Hediff damage = HediffMaker.MakeHediff(damageDef, Pawn, brain);
-                damage.Severity = 0.15f; 
+                damage.Severity = EE_Settings.BrainDamageSeverityIncrement; 
                 Pawn.health.AddHediff(damage, brain, null, null);
             }
         }

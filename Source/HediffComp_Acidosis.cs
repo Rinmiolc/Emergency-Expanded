@@ -32,11 +32,10 @@ namespace EmergencyExpanded
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
             
-            // 只要有一项低于阈值，或者两项极低，系统就开始酸中毒崩溃
             if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold)
             {
-                // 如果是深度休克/窒息（低于0.1），酸中毒速度翻倍
-                float severityFactor = (pumping <= 0.1f || breathing <= 0.1f) ? 2f : 1f;
+                float severityFactor = (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
+                    ? EE_Settings.VitalCriticalMultiplier : 1f;
                 severityAdjustment += (Props.severityIncreasePerDay * severityFactor / 1000f); 
             }
             else
@@ -44,13 +43,12 @@ namespace EmergencyExpanded
                 severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
             }
 
-            // ... 下方的静默组织缺氧 (ApplySilentHypoxia) 逻辑保持不变 ...
-            if (parent.Severity >= 0.4f)
+            if (parent.Severity >= EE_Settings.AcidosisSilentHypoxiaStart)
             {
-                float chance = 0f;
-                if (parent.Severity >= 0.85f) chance = 0.25f;      
-                else if (parent.Severity >= 0.7f) chance = 0.08f;  
-                else chance = 0.02f;                               
+                float chance;
+                if (parent.Severity >= EE_Settings.AcidosisHighThreshold) chance = EE_Settings.AcidosisChanceHigh;      
+                else if (parent.Severity >= EE_Settings.AcidosisMidThreshold) chance = EE_Settings.AcidosisChanceMid;  
+                else chance = EE_Settings.AcidosisChanceLow;                               
 
                 if (Rand.Chance(chance))
                 {
@@ -61,21 +59,18 @@ namespace EmergencyExpanded
 
         private void ApplySilentHypoxia()
         {
-            // 筛选四肢末端
             IEnumerable<BodyPartRecord> extremities = Pawn.health.hediffSet.GetNotMissingParts()
                 .Where(p => p.def.defName == "Finger" || p.def.defName == "Toe" || 
                             p.def.defName == "Nose" || p.def.defName == "Ear");
 
-            // 筛选核心内脏
             IEnumerable<BodyPartRecord> coreOrgans = Pawn.health.hediffSet.GetNotMissingParts()
                 .Where(p => p.def.defName == "Brain" || p.def.defName == "Heart" || 
                             p.def.defName == "Liver" || p.def.defName == "Kidney");
 
             BodyPartRecord partToAffect = null;
-            bool isCoreOrgan = false; // 【新增】标记是否为核心器官
+            bool isCoreOrgan = false; 
 
-            // 极重度(0.85)时防线崩溃，有 30% 的几率缺氧会直接攻击核心内脏
-            if (parent.Severity >= 0.85f && coreOrgans.Any() && Rand.Chance(0.3f))
+            if (parent.Severity >= EE_Settings.AcidosisHighThreshold && coreOrgans.Any() && Rand.Chance(EE_Settings.AcidosisCoreAttackChance))
             {
                 partToAffect = coreOrgans.RandomElement();
                 isCoreOrgan = true;
@@ -90,13 +85,9 @@ namespace EmergencyExpanded
             HediffDef hypoxiaDef = HediffDef.Named(Props.hypoxiaDefName);
             if (hypoxiaDef == null) return;
 
-            // 生成缺氧伤口
             Hediff hypoxia = HediffMaker.MakeHediff(hypoxiaDef, Pawn, partToAffect);
             
-            // 如果是核心器官，直接造成 2 倍的大量局部组织损伤，加速脏器衰竭致死
-            hypoxia.Severity = isCoreOrgan ? (Props.hypoxiaDamage * 2.0f) : Props.hypoxiaDamage;
-            
-            // 静默施加伤害
+            hypoxia.Severity = isCoreOrgan ? (Props.hypoxiaDamage * EE_Settings.AcidosisCoreDamageMultiplier) : Props.hypoxiaDamage;
             Pawn.health.AddHediff(hypoxia, partToAffect, null, null);
         }
     }
