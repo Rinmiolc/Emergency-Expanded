@@ -30,6 +30,7 @@ namespace EmergencyExpanded
 
         public override void CompPostTick(ref float severityAdjustment)
         {
+            if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
             if (!Pawn.IsHashIntervalTick(60)) return; 
             
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
@@ -85,16 +86,71 @@ namespace EmergencyExpanded
             tmpCoreOrgans.Clear();
 
             // 替代 LINQ .Where 筛选，不分配多余的 Enumerator 和 List 空间
+            // 采用 BodyPartTag 检测，极大增强了与其他异形、种族和义肢 Mod 的兼容性
             foreach (BodyPartRecord part in Pawn.health.hediffSet.GetNotMissingParts())
             {
-                string defName = part.def.defName;
-                if (defName == "Finger" || defName == "Toe" || defName == "Nose" || defName == "Ear")
+                if (part.def == null) continue;
+
+                // 1. 核心维生器官判定 (脑、心、肺、肾、肝等)
+                bool isCore = false;
+                if (part.def.tags != null)
                 {
-                    tmpExtremities.Add(part);
+                    if (part.def.tags.Contains(BodyPartTagDefOf.ConsciousnessSource) || // 大脑/意识源
+                        part.def.tags.Contains(BodyPartTagDefOf.BloodPumpingSource) ||  // 心脏
+                        part.def.tags.Contains(BodyPartTagDefOf.BloodFiltrationSource) || // 肾脏/肝脏
+                        part.def.tags.Contains(BodyPartTagDefOf.BreathingSource))        // 肺部
+                    {
+                        isCore = true;
+                    }
                 }
-                else if (defName == "Brain" || defName == "Heart" || defName == "Liver" || defName == "Kidney")
+                
+                // 字符串回退判断，以防万一有 Mod 没给器官加 tag
+                if (!isCore)
+                {
+                    string defNameLower = part.def.defName.ToLower();
+                    if (defNameLower.Contains("brain") || defNameLower.Contains("heart") || 
+                        defNameLower.Contains("liver") || defNameLower.Contains("kidney") || 
+                        defNameLower.Contains("lung"))
+                    {
+                        isCore = true;
+                    }
+                }
+
+                if (isCore)
                 {
                     tmpCoreOrgans.Add(part);
+                    continue;
+                }
+
+                // 2. 末梢小部位判定 (指、趾、耳、鼻等)
+                bool isExtremity = false;
+                if (part.def.tags != null)
+                {
+                    // 检查是否属于操作或移动肢体的末梢段
+                    if (part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbSegment) || 
+                        part.def.tags.Contains(BodyPartTagDefOf.MovingLimbSegment))
+                    {
+                        // 且该部位没有子部位 (即最末梢，如手指/脚趾)
+                        if (part.parts == null || part.parts.Count == 0)
+                        {
+                            isExtremity = true;
+                        }
+                    }
+                }
+
+                if (!isExtremity)
+                {
+                    string defNameLower = part.def.defName.ToLower();
+                    if (defNameLower.Contains("finger") || defNameLower.Contains("toe") || 
+                        defNameLower.Contains("nose") || defNameLower.Contains("ear"))
+                    {
+                        isExtremity = true;
+                    }
+                }
+
+                if (isExtremity)
+                {
+                    tmpExtremities.Add(part);
                 }
             }
 

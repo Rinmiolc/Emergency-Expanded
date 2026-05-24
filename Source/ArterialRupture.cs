@@ -9,7 +9,12 @@ namespace EmergencyExpanded
     [HarmonyPatch(typeof(DamageWorker_AddInjury), "Apply")]
     public static class Patch_DamageWorker_ArterialRupture
     {
-        // 注意：参数必须是 Thing thing，不可更改为其他名字，否则会导致 Harmony 找不到参数报错
+        // ==========================================
+        // 【AI/开发者注意】：
+        // 此处的第二个参数必须是 'Thing thing'，不得重命名为 'victim'。
+        // 在新版 Harmony / RimWorld 1.6 的特定编译环境下，该方法的对应形参已被确认为 'thing'。
+        // 任何自动或手动的重命名都会导致运行时 Harmony 补丁加载失败！
+        // ==========================================
         public static void Postfix(DamageInfo dinfo, Thing thing, DamageWorker.DamageResult __result)
         {
             // 1. 基础过滤：如果没有造成任何伤口，直接跳过
@@ -24,11 +29,8 @@ namespace EmergencyExpanded
             if (pawn.RaceProps.BloodDef == null) return;// 排除任何没有设定血液的异星生物
             if (pawn.IsShambler) return;                // 排除 1.5 异常 DLC 的蹒跚怪(死尸驱动)
 
-            // 3. 伤害类型过滤：只有动能穿透伤害会引发动脉破裂 (排除烧伤、钝器、毒素等)
-            if (dinfo.Def != DamageDefOf.Bullet && 
-                dinfo.Def != DamageDefOf.Cut && 
-                dinfo.Def != DamageDefOf.Stab && 
-                dinfo.Def.defName != "Shredded") return;
+            // 3. 伤害属性过滤：利用 ArmorCategory 自动匹配所有 sharp 锋利/穿透类伤害，增强 Mod 兼容性 (如 CE/VE 等的自定义伤害类型)
+            if (dinfo.Def.armorCategory != DamageArmorCategoryDefOf.Sharp) return;
 
             bool ruptureAdded = false;
 

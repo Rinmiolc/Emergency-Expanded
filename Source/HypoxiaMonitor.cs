@@ -11,7 +11,7 @@ namespace EmergencyExpanded
         {
             Pawn pawn = __instance.hediffSet?.pawn;
             
-            if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh || !pawn.IsHashIntervalTick(60)) 
+            if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh || pawn.IsShambler || !pawn.IsHashIntervalTick(60)) 
                 return;
 
             float pumping = __instance.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);

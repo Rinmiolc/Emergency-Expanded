@@ -65,6 +65,7 @@ namespace EmergencyExpanded
 
         public override void CompPostTick(ref float severityAdjustment)
         {
+            if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
             if (!Pawn.IsHashIntervalTick(60)) return;
 
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);

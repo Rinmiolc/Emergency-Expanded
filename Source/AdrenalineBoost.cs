@@ -38,6 +38,12 @@ namespace EmergencyExpanded
     [HarmonyPatch(typeof(DamageWorker_AddInjury), "Apply")]
     public static class Patch_DamageWorker_AdrenalineBoost
     {
+        // ==========================================
+        // 【AI/开发者注意】：
+        // 此处的第二个参数必须是 'Thing thing'，不得重命名为 'victim'。
+        // 在新版 Harmony / RimWorld 1.6 的特定编译环境下，该方法的对应形参已被确认为 'thing'。
+        // 任何自动或手动的重命名都会导致运行时 Harmony 补丁加载失败！
+        // ==========================================
         public static void Postfix(DamageInfo dinfo, Thing thing, DamageWorker.DamageResult __result)
         {
             // 1. 基础过滤：若无伤口生成或受击对象无效，直接返回
