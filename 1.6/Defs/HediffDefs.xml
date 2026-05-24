@@ -42,36 +42,50 @@
       <li>
         <label>轻度</label>
         <capMods>
-          <li><capacity>Breathing</capacity><offset>-0.1</offset></li>
+          <li><capacity>Breathing</capacity><offset>-0.2</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>-0.2</offset></li> 
         </capMods>
       </li>
       <li>
-        <minSeverity>0.4</minSeverity>
+        <minSeverity>0.2</minSeverity>
         <label>中度</label>
         <painOffset>0.1</painOffset>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.2</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>-0.2</offset></li> 
         </capMods>
       </li>
       <li>
-        <minSeverity>0.7</minSeverity>
+        <minSeverity>0.5</minSeverity>
         <label>重度</label>
         <lifeThreatening>true</lifeThreatening>
         <painOffset>0.25</painOffset>
         <capMods>
-          <li><capacity>Consciousness</capacity><setMax>0.25</setMax></li>
-          <li><capacity>BloodPumping</capacity><offset>-0.2</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.4</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>-0.4</offset></li> 
         </capMods>
+        <hediffGivers>
+          <li Class="HediffGiver_Random">
+            <hediff>VentricularFibrillation</hediff>
+            <mtbDays>0.05</mtbDays> 
+          </li>
+        </hediffGivers>
       </li>
       <li>
-        <minSeverity>0.85</minSeverity>
+        <minSeverity>0.95</minSeverity>
         <label>极重度 - 多脏器衰竭</label> 
         <lifeThreatening>true</lifeThreatening>
         <painOffset>0.40</painOffset>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.1</setMax></li>
-          <li><capacity>BloodPumping</capacity><offset>-0.4</offset></li>
+          <li><capacity>BloodPumping</capacity><setMax>0.15</setMax></li>
         </capMods>
+        <hediffGivers>
+          <li Class="HediffGiver_Random">
+            <hediff>VentricularFibrillation</hediff>
+            <mtbDays>0.02</mtbDays> 
+          </li>
+        </hediffGivers>
       </li>
     </stages>
   </HediffDef>
@@ -102,12 +116,6 @@
           <li><capacity>BloodPumping</capacity><setMax>0.10</setMax></li> 
           <li><capacity>Consciousness</capacity><setMax>0.10</setMax></li>
         </capMods>
-        <hediffGivers>
-          <li Class="HediffGiver_Random">
-            <hediff>MetabolicAcidosis</hediff>
-            <mtbDays>0.05</mtbDays> 
-          </li>
-        </hediffGivers>
       </li>
       <li>
         <minSeverity>0.60</minSeverity>

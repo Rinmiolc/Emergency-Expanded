@@ -1,3 +1,4 @@
+// HypoxiaMonitor.cs 完整替换
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -16,25 +17,30 @@ namespace EmergencyExpanded
 
             float pumping = __instance.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = __instance.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-            float threshold = 0.4f;
+            float threshold = 0.55f; // 已提高阈值
 
-            // 当机能跌破红线，触发全身综合急症
             if (pumping < threshold || breathing < threshold)
             {
-                // 1. 触发脑缺氧 (作用于大脑)
-                HediffDef brainHypoxiaDef = HediffDef.Named("CerebralHypoxia");
-                if (brainHypoxiaDef != null && !__instance.hediffSet.HasHediff(brainHypoxiaDef))
+                // 1. 触发脑缺氧 (互斥判定：不能是植物人)
+                HediffDef vegStateDef = HediffDef.Named("VegetativeState");
+                bool isVegetative = vegStateDef != null && __instance.hediffSet.HasHediff(vegStateDef);
+
+                if (!isVegetative)
                 {
-                    BodyPartRecord brain = __instance.hediffSet.GetBrain();
-                    if (brain != null)
+                    HediffDef brainHypoxiaDef = HediffDef.Named("CerebralHypoxia");
+                    if (brainHypoxiaDef != null && !__instance.hediffSet.HasHediff(brainHypoxiaDef))
                     {
-                        Hediff brainHypoxia = HediffMaker.MakeHediff(brainHypoxiaDef, pawn, brain);
-                        brainHypoxia.Severity = 0.01f; 
-                        __instance.AddHediff(brainHypoxia, brain, null, null);
+                        BodyPartRecord brain = __instance.hediffSet.GetBrain();
+                        if (brain != null)
+                        {
+                            Hediff brainHypoxia = HediffMaker.MakeHediff(brainHypoxiaDef, pawn, brain);
+                            brainHypoxia.Severity = 0.01f; 
+                            __instance.AddHediff(brainHypoxia, brain, null, null);
+                        }
                     }
                 }
 
-                // 2. 触发全身代谢性酸中毒 (作用于全身，不需要指定部位)
+                // 2. 触发全身代谢性酸中毒
                 HediffDef acidosisDef = HediffDef.Named("MetabolicAcidosis");
                 if (acidosisDef != null && !__instance.hediffSet.HasHediff(acidosisDef))
                 {

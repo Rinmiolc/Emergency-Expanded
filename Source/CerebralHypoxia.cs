@@ -8,13 +8,13 @@ namespace EmergencyExpanded
         // 放缓了缺氧速度。原来15.0意味着1.6小时拉满，现在8.0大约需要3个游戏小时，符合急救的"黄金窗口"
         public float hypoxiaPerDay = 8.0f; 
         public float recoveryPerDay = 3.0f; 
-        public float safePumpingThreshold = 0.4f;
-        public float safeBreathingThreshold = 0.4f;
+        public float safePumpingThreshold = 0.55f;
+        public float safeBreathingThreshold = 0.55f;
         
         // 脑损伤相关配置
         public string brainDamageDefName = "HypoxicBrainDamage"; // 缺氧性脑损伤
         public string vegetativeStateDefName = "VegetativeState"; // 植物人状态
-        public float damageChancePerSecond = 0.015f; // 重度缺氧时，每秒有 1.5% 几率造成永久性脑损伤
+        public float damageChancePerSecond = 0.025f; // 重度缺氧时，每秒有 2.5% 几率造成永久性脑损伤
 
         public HediffCompProperties_CerebralHypoxia()
         {
@@ -65,10 +65,9 @@ public override void CompPostTick(ref float severityAdjustment)
     // 3. 达到重度阶段 (0.6以上)，大脑开始发生不可逆损伤
     if (parent.Severity >= 0.6f)
     {
-        // 【调整】：因为 0.6 到 1.0 的时间变长了（约是原来的 3 倍），
-        // 为了让这段时间内造成的脑损伤总期望值不变，需要将判定概率乘以相同的衰减系数 (0.35f)
-        float baseChance = Props.damageChancePerSecond * 0.35f;
-        float currentChance = baseChance * (parent.Severity >= 0.85f ? 3f : 1f);
+        // 0.02f 意味着每秒有 2% 的概率发生脑软化。重度阶段必定会掉脑部血量。
+        float baseChance = 0.02f; 
+        float currentChance = baseChance * (parent.Severity >= 0.85f ? 2.5f : 1f); // 极重度概率翻倍
         
         if (Rand.Chance(currentChance))
         {

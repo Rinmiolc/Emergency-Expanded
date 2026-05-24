@@ -9,8 +9,8 @@ namespace EmergencyExpanded
     {
         public float severityIncreasePerDay = 6.0f;
         public float severityDecreasePerDay = 0.8f;
-        public float bloodPumpingThreshold = 0.4f;   // 为了和脑缺氧统一，建议将阈值从 0.2 提高到 0.4
-        public float breathingThreshold = 0.4f;      // 【新增】呼吸能力安全线
+        public float bloodPumpingThreshold = 0.55f;  
+        public float breathingThreshold = 0.55f;      
         
         public string hypoxiaDefName = "TissueHypoxia"; 
         public float hypoxiaDamage = 3.0f; 
