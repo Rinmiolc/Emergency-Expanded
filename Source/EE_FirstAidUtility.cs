@@ -131,12 +131,13 @@ namespace EmergencyExpanded
                     consumeItem = ApplyFieldTend(doctor, patient, finalMedQuality, isKit: false);
                     break;
                 case EmergencyItemType.IngestibleDirect:
-                    // 强行给队友喂食/注射成瘾品
+                    // 强行给队友喂食/注射成瘾品/血包
                     item.Ingested(patient, patient.needs?.food?.MaxLevel ?? 1.0f);
+                    consumeItem = false; // 原版 Ingested 方法会自动处理扣除和销毁！
                     break;
             }
 
-            if (consumeItem)
+            if (consumeItem && !item.Destroyed)
             {
                 // 扣除背包库存
                 if (item.stackCount > 1)
@@ -147,7 +148,7 @@ namespace EmergencyExpanded
                 {
                     doctor.carryTracker?.innerContainer?.Remove(item);
                     doctor.inventory?.innerContainer?.Remove(item);
-                    item.Destroy();
+                    if (!item.Destroyed) item.Destroy();
                 }
             }
 
