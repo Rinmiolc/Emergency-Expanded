@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
-// 这个文件实现了一个新的HediffComp，用于模拟酸中毒的动态变化和缺氧伤害
+
 namespace EmergencyExpanded
 {
-    // 1. 定义与 XML 对接的属性
     public class HediffCompProperties_Acidosis : HediffCompProperties
     {
-        public float severityIncreasePerDay = 6.0f;  // 心跳骤停时的增加速度 (每天)
-        public float severityDecreasePerDay = 0.8f;  // 正常时的代偿自愈速度 (每天)
-        public float bloodPumpingThreshold = 0.2f;   // 泵血能力低于此时，酸中毒开始恶化
+        public float severityIncreasePerDay = 6.0f;
+        public float severityDecreasePerDay = 0.8f;
+        public float bloodPumpingThreshold = 0.4f;   // 为了和脑缺氧统一，建议将阈值从 0.2 提高到 0.4
+        public float breathingThreshold = 0.4f;      // 【新增】呼吸能力安全线
         
         public string hypoxiaDefName = "TissueHypoxia"; 
-        public float hypoxiaDamage = 3.0f; // 每次缺氧扣除的血量
+        public float hypoxiaDamage = 3.0f; 
         
         public HediffCompProperties_Acidosis()
         {
@@ -21,38 +21,36 @@ namespace EmergencyExpanded
         }
     }
 
-    // 2. 核心运行逻辑
     public class HediffComp_Acidosis : HediffComp
     {
         public HediffCompProperties_Acidosis Props => (HediffCompProperties_Acidosis)this.props;
 
         public override void CompPostTick(ref float severityAdjustment)
         {
-            // 每 60 tick (游戏内1秒) 结算一次，完美兼顾实时性且绝对不卡顿
             if (!Pawn.IsHashIntervalTick(60)) return; 
             
-            // --- 核心一：基于泵血的动态拉锯战 ---
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+            float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
             
-            if (pumping <= Props.bloodPumpingThreshold)
+            // 只要有一项低于阈值，或者两项极低，系统就开始酸中毒崩溃
+            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold)
             {
-                // 心肺停工，每天增加的值平摊到每次结算 (RimWorld 一天是 60000 tick，所以除以 1000)
-                severityAdjustment += (Props.severityIncreasePerDay / 1000f); 
+                // 如果是深度休克/窒息（低于0.1），酸中毒速度翻倍
+                float severityFactor = (pumping <= 0.1f || breathing <= 0.1f) ? 2f : 1f;
+                severityAdjustment += (Props.severityIncreasePerDay * severityFactor / 1000f); 
             }
             else
             {
-                // 机体正常，每天减少的值平摊到每次结算
                 severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
             }
 
-            // --- 核心二：高频静默施加组织缺氧 ---
+            // ... 下方的静默组织缺氧 (ApplySilentHypoxia) 逻辑保持不变 ...
             if (parent.Severity >= 0.4f)
             {
-                // 随着酸中毒加深，缺氧概率指数级飙升
                 float chance = 0f;
-                if (parent.Severity >= 0.85f) chance = 0.25f;      // 极重度：每秒 25% 触发！
-                else if (parent.Severity >= 0.7f) chance = 0.08f;  // 重度：每秒 8% 触发
-                else chance = 0.02f;                               // 中度：每秒 2% 触发
+                if (parent.Severity >= 0.85f) chance = 0.25f;      
+                else if (parent.Severity >= 0.7f) chance = 0.08f;  
+                else chance = 0.02f;                               
 
                 if (Rand.Chance(chance))
                 {
