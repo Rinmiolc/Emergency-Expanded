@@ -15,6 +15,9 @@ namespace EmergencyExpanded
         public static HediffDef VentricularFibrillation;
         public static HediffDef AdrenalineBoost;
         public static HediffDef AdrenalineCrash;
+        public static HediffDef EE_AdrenalineStabilized;
+        
+        public static JobDef EE_ApplyFirstAid;
         
         public static BodyPartDef Brain;
 

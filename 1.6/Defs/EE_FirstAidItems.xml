@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 草药急救包 (Herbal First Aid Kit) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_HerbalFirstAidKit</defName>
+    <label>草药急救包</label>
+    <description>内含粗制草药提取液、简易压迫绷带和固定板。专为战地就地抢救设计，包扎速度极快且完全不受野外无医疗床的工作量惩罚，但由于药品条件简陋，处理伤口的品质（Tend Quality）较低。不能用于常规的外科手术。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>25</stackLimit>
+    <statBases>
+      <MaxHitPoints>60</MaxHitPoints>
+      <MarketValue>12</MarketValue>
+      <Mass>0.15</Mass>
+      <Flammability>1.0</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- 工业级急救包 (First Aid Kit) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_FirstAidKit</defName>
+    <label>战地急救箱</label>
+    <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干动脉破裂的核心耗材。不能用于基地的常规手术。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>20</stackLimit>
+    <statBases>
+      <MaxHitPoints>85</MaxHitPoints>
+      <MarketValue>28</MarketValue>
+      <Mass>0.28</Mass>
+      <Flammability>0.8</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- 战术止血带 (Tourniquet) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_Tourniquet</defName>
+    <label>战术止血带</label>
+    <description>高强度单手便携式弹力止血带。只能在四肢受伤时绑扎。施用速度快至毫秒级别，使用后能瞬间将目标四肢上的所有大出血伤口包扎止血，作为战场续命的强力工具，无需耗费漫长的常规包扎读条。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>35</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>9</MarketValue>
+      <Mass>0.05</Mass>
+      <Flammability>0.6</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- 肾上腺素注射笔 (Adrenaline Pen) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_AdrenalinePen</defName>
+    <label>肾上腺素注射笔</label>
+    <description>一次性密封弹簧自动皮下注射器。内含强效肾上腺素及酸碱稳定复合缓冲液。注射后能在 12 小时（半天）内彻底冰冻/暂缓代谢性酸中毒及致命心室颤动的恶化进程，同时给予强力肾上腺素增强（Adrenaline Boost）超频效果，为重伤昏迷的伤员运回大后方抢救赢得最后且关键的黄金时间。</description>
+    <graphicData>
+      <texPath>Things/Item/Drug/Penoxycyline</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>15</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>38</MarketValue>
+      <Mass>0.04</Mass>
+      <Flammability>0.5</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+</Defs>

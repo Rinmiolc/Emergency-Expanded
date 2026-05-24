@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <JobDef>
+    <defName>EE_ApplyFirstAid</defName>
+    <driverClass>EmergencyExpanded.JobDriver_ApplyFirstAid</driverClass>
+    <reportString>正在对 {0} 进行紧急处理。</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
+</Defs>
