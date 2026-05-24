@@ -136,10 +136,10 @@
     <description>大脑供血或供氧不足导致的急性神经系统损伤。随着缺氧加剧，意识会逐渐丧失，并伴随不可逆的脑部器质性损伤。如果达到极限，将导致彻底的脑死亡。</description>
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
-    <maxSeverity>1.0</maxSeverity> <initialSeverity>0.05</initialSeverity>
+    <maxSeverity>1.0</maxSeverity> 
+    <initialSeverity>0.05</initialSeverity>
     <comps>
-      <li Class="EmergencyExpanded.HediffCompProperties_CerebralHypoxia">
-        </li>
+      <li Class="EmergencyExpanded.HediffCompProperties_CerebralHypoxia"/>
     </comps>
     <stages>
       <li>
@@ -168,24 +168,55 @@
         <label>极重度 - 深昏迷</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
-          <li><capacity>Consciousness</capacity><setMax>0.01</setMax></li> </capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.01</setMax></li> 
+        </capMods>
       </li>
     </stages>
   </HediffDef>
 
-  <HediffDef ParentName="InjuryBase">
+  <HediffDef>
     <defName>HypoxicBrainDamage</defName>
     <label>缺氧性脑损伤</label>
-    <labelNoun>脑部损伤</labelNoun>
-    <description>由于严重脑缺氧导致的不可逆脑组织坏死。这会永久性地影响小人的认知和运动能力。</description>
-    <hediffClass>Hediff_Injury</hediffClass>
-    <initialSeverity>1.0</initialSeverity>
-    <displayWound>false</displayWound> <injuryProps>
-      <painPerSeverity>0.0</painPerSeverity> <averagePainPerSeverityPermanent>0.0</averagePainPerSeverityPermanent>
-      <canMerge>true</canMerge>
-      <destroyedLabel>脑软化</destroyedLabel>
-      <destroyedOutLabel>脑软化</destroyedOutLabel>
-    </injuryProps>
+    <description>由于严重脑缺氧导致的不可逆脑组织永久性坏死。这会实质性地且不可逆地摧毁小人的认知、语言和运动运动能力。</description>
+    <hediffClass>Hediff</hediffClass>
+    <defaultLabelColor>(0.85, 0.3, 0.3)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <isBad>true</isBad>
+    <stages>
+      <li>
+        <label>轻度神经功能缺损</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.25</minSeverity>
+        <label>中度神经功能缺损</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.15</offset></li>
+          <li><capacity>Talking</capacity><offset>-0.15</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.55</minSeverity>
+        <label>重度偏瘫与失语</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.50</setMax></li>
+          <li><capacity>Talking</capacity><setMax>0.10</setMax></li>
+          <li><capacity>Moving</capacity><setMax>0.30</setMax></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.85</minSeverity>
+        <label>濒临全面脑死亡</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.35</setMax></li>
+          <li><capacity>Talking</capacity><setMax>0.00</setMax></li>
+          <li><capacity>Moving</capacity><setMax>0.05</setMax></li>
+        </capMods>
+      </li>
+    </stages>
   </HediffDef>
 
   <HediffDef>

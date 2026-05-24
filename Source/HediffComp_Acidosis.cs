@@ -72,11 +72,13 @@ namespace EmergencyExpanded
                             p.def.defName == "Liver" || p.def.defName == "Kidney");
 
             BodyPartRecord partToAffect = null;
+            bool isCoreOrgan = false; // 【新增】标记是否为核心器官
 
-            // 极重度(0.85)时防线崩溃，有 30% 的几率缺氧会直接攻击核心内脏,否则疯狂攻击末梢
+            // 极重度(0.85)时防线崩溃，有 30% 的几率缺氧会直接攻击核心内脏
             if (parent.Severity >= 0.85f && coreOrgans.Any() && Rand.Chance(0.3f))
             {
                 partToAffect = coreOrgans.RandomElement();
+                isCoreOrgan = true;
             }
             else if (extremities.Any())
             {
@@ -90,9 +92,11 @@ namespace EmergencyExpanded
 
             // 生成缺氧伤口
             Hediff hypoxia = HediffMaker.MakeHediff(hypoxiaDef, Pawn, partToAffect);
-            hypoxia.Severity = Props.hypoxiaDamage;
             
-            // 【完全静默】：绕过所有事件通知直接施加伤害，防止黄色警报弹窗
+            // 如果是核心器官，直接造成 2 倍的大量局部组织损伤，加速脏器衰竭致死
+            hypoxia.Severity = isCoreOrgan ? (Props.hypoxiaDamage * 2.0f) : Props.hypoxiaDamage;
+            
+            // 静默施加伤害
             Pawn.health.AddHediff(hypoxia, partToAffect, null, null);
         }
     }
