@@ -19,6 +19,16 @@ namespace EmergencyExpanded
     public class Hediff_MetabolicAcidosis : HediffWithComps
     {
         public override string SeverityLabel => (this.Severity * 100f).ToString("F0") + "%";
+
+        public override void Tick()
+        {
+            if (pawn != null && pawn.health.hediffSet.HasHediff(EE_DefOf.EE_AdrenalineStabilized))
+            {
+                // 冻结酸中毒：肾上腺素强化期间不增加严重度，且不执行后续 comps
+                return;
+            }
+            base.Tick();
+        }
     }
 
     // ================= 组织缺氧局部外伤 =================

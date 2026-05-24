@@ -94,9 +94,9 @@
 
   <HediffDef>
     <defName>VentricularFibrillation</defName>
-    <label>致命心律失常</label>
-    <description>心脏功能丧失。不仅无法泵血，还会导致全身组织极速缺氧坏死。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <label>室颤</label>
+    <description>心功能丧失，心室乱颤无法泵血，导致全身组织缺氧衰竭。</description>
+    <hediffClass>EmergencyExpanded.Hediff_VentricularFibrillation</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <lethalSeverity>1.0</lethalSeverity> 
     <initialSeverity>0.2</initialSeverity>

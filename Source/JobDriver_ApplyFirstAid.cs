@@ -127,7 +127,7 @@ namespace EmergencyExpanded
         {
             EmergencyItemType type = EE_FirstAidUtility.GetEmergencyItemType(def);
             
-            if (type == EmergencyItemType.Tourniquet) return 60;   // 1.0 seconds
+            if (type == EmergencyItemType.Tourniquet) return 180;   // 3.0 seconds
             if (type == EmergencyItemType.AdrenalinePen) return 60; // 1.0 seconds
             
             if (type == EmergencyItemType.FirstAidKit)

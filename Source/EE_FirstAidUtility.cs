@@ -109,6 +109,8 @@ namespace EmergencyExpanded
             EmergencyItemType type = GetEmergencyItemType(item.def);
             if (type == EmergencyItemType.None) return;
 
+            bool consumeItem = true;
+
             switch (type)
             {
                 case EmergencyItemType.Tourniquet:
@@ -119,14 +121,14 @@ namespace EmergencyExpanded
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? 0.35f : 0.65f;
-                    ApplyFieldTend(doctor, patient, kitQuality, isKit: true);
+                    consumeItem = ApplyFieldTend(doctor, patient, kitQuality, isKit: true);
                     break;
                 case EmergencyItemType.Medicine:
                     float medMultiplier = item.def == ThingDefOf.MedicineHerbal ? 0.45f :
                                          item.def == ThingDefOf.MedicineIndustrial ? 0.85f : 1.7f;
                     float docSkill = doctor.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
                     float finalMedQuality = UnityEngine.Mathf.Clamp01((docSkill * 0.05f + 0.2f) * medMultiplier);
-                    ApplyFieldTend(doctor, patient, finalMedQuality, isKit: false);
+                    consumeItem = ApplyFieldTend(doctor, patient, finalMedQuality, isKit: false);
                     break;
                 case EmergencyItemType.IngestibleDirect:
                     // 强行给队友喂食/注射成瘾品
@@ -134,15 +136,19 @@ namespace EmergencyExpanded
                     break;
             }
 
-            // 扣除背包库存
-            if (item.stackCount > 1)
+            if (consumeItem)
             {
-                item.stackCount--;
-            }
-            else
-            {
-                doctor.inventory.innerContainer.Remove(item);
-                item.Destroy();
+                // 扣除背包库存
+                if (item.stackCount > 1)
+                {
+                    item.stackCount--;
+                }
+                else
+                {
+                    doctor.carryTracker?.innerContainer?.Remove(item);
+                    doctor.inventory?.innerContainer?.Remove(item);
+                    item.Destroy();
+                }
             }
 
             // 产生浮空文字和音效
@@ -229,7 +235,7 @@ namespace EmergencyExpanded
             }
         }
 
-        private static void ApplyFieldTend(Pawn doctor, Pawn patient, float tendQuality, bool isKit)
+        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, float tendQuality, bool isKit)
         {
             // 战地倾向逻辑
             List<Hediff> hediffsToTend = new List<Hediff>();
@@ -241,7 +247,7 @@ namespace EmergencyExpanded
                 }
             }
 
-            if (hediffsToTend.Count == 0) return;
+            if (hediffsToTend.Count == 0) return false;
 
             // 优先处理最危险的动脉破裂和严重流血伤口
             hediffsToTend.Sort((a, b) =>
@@ -255,14 +261,31 @@ namespace EmergencyExpanded
             Hediff primaryWound = hediffsToTend[0];
             if (primaryWound.def == EE_DefOf.ArterialRupture)
             {
-                // 动脉破裂：消耗一次急救包/医药即可完全缝合止血
-                patient.health.RemoveHediff(primaryWound);
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "动脉破裂已缝合消除!", 4.0f);
+                // 【动脉破裂特殊机制】：一次只能包扎一部分，根据治疗品质降低严重度 0.1 ~ 0.25
+                float reduction = UnityEngine.Mathf.Clamp(0.1f + tendQuality * 0.15f, 0.1f, 0.25f);
+                primaryWound.Severity -= reduction;
+                
+                // 原版 Tend 状态更新
+                primaryWound.Tended(tendQuality, 1.0f);
+
+                if (primaryWound.Severity <= 0.001f)
+                {
+                    patient.health.RemoveHediff(primaryWound);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "动脉破裂已缝合消除!", 4.0f);
+                    return true;
+                }
+                else
+                {
+                    int remainTimes = (int)System.Math.Ceiling(primaryWound.Severity / reduction);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"大动脉缝合中 (还需 {remainTimes} 次)", 3.5f);
+                    return false;
+                }
             }
             else
             {
                 // 普通伤口：1 次包扎即可解决
                 primaryWound.Tended(tendQuality, 1.0f);
+                return true;
             }
         }
     }
