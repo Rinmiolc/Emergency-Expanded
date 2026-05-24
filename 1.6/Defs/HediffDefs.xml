@@ -98,7 +98,7 @@
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <lethalSeverity>1.0</lethalSeverity> 
-    <initialSeverity>0.1</initialSeverity>
+    <initialSeverity>0.2</initialSeverity>
     <tendable>true</tendable> 
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
