@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/HediffDef[defName="BloodLoss"]/lethalSeverity</xpath>
+    <value>
+      <lethalSeverity>0.65</lethalSeverity>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/HediffDef[defName="BloodLoss"]/stages</xpath>
+    <value>
+      <stages>
+        <li>
+          <label>轻微失血 - 休克代偿期</label>
+          <becomeVisible>true</becomeVisible>
+        </li>
+        <li>
+          <minSeverity>0.20</minSeverity>
+          <label>中度失血 - 休克失代偿</label>
+          <capMods>
+            <li>
+              <capacity>Consciousness</capacity>
+              <offset>-0.20</offset>
+            </li>
+            <li>
+              <capacity>Moving</capacity>
+              <offset>-0.15</offset>
+            </li>
+          </capMods>
+        </li>
+        
+        <li>
+          <minSeverity>0.35</minSeverity>
+          <label>重度失血 - 失血性休克</label>
+          <lifeThreatening>true</lifeThreatening>
+          <capMods>
+            <li>
+              <capacity>Consciousness</capacity>
+              <setMax>0.30</setMax>
+            </li>
+          </capMods>
+          <hediffGivers>
+            <li Class="HediffGiver_Random">
+              <hediff>MetabolicAcidosis</hediff>
+              <mtbDays>0.1</mtbDays> </li>
+          </hediffGivers>
+        </li>
+        
+        <li>
+          <minSeverity>0.45</minSeverity>
+          <label>失血性休克 - 濒死</label>
+          <lifeThreatening>true</lifeThreatening>
+          <capMods>
+            <li>
+              <capacity>Consciousness</capacity>
+              <setMax>0.10</setMax>
+            </li>
+            <li>
+              <capacity>Breathing</capacity>
+              <offset>-0.50</offset>
+            </li>
+          </capMods>
+          <hediffGivers>
+            <li Class="HediffGiver_Random">
+              <hediff>MetabolicAcidosis</hediff>
+              <mtbDays>0.005</mtbDays>
+            </li>
+            <li Class="HediffGiver_Random">
+              <hediff>VentricularFibrillation</hediff>
+              <mtbDays>0.005</mtbDays>
+              <partsToAffect>
+                <li>Heart</li>
+              </partsToAffect>
+            </li>
+          </hediffGivers>
+        </li>
+      </stages>
+    </value>
+  </Operation>
+  
+<!-- 枪伤流血速度 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/HediffDef[defName="Gunshot"]/injuryProps/bleedRate</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/HediffDef[defName="Gunshot"]/injuryProps/bleedRate</xpath>
+      <value>
+        <bleedRate>0.15</bleedRate> </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/HediffDef[defName="Gunshot"]/injuryProps</xpath>
+      <value>
+        <bleedRate>0.15</bleedRate>
+      </value>
+    </nomatch>
+  </Operation>
+
+ <!-- 切割伤流血速度 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/HediffDef[defName="Cut"]/injuryProps/bleedRate</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/HediffDef[defName="Cut"]/injuryProps/bleedRate</xpath>
+      <value>
+        <bleedRate>0.12</bleedRate> 
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/HediffDef[defName="Cut"]/injuryProps</xpath>
+      <value>
+        <bleedRate>0.12</bleedRate>
+      </value>
+    </nomatch>
+  </Operation>
+
+<!-- 刺伤流血速度 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/HediffDef[defName="Stab"]/injuryProps/bleedRate</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/HediffDef[defName="Stab"]/injuryProps/bleedRate</xpath>
+      <value>
+        <bleedRate>0.16</bleedRate> 
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/HediffDef[defName="Stab"]/injuryProps</xpath>
+      <value>
+        <bleedRate>0.16</bleedRate>
+      </value>
+    </nomatch>
+  </Operation>
+
+<!-- 撕裂伤流血速度 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps/bleedRate</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps/bleedRate</xpath>
+      <value>
+        <bleedRate>0.20</bleedRate> 
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps</xpath>
+      <value>
+        <bleedRate>0.20</bleedRate>
+      </value>
+    </nomatch>
+  </Operation>
+
+<!-- 撕裂伤疼痛 -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps/painPerSeverity</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps/painPerSeverity</xpath>
+      <value>
+        <painPerSeverity>0.025</painPerSeverity> 
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps</xpath>
+      <value>
+        <painPerSeverity>0.025</painPerSeverity>
+      </value>
+    </nomatch>
+  </Operation>
+
+</Patch>

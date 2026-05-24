@@ -1,0 +1,8 @@
+# 忽略 VS 和编译生成的临时文件
+.vs/
+bin/
+obj/
+*.csproj.user
+*.suo
+*.user
+*.sln.docstates
