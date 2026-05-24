@@ -247,4 +247,17 @@
     </stages>
   </HediffDef>
 
+  <HediffDef ParentName="InjuryBase">
+    <defName>ArterialRupture</defName>
+    <label>动脉破裂</label>
+    <labelNoun>破裂的动脉</labelNoun>
+    <description>大动脉或主要血管遭到严重破坏，导致灾难性的失血。如果不立即采取强力止血措施，伤者将极快死于失血性休克。</description>
+    <hediffClass>Hediff_Injury</hediffClass>
+    <defaultLabelColor>(1.0, 0.2, 0.2)</defaultLabelColor> <injuryProps>
+      <painPerSeverity>0.02</painPerSeverity>
+      <bleedRate>2.5</bleedRate> 
+      <canMerge>false</canMerge>
+      <destroyedLabel>血管彻底断裂</destroyedLabel>
+    </injuryProps>
+  </HediffDef>
 </Defs>

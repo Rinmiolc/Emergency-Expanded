@@ -85,12 +85,12 @@
     <match Class="PatchOperationReplace">
       <xpath>Defs/HediffDef[defName="Gunshot"]/injuryProps/bleedRate</xpath>
       <value>
-        <bleedRate>0.20</bleedRate> </value>
+        <bleedRate>0.10</bleedRate> </value>
     </match>
     <nomatch Class="PatchOperationAdd">
       <xpath>Defs/HediffDef[defName="Gunshot"]/injuryProps</xpath>
       <value>
-        <bleedRate>0.20</bleedRate>
+        <bleedRate>0.10</bleedRate>
       </value>
     </nomatch>
   </Operation>
@@ -101,13 +101,13 @@
     <match Class="PatchOperationReplace">
       <xpath>Defs/HediffDef[defName="Cut"]/injuryProps/bleedRate</xpath>
       <value>
-        <bleedRate>0.15</bleedRate> 
+        <bleedRate>0.08</bleedRate> 
       </value>
     </match>
     <nomatch Class="PatchOperationAdd">
       <xpath>Defs/HediffDef[defName="Cut"]/injuryProps</xpath>
       <value>
-        <bleedRate>0.15</bleedRate>
+        <bleedRate>0.08</bleedRate>
       </value>
     </nomatch>
   </Operation>
@@ -118,13 +118,13 @@
     <match Class="PatchOperationReplace">
       <xpath>Defs/HediffDef[defName="Stab"]/injuryProps/bleedRate</xpath>
       <value>
-        <bleedRate>0.20</bleedRate> 
+        <bleedRate>0.10</bleedRate> 
       </value>
     </match>
     <nomatch Class="PatchOperationAdd">
       <xpath>Defs/HediffDef[defName="Stab"]/injuryProps</xpath>
       <value>
-        <bleedRate>0.20</bleedRate>
+        <bleedRate>0.10</bleedRate>
       </value>
     </nomatch>
   </Operation>
@@ -135,13 +135,13 @@
     <match Class="PatchOperationReplace">
       <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps/bleedRate</xpath>
       <value>
-        <bleedRate>0.20</bleedRate> 
+        <bleedRate>0.12</bleedRate> 
       </value>
     </match>
     <nomatch Class="PatchOperationAdd">
       <xpath>Defs/HediffDef[defName="Shredded"]/injuryProps</xpath>
       <value>
-        <bleedRate>0.20</bleedRate>
+        <bleedRate>0.12</bleedRate>
       </value>
     </nomatch>
   </Operation>
