@@ -261,4 +261,97 @@
       <destroyedLabel>血管彻底断裂</destroyedLabel>
     </injuryProps>
   </HediffDef>
+
+  <HediffDef>
+    <defName>AdrenalineBoost</defName>
+    <label>肾上腺素增强</label>
+    <description>小人在受到物理创伤或致命危机刺激时分泌的强力肾上腺素，能临时显著增强移动、操作和意识能力，并能够极大削弱身体痛觉感知，防止休克倒地。但在激素消退后会产生强烈的脱水与疲劳反应。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.9, 0.6, 0.2)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-8.0</severityPerDay>
+      </li>
+      <li Class="EmergencyExpanded.HediffCompProperties_AdrenalineBoost"/>
+    </comps>
+    <stages>
+      <li>
+        <label>渐弱消退</label>
+        <painFactor>0.95</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.03</offset></li>
+          <li><capacity>Moving</capacity><offset>0.05</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.03</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.3</minSeverity>
+        <label>全身爆发</label>
+        <painFactor>0.85</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.07</offset></li>
+          <li><capacity>Moving</capacity><offset>0.10</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.07</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeDodgeChance>2.0</MeleeDodgeChance>
+          <MeleeHitChance>1.0</MeleeHitChance>
+          <ShootingAccuracyPawn>1.0</ShootingAccuracyPawn>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>极限应激</label>
+        <painFactor>0.80</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>0.15</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.10</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeDodgeChance>5.0</MeleeDodgeChance>
+          <MeleeHitChance>2.0</MeleeHitChance>
+          <ShootingAccuracyPawn>2.0</ShootingAccuracyPawn>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>AdrenalineCrash</defName>
+    <label>肾上腺素后遗症</label>
+    <description>强烈肾上腺素应激爆发后的崩溃与脱水疲劳期。由于身体机能极度透支以及乳酸的大量堆积，小人的运动能力、操作精度及意识会明显下降，并且创伤的炎性反应使得痛觉感受器变得异常敏感。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.5, 0.4, 0.4)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-4.0</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>逐步缓释</label>
+        <painOffset>0.05</painOffset>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.02</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.05</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.5</minSeverity>
+        <label>重度脱水疲劳</label>
+        <painOffset>0.10</painOffset>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
 </Defs>
