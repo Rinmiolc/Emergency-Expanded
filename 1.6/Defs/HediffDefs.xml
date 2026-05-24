@@ -68,7 +68,7 @@
         <hediffGivers>
           <li Class="HediffGiver_Random">
             <hediff>VentricularFibrillation</hediff>
-            <mtbDays>0.05</mtbDays> 
+            <mtbDays>0.03</mtbDays> 
           </li>
         </hediffGivers>
       </li>
@@ -84,7 +84,7 @@
         <hediffGivers>
           <li Class="HediffGiver_Random">
             <hediff>VentricularFibrillation</hediff>
-            <mtbDays>0.02</mtbDays> 
+            <mtbDays>0.01</mtbDays> 
           </li>
         </hediffGivers>
       </li>
