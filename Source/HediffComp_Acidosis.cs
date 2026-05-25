@@ -37,31 +37,57 @@ namespace EmergencyExpanded
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
             float bleedRate = Pawn.health.hediffSet.BleedRateTotal; // 获取当前全身流血速率
             
-            // 触发条件：泵血/呼吸低于早期阈值 (0.80)，或者处于中度大出血状态 (bleedRate > 0.15)
-            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bleedRate > 0.15f)
-            {
-                float severityFactor = 1f;
+            // 获取当前实质性累积失血严重度
+            float bloodLossSeverity = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
 
-                // 1. 基础维生极低时的翻倍
+            // 触发与恶化条件精细化：仅当泵血/呼吸降至 <= 0.50f，或者累积失血量进入 Class II 休克门槛（> 0.15f）时才触发恶化
+            if (pumping <= 0.50f || breathing <= 0.50f || bloodLossSeverity > 0.15f)
+            {
+                float severityFactor = 0.18f; // 前期基数从 1.0 降至 0.18，实现轻度休克代偿期极缓慢进展
+
+                // 1. 根据失血分级非线性大幅提速（对应临床 Class II、III、IV 失血性休克）
+                if (bloodLossSeverity > 0.15f)
+                {
+                    if (bloodLossSeverity <= 0.30f)
+                    {
+                        // Class II 级休克（15% - 30%）：代偿期，酸中毒增长微乎其微
+                        severityFactor += (bloodLossSeverity - 0.15f) * 1.2f; // 最大增加 0.18
+                    }
+                    else if (bloodLossSeverity <= 0.40f)
+                    {
+                        // Class III 级休克（30% - 40%）：代偿不足，增长加快
+                        severityFactor += 0.18f + (bloodLossSeverity - 0.30f) * 3.5f; // 最大增加 0.53
+                    }
+                    else
+                    {
+                        // Class IV 级重度失血性休克（> 40% 血液流失，Mod致死上限为 0.55）：代偿彻底崩溃，酸中毒发生爆发性、极速飙升！
+                        severityFactor += 0.53f + (bloodLossSeverity - 0.40f) * 16.0f; 
+                    }
+                }
+
+                // 2. 心泵与肺换气功能重度受损（低于 50%）时的低灌注与严重乏氧惩罚
+                if (pumping <= 0.50f)
+                {
+                    float pumpingDeficit = 0.50f - pumping;
+                    severityFactor += pumpingDeficit * 7.5f; // 每比 50% 降低 10%，乘数大增 0.75
+                }
+                if (breathing <= 0.50f)
+                {
+                    float breathingDeficit = 0.50f - breathing;
+                    severityFactor += breathingDeficit * 7.5f;
+                }
+
+                // 3. 基础维生极低时的终末危机翻倍
                 if (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
                 {
                     severityFactor *= EE_Settings.VitalCriticalMultiplier;
                 }
 
-                // 2. 根据流血速率进行温和的代谢累加（降为 1.5f 倍）
-                if (bleedRate > 0f)
-                {
-                    severityFactor += (bleedRate * 1.5f); 
-                }
-
-                // 3. 泵血缺口惩罚（降为 2.0f 倍）
-                float pumpingDeficit = UnityEngine.Mathf.Clamp01(Props.bloodPumpingThreshold - pumping);
-                severityFactor += (pumpingDeficit * 2f);
-
                 severityAdjustment += (Props.severityIncreasePerDay * severityFactor / 1000f); 
             }
             else
             {
+                // 无酸中毒刺激，代偿排出酸素，健康时排出速率大增
                 severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
             }
 

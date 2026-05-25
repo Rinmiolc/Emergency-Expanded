@@ -45,7 +45,21 @@ namespace EmergencyExpanded
             float bioAge = pawn.ageTracker.AgeBiologicalYearsFloat;
             float baseHR = 80f - Mathf.Clamp(bioAge - 15f, 0f, 60f) * 0.2f; // 人类范围在 68 - 80 左右
 
-            // 3. 失血状态加成
+            // 2. 肾上腺素加成 (额外增加心率)
+            Hediff adrenaline = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
+            if (adrenaline != null)
+            {
+                baseHR += adrenaline.Severity * 35f; // 最高 +35 bpm
+            }
+
+            // 3. 急性流血引起的交感神经代偿 (急性失血交感亢奋，心率立刻快速飙升)
+            float bleedRate = pawn.health.hediffSet.BleedRateTotal;
+            if (bleedRate > 0.01f)
+            {
+                baseHR += Mathf.Clamp(bleedRate * 35f, 0f, 60f); // 突击大出血立刻增加 20-60 bpm
+            }
+
+            // 4. 累积失血状态代偿与崩溃 (失容量代偿)
             Hediff bloodLoss = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
             if (bloodLoss != null)
             {
@@ -63,11 +77,11 @@ namespace EmergencyExpanded
                 else
                 {
                     // 终末脱水休克：心肌缺氧坏死，代偿崩溃，心率灾难性慢阻跌落
-                    baseHR = Mathf.Lerp(150f, 30f, (severity - 0.8f) / 0.2f);
+                    baseHR = Mathf.Lerp(baseHR, 30f, (severity - 0.8f) / 0.2f);
                 }
             }
 
-            // 4. 心律失常与骤停状态判定
+            // 5. 心律失常与骤停状态判定
             Hediff vFib = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
             if (vFib != null)
             {
@@ -151,6 +165,10 @@ namespace EmergencyExpanded
             // 定义 Gizmo 面板的整块区域 (160 x 75 像素)
             Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
             
+            // 【UI对齐核心修复】：显式绘制全尺寸 160x75 的原版切角面板背景。
+            // 这将彻底消除底层由于引擎默认 Command 引起的 75x75 灰色方块残留，确保与旁边所有按钮在高度与外观上完美对齐。
+            Widgets.DrawWindowBackground(rect);
+            
             // 获取与更新生理缓存
             CachedVitals vitals = VitalTracker.GetOrCreateVitals(pawn);
             if (vitals == null) return new GizmoResult(GizmoState.Clear);
@@ -186,10 +204,10 @@ namespace EmergencyExpanded
             }
 
             // --- 绘制高级质感背景 ---
-            // 外框边角
-            Widgets.DrawBoxSolid(rect, new Color(0.08f, 0.08f, 0.09f, 1f));
-            Rect innerScreen = rect.ContractedBy(3f);
-            // 纯黑深邃屏幕
+            // 【UI重塑】：彻底删除硬直角的自定义外框 DrawBoxSolid，直接利用原版斜切角 Gizmo 背景作为物理外壳！
+            // 黑色屏幕向内稍微缩进 4 像素，以形成完美的一体化“嵌入式液晶屏”视觉效果。
+            Rect innerScreen = rect.ContractedBy(4f);
+            // 纯黑深邃液晶屏幕
             Widgets.DrawBoxSolid(innerScreen, new Color(0.02f, 0.02f, 0.025f, 1f));
             
             // 顶部玻璃微反光质感
@@ -250,15 +268,28 @@ namespace EmergencyExpanded
                         float p = (vitals.phase + phaseDelta * fraction) % 1f;
                         
                         float val = 0f;
-                        if (bpm < 0.1f) val = 0f;
+                        if (bpm < 0.1f)
+                        {
+                            // 心跳骤停 (Flatline) 微弱起伏：包含极其缓慢的基线游走波动 (胸腔起伏/残余电信号) 与电磁干扰噪声抖动
+                            float timeAtPixel = t - dt * (1f - fraction);
+                            val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
+                        }
                         else if (pawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation) && bpm > 180f)
                         {
+                            // 【高拟真室颤波重塑】：融合质数频率谐波与缓慢的低频调制，塑造出极度无规则、波幅宽窄动态漂移的混沌乱颤蠕动波
                             float timeAtPixel = t - dt * (1f - fraction);
-                            val = Mathf.Sin(timeAtPixel * 35f) * 0.3f + Mathf.Sin(timeAtPixel * 70f) * 0.15f + Rand.Range(-0.05f, 0.05f);
+                            float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f; // 7.5Hz低频振幅漂移
+                            float baseWave = Mathf.Sin(timeAtPixel * 37f) * 0.32f + 
+                                             Mathf.Cos(timeAtPixel * 79f) * 0.18f + 
+                                             Mathf.Sin(timeAtPixel * 131f) * 0.10f;
+                            float noise = Rand.Range(-0.08f, 0.08f); // 高频微颤抖动
+                            val = baseWave * amplitudeMod + noise;
                         }
                         else
                         {
-                            val = GetBaseECGValue(p);
+                            // 缺氧与心肌严重缺血病理判定
+                            bool isHypoxic = pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia) || bpm > 140f;
+                            val = GetBaseECGValue(p, isHypoxic);
                         }
                         if (x >= 0 && x < vitals.waveBuffer.Length)
                             vitals.waveBuffer[x] = val;
@@ -268,14 +299,20 @@ namespace EmergencyExpanded
             }
 
             // 绘制波形线段
-            int gapWidth = 5;
             for (int i = 0; i < Mathf.FloorToInt(waveWidth) - 1; i++)
             {
-                float distToSweep = vitals.sweepX - i;
-                if (distToSweep < 0) distToSweep += waveWidth;
-                if (distToSweep >= 0 && distToSweep <= gapWidth) continue; // 留出扫描头前方的断层空隙
+                // 计算该点到扫描头的顺时针距离（即扫描头前方的距离）
+                float distToSweep = i - vitals.sweepX;
+                if (distToSweep < 0f) distToSweep += waveWidth;
                 
-                // 跨越扫描线时不连接
+                // 扫描头前方 8 像素内逐渐淡出到 0，完美实现扫描阴影断层，杜绝硬剔除带来的边缘毛糙与视觉断点
+                float alpha = 1f;
+                if (distToSweep < 8f)
+                {
+                    alpha = distToSweep / 8f; // 0 到 1 线性渐变
+                }
+                
+                // 跨越扫描线时不连接，防止首尾两端产生突变的粘连折线
                 if (i + 1 > vitals.sweepX && i < vitals.sweepX) continue;
                 
                 float v1 = vitals.waveBuffer[i];
@@ -286,10 +323,13 @@ namespace EmergencyExpanded
                 float screenX2 = waveRect.x + i + 1;
                 float screenY2 = centerY - v2 * (waveRect.height * 0.42f);
                 
-                // 外辉光
-                Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), glowColor, 2.5f);
-                // 亮芯
-                Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), coreColor, 1.2f);
+                Color drawGlow = glowColor * new Color(1f, 1f, 1f, alpha);
+                Color drawCore = coreColor * new Color(1f, 1f, 1f, alpha);
+                
+                // 外辉光 (带 Alpha 渐变)
+                Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawGlow, 2.5f);
+                // 亮芯 (带 Alpha 渐变)
+                Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawCore, 1.2f);
             }
 
             // 绘制扫描头亮线
@@ -301,11 +341,11 @@ namespace EmergencyExpanded
             Rect rightPanel = new Rect(innerScreen.xMax - 46f, innerScreen.y, 46f, innerScreen.height);
             TextAnchor origAnchor = Text.Anchor;
 
-            // LEAD II 标识
+            // ECG 标识
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = new Color(0.5f, 0.6f, 0.5f, 0.7f);
-            Widgets.Label(new Rect(innerScreen.x + 18f, innerScreen.y + 2f, 50f, 15f), "LEAD II");
+            Widgets.Label(new Rect(innerScreen.x + 18f, innerScreen.y + 2f, 50f, 15f), "ECG");
 
             // 跳动的心脏图标 ♥
             bool isBlinking = bpm > 0.1f && (vitals.phase < 0.15f);
@@ -316,7 +356,7 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.UpperRight;
             GUI.color = coreColor;
-            string bpmStr = (bpm < 0.1f) ? "---" : Mathf.RoundToInt(bpm).ToString();
+            string bpmStr = Mathf.RoundToInt(bpm).ToString(); // 骤停时直接显示数字 0，符合现实
             Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 10f, rightPanel.width - 2f, 26f), bpmStr);
 
             // 血氧数值 (中号字体，偏下居中，去掉英文标签)
@@ -325,7 +365,7 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Small;
             Text.Anchor = TextAnchor.UpperRight;
             GUI.color = spo2Color;
-            string spo2Str = (bpm < 0.1f) ? "--" : spo2.ToString() + "%";
+            string spo2Str = spo2.ToString() + "%"; // 骤停时直接显示数字 0%，符合现实
             Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 42f, rightPanel.width - 2f, 18f), spo2Str);
 
             // 还原状态
@@ -348,7 +388,9 @@ namespace EmergencyExpanded
         }
 
         // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
-        private float GetBaseECGValue(float p)
+        // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
+        // 包含心肌缺血/缺氧时的 ST段压低 与 T波倒置 拟真病理改变
+        private float GetBaseECGValue(float p, bool isHypoxic)
         {
             if (p < 0.05f) return 0f;
             // P波 (心房除极)
@@ -366,15 +408,26 @@ namespace EmergencyExpanded
             // S波 (心室基底除极 - 极速下降)
             if (p < 0.26f) 
                 return 1.20f - ((p - 0.23f) / 0.03f) * 1.55f; // S波谷底 -0.35
+            
             // ST段 (缓慢回基线)
             if (p < 0.32f) 
-                return -0.35f + ((p - 0.26f) / 0.06f) * 0.35f;
+            {
+                float stBase = -0.35f + ((p - 0.26f) / 0.06f) * 0.35f;
+                // 脑部窒息缺氧或重度低血容量休克时：发生 ST段压低 (ST Depression) 0.08 像素单位
+                return isHypoxic ? (stBase - 0.08f) : stBase;
+            }
+            
             // T波 (心室复极 - 不对称宽波)
             if (p < 0.55f) 
             {
                 float tPhase = (p - 0.32f) / 0.23f;
-                // 用 Pow(sin, 1.5) 塑造 T波不对称感
-                return Mathf.Pow(Mathf.Sin(tPhase * Mathf.PI), 1.5f) * 0.28f;
+                float tWave = Mathf.Pow(Mathf.Sin(tPhase * Mathf.PI), 1.5f) * 0.28f;
+                if (isHypoxic)
+                {
+                    // 缺氧病理：T波对称性倒置 (T Wave Inversion)
+                    return -tWave * 0.8f - 0.05f; 
+                }
+                return tWave;
             }
             return 0f; // TP段基线
         }
@@ -404,15 +457,15 @@ namespace EmergencyExpanded
                 if (vFeb.Severity >= 0.60f)
                 {
                     text += "<color=red>⚠️【致命！心跳骤停 (Flatline)】</color>\n";
-                    text += "原因: 心室颤动崩溃或严重失氧导致心脏停止跳动，几分钟内将脑死亡！\n";
-                    text += "急救措施: <color=yellow>请立刻派人对伤者实施【心肺复苏术 (CPR)】以维持人工脑供氧，并配合【除颤抢救】！</color>";
+                    text += "原因: 急性心肌梗死重度恶化，引发心肌大面积坏死与心律崩溃，心脏已停止搏动！\n";
+                    text += "急救措施: <color=yellow>请立刻派人对伤者实施【心肺复苏术 (CPR)】以提供人工脑供氧，并配合【除颤器】尝试复律！</color>";
                     return text;
                 }
                 else
                 {
-                    text += "<color=red>⚠️【致命！心室颤动 (V-Fib)】</color>\n";
-                    text += "原因: 严重酸中毒或物理电击导致心肌纤维乱颤，已失去泵血功能！\n";
-                    text += "急救措施: <color=yellow>小人将在数秒内昏迷并骤停。必须立刻使用【自动体外除颤器 (AED)】进行除颤！</color>";
+                    text += "<color=red>⚠️【致命！急性心肌梗死】</color>\n";
+                    text += "原因: 冠状动脉急性阻塞导致心肌严重缺血坏死与纤维乱颤，已失去血液泵送功能！\n";
+                    text += "急救措施: <color=yellow>小人随时会丧失意识并骤停。必须立刻使用【自动体外除颤器 (AED)】进行除颤挽救！</color>";
                     return text;
                 }
             }
@@ -452,6 +505,14 @@ namespace EmergencyExpanded
                 text += "<color=red>⚠️【危重！全身代谢性酸中毒】</color>\n";
                 text += "原因: 长时间低灌注与局部肢体坏死引发酸碱失衡大崩溃，晚期可直接诱发心搏骤停。\n";
                 text += "急救措施: <color=yellow>必须尽快纠正失血低血压状态；若酸中毒危及心跳，请紧急注射【碳酸氢钠针剂】中和血液！</color>\n";
+            }
+
+            // 5. 肾上腺素状态
+            Hediff adrenalineStatus = p.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
+            if (adrenalineStatus != null)
+            {
+                text += "<color=green>⚡【生理应激：肾上腺素充沛】</color>\n";
+                text += "影响: 神经高度亢奋。临时获得 15% 移速与 10% 意识加成，且极大屏蔽痛觉，避免痛觉休克。\n";
             }
 
             // 6. 全身健康

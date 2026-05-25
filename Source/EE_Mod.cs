@@ -99,10 +99,10 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Small;
             listing.Gap(10f);
 
-            listing.Label($"【动脉破裂几率 - 躯干】: {Settings.arterialRuptureChanceTorso.ToStringPercent()} (乘以单次伤害系数)");
+            listing.Label($"【大出血发生率 - 躯干】: {Settings.arterialRuptureChanceTorso.ToStringPercent()} (乘以单次伤害系数)");
             Settings.arterialRuptureChanceTorso = listing.Slider(Settings.arterialRuptureChanceTorso, 0f, 1f);
 
-            listing.Label($"【动脉破裂几率 - 四肢】: {Settings.arterialRuptureChanceLimb.ToStringPercent()} (乘以单次伤害系数)");
+            listing.Label($"【大出血发生率 - 四肢】: {Settings.arterialRuptureChanceLimb.ToStringPercent()} (乘以单次伤害系数)");
             Settings.arterialRuptureChanceLimb = listing.Slider(Settings.arterialRuptureChanceLimb, 0f, 1f);
 
             listing.Label($"【血液灌注/呼吸监控阈值】: {Settings.hypoxiaMonitorThreshold.ToStringPercent()} (低于此值将触发缺氧与酸中毒危机)");

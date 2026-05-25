@@ -40,8 +40,9 @@ namespace EmergencyExpanded
                 }
             }
 
-            // 2. 代谢性酸中毒判定门槛放宽（0.80 早期低灌注或大出血即启动）
-            if (pumping < 0.80f || breathing < 0.80f || bleedRate > 0.15f)
+            // 2. 代谢性酸中毒病理门槛重塑（由累积失血休克、或严重循环/呼吸功能衰竭触发）
+            float bloodLossSeverity = __instance.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
+            if (pumping <= 0.50f || breathing <= 0.50f || bloodLossSeverity > 0.15f)
             {
                 HediffDef acidosisDef = EE_DefOf.MetabolicAcidosis;
                 if (acidosisDef != null && !__instance.hediffSet.HasHediff(acidosisDef))

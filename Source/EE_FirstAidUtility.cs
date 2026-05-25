@@ -245,7 +245,7 @@ namespace EmergencyExpanded
             Hediff primaryWound = hediffsToTend[0];
             if (primaryWound.def == EE_DefOf.ArterialRupture)
             {
-                // 【动脉破裂特殊机制】：一次只能包扎一部分，根据治疗品质降低严重度 0.1 ~ 0.25
+                // 【大出血伤口特殊机制】：一次只能包扎一部分，根据治疗品质降低严重度 0.1 ~ 0.25
                 float reduction = UnityEngine.Mathf.Clamp(0.1f + tendQuality * 0.15f, 0.1f, 0.25f);
                 primaryWound.Severity -= reduction;
                 
@@ -255,13 +255,13 @@ namespace EmergencyExpanded
                 if (primaryWound.Severity <= 0.001f)
                 {
                     patient.health.RemoveHediff(primaryWound);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "动脉破裂已缝合消除!", 4.0f);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已缝合消除!", 4.0f);
                     return true; // 缝合完毕，消耗物品
                 }
                 else
                 {
                     int remainTimes = (int)System.Math.Ceiling(primaryWound.Severity / reduction);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"大动脉缝合中 (还需 {remainTimes} 次)", 3.5f);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"大出血伤口缝合中 (还需 {remainTimes} 次)", 3.5f);
                     return !allowConsecutive; // 如果允许连续使用则暂不消耗物品，否则强制每次都消耗
                 }
             }
