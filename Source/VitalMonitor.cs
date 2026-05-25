@@ -373,14 +373,9 @@ namespace EmergencyExpanded
             GUI.color = Color.white;
             Text.Font = GameFont.Small;
 
-            // 4. 注册悬停 Tip (新手引导)
-            string diagnosisTip = GetMedicalDiagnosisAndTutorial(pawn, vitals);
-            TooltipHandler.TipRegion(rect, diagnosisTip);
-
-            // 5. 监听左键点击
+            // 4. 监听左键点击 (精简无干扰)
             if (Widgets.ButtonInvisible(rect))
             {
-                Messages.Message($"{pawn.NameShortColored} 生命体征监视中，悬停鼠标可查看详细医学诊断。", MessageTypeDefOf.NeutralEvent, false);
                 return new GizmoResult(GizmoState.Interacted);
             }
 
@@ -430,99 +425,6 @@ namespace EmergencyExpanded
                 return tWave;
             }
             return 0f; // TP段基线
-        }
-
-        private string GetMedicalDiagnosisAndTutorial(Pawn p, CachedVitals v)
-        {
-            if (p == null || p.Dead || v == null) return "无法获取体征数据。";
-
-            float pumping = p.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-            float breathing = p.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-            float bleedRate = p.health.hediffSet.BleedRateTotal;
-            int bpm = Mathf.RoundToInt(v.displayHeartRate);
-
-            string text = $"<b>【生命体征监测仪 - {p.NameShortColored}】</b>\n";
-            text += "---------------------------------\n";
-            text += $"<b>实时心率</b>: {((bpm == 0) ? "<color=red>0次/分 (骤停!)</color>" : $"{bpm}次/分")}\n";
-            text += $"<b>全身泵血</b>: {pumping.ToStringPercent()}\n";
-            text += $"<b>全身呼吸</b>: {breathing.ToStringPercent()}\n";
-            text += $"<b>总流血率</b>: {(bleedRate > 0.01f ? $"<color=red>{bleedRate:F1}/天</color>" : "无流血")}\n";
-            text += "---------------------------------\n";
-            text += "<b>【实时医学诊断与急救指引】</b>\n";
-
-            // 1. 心脏骤停判定
-            Hediff vFeb = p.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
-            if (vFeb != null)
-            {
-                if (vFeb.Severity >= 0.60f)
-                {
-                    text += "<color=red>⚠️【致命！心跳骤停 (Flatline)】</color>\n";
-                    text += "原因: 急性心肌梗死重度恶化，引发心肌大面积坏死与心律崩溃，心脏已停止搏动！\n";
-                    text += "急救措施: <color=yellow>请立刻派人对伤者实施【心肺复苏术 (CPR)】以提供人工脑供氧，并配合【除颤器】尝试复律！</color>";
-                    return text;
-                }
-                else
-                {
-                    text += "<color=red>⚠️【致命！急性心肌梗死】</color>\n";
-                    text += "原因: 冠状动脉急性阻塞导致心肌严重缺血坏死与纤维乱颤，已失去血液泵送功能！\n";
-                    text += "急救措施: <color=yellow>小人随时会丧失意识并骤停。必须立刻使用【自动体外除颤器 (AED)】进行除颤挽救！</color>";
-                    return text;
-                }
-            }
-
-            // 2. 严重流血与休克代偿判定
-            Hediff bloodLoss = p.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
-            if (bloodLoss != null)
-            {
-                if (bloodLoss.Severity >= 0.80f)
-                {
-                    text += "<color=red>⚠️【危急！终末代偿失调休克】</color>\n";
-                    text += "原因: 全身失血已达致命极限。心肌供氧严重崩溃导致心率慢阻骤跌，濒临骤停！\n";
-                    text += "急救措施: <color=yellow>必须在几秒钟内完成止血包扎，并火速通过【静脉补液/输血】抢救！</color>\n";
-                }
-                else if (bloodLoss.Severity >= 0.30f)
-                {
-                    text += "<color=yellow>⚠️【危重！低血容量性代偿过速】</color>\n";
-                    text += "原因: 全身血管容量急剧丢失，心脏被迫高频超载代偿以维持脑血压。\n";
-                    text += "急救措施: <color=yellow>请迅速使用止血带包扎主要伤口，防止代偿崩溃引发酸中毒休克！</color>\n";
-                }
-            }
-
-            // 3. 脑部窒息危机判定
-            Hediff brainHypoxia = p.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia);
-            if (brainHypoxia != null)
-            {
-                text += "<color=red>⚠️【危急！脑组织急性缺氧】</color>\n";
-                text += $"脑缺氧严重度: {(brainHypoxia.Severity * 100f):F0}%\n";
-                text += "原因: 泵血不足或呼吸受阻。缺氧达到60%以上将产生不可逆的【永久脑损伤】，到100%直接脑死亡陷入植物人！\n";
-                text += "急救措施: <color=yellow>请火速包扎止血以恢复脑供血；若呼吸通道受阻，请确保清理呼吸道或戴上人工面罩！</color>\n";
-            }
-
-            // 4. 代谢性酸中毒判定
-            Hediff acidosis = p.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis);
-            if (acidosis != null && acidosis.Severity >= 0.50f)
-            {
-                text += "<color=red>⚠️【危重！全身代谢性酸中毒】</color>\n";
-                text += "原因: 长时间低灌注与局部肢体坏死引发酸碱失衡大崩溃，晚期可直接诱发心搏骤停。\n";
-                text += "急救措施: <color=yellow>必须尽快纠正失血低血压状态；若酸中毒危及心跳，请紧急注射【碳酸氢钠针剂】中和血液！</color>\n";
-            }
-
-            // 5. 肾上腺素状态
-            Hediff adrenalineStatus = p.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
-            if (adrenalineStatus != null)
-            {
-                text += "<color=green>⚡【生理应激：肾上腺素充沛】</color>\n";
-                text += "影响: 神经高度亢奋。临时获得 15% 移速与 10% 意识加成，且极大屏蔽痛觉，避免痛觉休克。\n";
-            }
-
-            // 6. 全身健康
-            if (brainHypoxia == null && bloodLoss == null && vFeb == null && acidosis == null)
-            {
-                text += "<color=green>✓【生命体征总体安全】</color>\n";
-                text += "监测报告: 目前各项核心维生器官工作状态良好，微循环稳定，无急症危机风险。";
-            }
-
-            return text;
         }
     }
 
