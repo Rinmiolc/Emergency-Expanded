@@ -16,10 +16,11 @@ namespace EmergencyExpanded
 
             float pumping = __instance.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = __instance.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+            float bleedRate = __instance.hediffSet.BleedRateTotal;
 
+            // 1. 脑缺氧判定门槛（依然保持在 0.55 极低晚期危急门槛）
             if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold)
             {
-                // 1. 使用 EE_DefOf 预置定义，极大地提升高频执行性能，避免高频哈希碰撞
                 HediffDef vegStateDef = EE_DefOf.VegetativeState;
                 bool isVegetative = vegStateDef != null && __instance.hediffSet.HasHediff(vegStateDef);
 
@@ -37,7 +38,11 @@ namespace EmergencyExpanded
                         }
                     }
                 }
+            }
 
+            // 2. 代谢性酸中毒判定门槛放宽（0.80 早期低灌注或大出血即启动）
+            if (pumping < 0.80f || breathing < 0.80f || bleedRate > 0.15f)
+            {
                 HediffDef acidosisDef = EE_DefOf.MetabolicAcidosis;
                 if (acidosisDef != null && !__instance.hediffSet.HasHediff(acidosisDef))
                 {

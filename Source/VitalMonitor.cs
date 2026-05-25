@@ -45,13 +45,6 @@ namespace EmergencyExpanded
             float bioAge = pawn.ageTracker.AgeBiologicalYearsFloat;
             float baseHR = 80f - Mathf.Clamp(bioAge - 15f, 0f, 60f) * 0.2f; // 人类范围在 68 - 80 左右
 
-            // 2. 肾上腺素加成 (额外增加心率)
-            Hediff adrenaline = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
-            if (adrenaline != null)
-            {
-                baseHR += adrenaline.Severity * 35f; // 最高 +35 bpm
-            }
-
             // 3. 失血状态加成
             Hediff bloodLoss = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
             if (bloodLoss != null)
@@ -459,14 +452,6 @@ namespace EmergencyExpanded
                 text += "<color=red>⚠️【危重！全身代谢性酸中毒】</color>\n";
                 text += "原因: 长时间低灌注与局部肢体坏死引发酸碱失衡大崩溃，晚期可直接诱发心搏骤停。\n";
                 text += "急救措施: <color=yellow>必须尽快纠正失血低血压状态；若酸中毒危及心跳，请紧急注射【碳酸氢钠针剂】中和血液！</color>\n";
-            }
-
-            // 5. 肾上腺素状态
-            Hediff adrenaline = p.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
-            if (adrenaline != null)
-            {
-                text += "<color=green>⚡【生理应激：肾上腺素充沛】</color>\n";
-                text += "影响: 神经高度亢奋。临时获得 15% 移速与 10% 意识加成，且极大屏蔽痛觉，避免痛觉休克。\n";
             }
 
             // 6. 全身健康

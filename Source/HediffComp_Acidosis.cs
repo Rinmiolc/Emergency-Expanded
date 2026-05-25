@@ -33,18 +33,12 @@ namespace EmergencyExpanded
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
             if (!Pawn.IsHashIntervalTick(60)) return;
 
-            if (EE_DefOf.EE_AdrenalineStabilized != null && Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_AdrenalineStabilized))
-            {
-                severityAdjustment = 0f;
-                return;
-            }
-            
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
             float bleedRate = Pawn.health.hediffSet.BleedRateTotal; // 获取当前全身流血速率
             
-            // 触发条件放宽：不仅看泵血，如果正在大出血(>0.5/天)，也会强制引发酸中毒恶化
-            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bleedRate > 0.5f)
+            // 触发条件：泵血/呼吸低于早期阈值 (0.80)，或者处于中度大出血状态 (bleedRate > 0.15)
+            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bleedRate > 0.15f)
             {
                 float severityFactor = 1f;
 
@@ -54,16 +48,15 @@ namespace EmergencyExpanded
                     severityFactor *= EE_Settings.VitalCriticalMultiplier;
                 }
 
-                // 2. 根据流血速率提供巨额指数级补偿
-                // 动脉破裂 (出血率 2.5) 会在这里提供 2.5 * 4 = 10倍 的酸中毒恶化速度！
+                // 2. 根据流血速率进行温和的代谢累加（降为 1.5f 倍）
                 if (bleedRate > 0f)
                 {
-                    severityFactor += (bleedRate * 4f); 
+                    severityFactor += (bleedRate * 1.5f); 
                 }
 
-                // 3. 泵血缺口线性惩罚：泵血越低，恶化越快
+                // 3. 泵血缺口惩罚（降为 2.0f 倍）
                 float pumpingDeficit = UnityEngine.Mathf.Clamp01(Props.bloodPumpingThreshold - pumping);
-                severityFactor += (pumpingDeficit * 3f);
+                severityFactor += (pumpingDeficit * 2f);
 
                 severityAdjustment += (Props.severityIncreasePerDay * severityFactor / 1000f); 
             }

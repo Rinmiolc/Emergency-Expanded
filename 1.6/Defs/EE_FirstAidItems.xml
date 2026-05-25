@@ -70,27 +70,4 @@
     </thingCategories>
   </ThingDef>
 
-  <!-- 肾上腺素注射笔 (Adrenaline Pen) -->
-  <ThingDef ParentName="ResourceBase">
-    <defName>EE_AdrenalinePen</defName>
-    <label>肾上腺素注射笔</label>
-    <description>一次性密封弹簧自动皮下注射器。内含强效肾上腺素及酸碱稳定复合缓冲液。注射后能在 12 小时（半天）内彻底冰冻/暂缓代谢性酸中毒及致命心室颤动的恶化进程，同时给予强力肾上腺素增强（Adrenaline Boost）超频效果，为重伤昏迷的伤员运回大后方抢救赢得最后且关键的黄金时间。</description>
-    <graphicData>
-      <texPath>Things/Item/Drug/Penoxycyline</texPath>
-      <graphicClass>Graphic_StackCount</graphicClass>
-    </graphicData>
-    <soundInteract>Standard_Drop</soundInteract>
-    <soundDrop>Standard_Drop</soundDrop>
-    <stackLimit>15</stackLimit>
-    <statBases>
-      <MaxHitPoints>50</MaxHitPoints>
-      <MarketValue>38</MarketValue>
-      <Mass>0.04</Mass>
-      <Flammability>0.5</Flammability>
-    </statBases>
-    <thingCategories>
-      <li>Medicine</li>
-    </thingCategories>
-  </ThingDef>
-
 </Defs>

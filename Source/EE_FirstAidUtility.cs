@@ -11,7 +11,6 @@ namespace EmergencyExpanded
         Medicine,        // 常规医药 (Herbal, Industrial, Ultratech)
         FirstAidKit,     // 战地急救包 (EE_HerbalFirstAidKit, EE_FirstAidKit)
         Tourniquet,      // 止血带
-        AdrenalinePen,   // 肾上腺素注射笔
         IngestibleDirect // 所有可食用/可注射的食物与成瘾品
     }
 
@@ -24,7 +23,6 @@ namespace EmergencyExpanded
 
             // 1. 特殊定制急救品
             if (def.defName == "EE_Tourniquet") return EmergencyItemType.Tourniquet;
-            if (def.defName == "EE_AdrenalinePen") return EmergencyItemType.AdrenalinePen;
             if (def.defName == "EE_HerbalFirstAidKit" || def.defName == "EE_FirstAidKit") return EmergencyItemType.FirstAidKit;
 
             // 2. 原版与Mod常规医药
@@ -62,12 +60,6 @@ namespace EmergencyExpanded
                 case EmergencyItemType.Tourniquet:
                     // 止血带：必须有四肢流血伤口
                     return HasBleedingLimbWound(patient);
-
-                case EmergencyItemType.AdrenalinePen:
-                    // 肾上腺素：有心脏骤停(VFib)、严重酸中毒、或者处于昏迷倒地状态
-                    return patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation) || 
-                           patient.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis) ||
-                           patient.Downed;
 
                 case EmergencyItemType.FirstAidKit:
                 case EmergencyItemType.Medicine:
@@ -120,9 +112,6 @@ namespace EmergencyExpanded
             {
                 case EmergencyItemType.Tourniquet:
                     ApplyTourniquet(doctor, patient);
-                    break;
-                case EmergencyItemType.AdrenalinePen:
-                    ApplyAdrenaline(doctor, patient);
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? 0.35f : 0.65f;
@@ -227,43 +216,6 @@ namespace EmergencyExpanded
                     }
                 }
                 MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"肢体 {targetLimb.Label} 已结扎止血", 3.5f);
-            }
-        }
-
-        private static void ApplyAdrenaline(Pawn doctor, Pawn patient)
-        {
-            // 1. 冰冻严重度和恶化：施加一个临时的“肾上腺素强制稳定”Hediff (EE_AdrenalineStabilized)
-            HediffDef stabDef = EE_DefOf.EE_AdrenalineStabilized;
-            if (stabDef != null)
-            {
-                Hediff stab = patient.health.hediffSet.GetFirstHediffOfDef(stabDef);
-                if (stab == null)
-                {
-                    stab = HediffMaker.MakeHediff(stabDef, patient);
-                    stab.Severity = 1.0f; // 持续 12 小时
-                    patient.health.AddHediff(stab);
-                }
-                else
-                {
-                    stab.Severity = 1.0f; // 刷新时间
-                }
-            }
-
-            // 2. 激发状态
-            HediffDef boostDef = EE_DefOf.AdrenalineBoost;
-            if (boostDef != null)
-            {
-                Hediff boost = patient.health.hediffSet.GetFirstHediffOfDef(boostDef);
-                if (boost == null)
-                {
-                    boost = HediffMaker.MakeHediff(boostDef, patient);
-                    boost.Severity = 1.0f;
-                    patient.health.AddHediff(boost);
-                }
-                else
-                {
-                    boost.Severity = 1.0f;
-                }
             }
         }
 
