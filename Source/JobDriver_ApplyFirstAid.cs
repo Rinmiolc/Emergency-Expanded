@@ -143,8 +143,8 @@ namespace EmergencyExpanded
             // Normal medicine: 4.0 seconds base
             int baseTicks = 240;
             
-            bool inMedicalBed = patient.CurrentBed() != null && patient.CurrentBed().Medical;
-            if (!inMedicalBed)
+            bool inBed = patient.CurrentBed() != null;
+            if (!inBed)
             {
                 // Ground tend speed penalty: 2.5x slower (10.0 seconds)
                 baseTicks = (int)(baseTicks * 2.5f); 

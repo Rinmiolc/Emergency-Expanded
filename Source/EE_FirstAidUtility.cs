@@ -71,10 +71,15 @@ namespace EmergencyExpanded
 
                 case EmergencyItemType.FirstAidKit:
                 case EmergencyItemType.Medicine:
-                    // 急急包/医药：身上有任何需要包扎(tendable)的伤口或疾病
+                    // 急救包/医药：身上有任何需要包扎(tendable)的伤口或疾病
                     return patient.health.hediffSet.HasTendableHediff();
 
                 case EmergencyItemType.IngestibleDirect:
+                    // 血原质包：在有失血症时允许输血施用
+                    if (itemDef.defName == "HemogenPack")
+                    {
+                        return patient.health.hediffSet.HasHediff(HediffDefOf.BloodLoss);
+                    }
                     // 食物/成瘾品：只要对方是活体，且没有饱腹；或者是成瘾品且对方倒地
                     if (itemDef.IsDrug && patient.Downed) return true;
                     if (itemDef.ingestible != null && itemDef.ingestible.CachedNutrition > 0f && patient.needs?.food != null && patient.needs.food.CurLevelPercentage < 0.9f) return true;
@@ -121,19 +126,45 @@ namespace EmergencyExpanded
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? 0.35f : 0.65f;
-                    consumeItem = ApplyFieldTend(doctor, patient, kitQuality, isKit: true);
+                    consumeItem = ApplyFieldTend(doctor, patient, kitQuality, allowConsecutive: true);
                     break;
                 case EmergencyItemType.Medicine:
                     float medMultiplier = item.def == ThingDefOf.MedicineHerbal ? 0.45f :
                                          item.def == ThingDefOf.MedicineIndustrial ? 0.85f : 1.7f;
                     float docSkill = doctor.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
                     float finalMedQuality = UnityEngine.Mathf.Clamp01((docSkill * 0.05f + 0.2f) * medMultiplier);
-                    consumeItem = ApplyFieldTend(doctor, patient, finalMedQuality, isKit: false);
+                    
+                    // 仅限原版三种医药允许连续使用
+                    bool allowConsecutive = item.def == ThingDefOf.MedicineHerbal || 
+                                            item.def == ThingDefOf.MedicineIndustrial || 
+                                            item.def == ThingDefOf.MedicineUltratech;
+                    consumeItem = ApplyFieldTend(doctor, patient, finalMedQuality, allowConsecutive);
                     break;
                 case EmergencyItemType.IngestibleDirect:
-                    // 强行给队友喂食/注射成瘾品/血包
-                    item.Ingested(patient, patient.needs?.food?.MaxLevel ?? 1.0f);
-                    consumeItem = false; // 原版 Ingested 方法会自动处理扣除和销毁！
+                    if (item.def.defName == "HemogenPack")
+                    {
+                        // 输血逻辑：降低失血 Hediff 的严重度
+                        Hediff bloodLoss = patient.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
+                        if (bloodLoss != null)
+                        {
+                            // 根据配置的致死流血量上限，按现实比例精准恢复（一包血原质约恢复 12% 的全身血液量）
+                            float lethal = HediffDefOf.BloodLoss.lethalSeverity;
+                            float reduction = lethal * 0.12f; // 约减少 0.066 严重度
+                            bloodLoss.Severity -= reduction;
+                            if (bloodLoss.Severity <= 0.001f)
+                            {
+                                patient.health.RemoveHediff(bloodLoss);
+                            }
+                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "输血成功: 失血减轻 12%", 4.0f);
+                        }
+                        consumeItem = true; // 正常扣除消耗品
+                    }
+                    else
+                    {
+                        // 强行给队友喂食/注射成瘾品/血包
+                        item.Ingested(patient, patient.needs?.food?.MaxLevel ?? 1.0f);
+                        consumeItem = false; // 原版 Ingested 方法会自动处理扣除和销毁！
+                    }
                     break;
             }
 
@@ -236,7 +267,7 @@ namespace EmergencyExpanded
             }
         }
 
-        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, float tendQuality, bool isKit)
+        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, float tendQuality, bool allowConsecutive)
         {
             // 战地倾向逻辑
             List<Hediff> hediffsToTend = new List<Hediff>();
@@ -273,13 +304,13 @@ namespace EmergencyExpanded
                 {
                     patient.health.RemoveHediff(primaryWound);
                     MoteMaker.ThrowText(patient.DrawPos, patient.Map, "动脉破裂已缝合消除!", 4.0f);
-                    return true;
+                    return true; // 缝合完毕，消耗物品
                 }
                 else
                 {
                     int remainTimes = (int)System.Math.Ceiling(primaryWound.Severity / reduction);
                     MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"大动脉缝合中 (还需 {remainTimes} 次)", 3.5f);
-                    return false;
+                    return !allowConsecutive; // 如果允许连续使用则暂不消耗物品，否则强制每次都消耗
                 }
             }
             else

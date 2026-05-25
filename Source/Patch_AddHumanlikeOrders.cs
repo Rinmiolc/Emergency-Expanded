@@ -42,7 +42,7 @@ namespace EmergencyExpanded
             IntVec3 clickCell = IntVec3.FromVector3(clickPos);
             Pawn targetPawn = clickCell.GetFirstPawn(pawn.Map);
             if (targetPawn == null || targetPawn == pawn) return; // 无法对自己通过右键实施野外急救
-            if (!targetPawn.RaceProps.Humanlike) return; // 仅支持人类
+            if (!targetPawn.RaceProps.IsFlesh || targetPawn.RaceProps.BloodDef == null) return; // 必须是血肉生物且具有血液
 
             // 3. 扫描治疗者背包里的急救道具和食物/药物
             List<Thing> availableItems = EE_FirstAidUtility.GetUsableItemsInInventory(pawn);
@@ -65,13 +65,16 @@ namespace EmergencyExpanded
 
                 // 6. 构建右键菜单选项
                 string optionLabel = "";
-                if (type == EmergencyItemType.IngestibleDirect)
+                bool isBleeding = targetPawn.health.hediffSet.BleedRateTotal > 0.01f;
+
+                if (type == EmergencyItemType.Tourniquet || 
+                    ((type == EmergencyItemType.FirstAidKit || type == EmergencyItemType.Medicine) && isBleeding))
                 {
-                    optionLabel = $"[背包喂药] 强行给 {targetPawn.LabelShort} 喂食/注射 {itemDef.LabelCap} (剩余: {totalCount})";
+                    optionLabel = $"为 {targetPawn.LabelShort} 紧急止血 (剩余: {totalCount})";
                 }
                 else
                 {
-                    optionLabel = $"[战地急救] 用 {itemDef.LabelCap} 抢救 {targetPawn.LabelShort} (剩余: {totalCount})";
+                    optionLabel = $"对 {targetPawn.LabelShort} 使用 {itemDef.LabelCap} (剩余: {totalCount})";
                 }
                 
                 Action action = () =>
@@ -85,12 +88,12 @@ namespace EmergencyExpanded
                     }
                 };
 
-                // 添加高优先级的彩装饰单项并注入到已有的右键结果列表中
-                __result.Add(FloatMenuUtility.DecoratePrioritizedTask(
-                    new FloatMenuOption(optionLabel, action, MenuOptionPriority.High, null, targetPawn), 
-                    pawn, 
-                    targetPawn
-                ));
+                // 创建带图标的高级 FloatMenuOption
+                FloatMenuOption option = new FloatMenuOption(optionLabel, action, MenuOptionPriority.High, null, targetPawn);
+                option.iconThing = firstThing; // 方括号换成所用物品的图标，实现完美原版质感
+
+                // 添加高优先级修饰并注入到已有的右键结果列表中
+                __result.Add(FloatMenuUtility.DecoratePrioritizedTask(option, pawn, targetPawn));
             }
         }
     }
