@@ -41,6 +41,10 @@ namespace EmergencyExpanded
         public float arterialRuptureChanceTorso = 0.90f;
         public float arterialRuptureChanceLimb = 0.90f;
 
+        // ================= 骨折与二次伤害 =================
+        public float fractureChanceMultiplier = 1.0f;
+        public float secondaryDamageChance = 0.08f;
+
         public override void ExposeData()
         {
             base.ExposeData();
@@ -76,6 +80,10 @@ namespace EmergencyExpanded
             Scribe_Values.Look(ref minBleedMultiplier, "minBleedMultiplier", 0.1f);
             Scribe_Values.Look(ref arterialRuptureChanceTorso, "arterialRuptureChanceTorso", 0.90f);
             Scribe_Values.Look(ref arterialRuptureChanceLimb, "arterialRuptureChanceLimb", 0.90f);
+
+            // 骨折
+            Scribe_Values.Look(ref fractureChanceMultiplier, "fractureChanceMultiplier", 1.0f);
+            Scribe_Values.Look(ref secondaryDamageChance, "secondaryDamageChance", 0.08f);
         }
     }
 
@@ -123,6 +131,12 @@ namespace EmergencyExpanded
             listing.Label($"【心脏骤停流血率下限】: {Settings.minBleedMultiplier.ToStringPercent()} (停搏时全身流血速度的保底比例)");
             Settings.minBleedMultiplier = listing.Slider(Settings.minBleedMultiplier, 0.01f, 0.5f);
 
+            listing.Label($"【全局骨折几率乘数】: {Settings.fractureChanceMultiplier.ToStringPercent()}");
+            Settings.fractureChanceMultiplier = listing.Slider(Settings.fractureChanceMultiplier, 0f, 3.0f);
+
+            listing.Label($"【骨折移动二次伤害几率】: {Settings.secondaryDamageChance.ToStringPercent()}/RareTick (每4秒)");
+            Settings.secondaryDamageChance = listing.Slider(Settings.secondaryDamageChance, 0.01f, 0.50f);
+
             listing.Gap(15f);
             if (listing.ButtonText("恢复默认设置"))
             {
@@ -148,6 +162,8 @@ namespace EmergencyExpanded
                 Settings.acidosisCoreAttackChance = 0.3f;
                 Settings.acidosisCoreDamageMultiplier = 2.0f;
                 Settings.minBleedMultiplier = 0.1f;
+                Settings.fractureChanceMultiplier = 1.0f;
+                Settings.secondaryDamageChance = 0.08f;
             }
 
             listing.End();

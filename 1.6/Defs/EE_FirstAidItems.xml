@@ -70,4 +70,146 @@
     </thingCategories>
   </ThingDef>
 
+  <!-- 简易硬夹板 (Primitive Splint) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_PrimitiveSplint</defName>
+    <label>简易硬夹板</label>
+    <description>由木条和粗质绷带制成的简易正骨夹板。可由医疗兵在野外直接施用以紧急固定受损骨骼，彻底免除移动造成的二次刺刺伤害，但无法保证完美的骨骼复位质量，依然有畸形愈合的风险。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>25</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>8</MarketValue>
+      <Mass>0.2</Mass>
+      <Flammability>1.0</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- 石膏绷带 (Plaster Bandage) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_PlasterBandage</defName>
+    <label>石膏绷带</label>
+    <description>加入石膏粉的医用绷带。浸水后卷在患肢上可快速硬化，提供完美的刚性保守固定。只能在干净的病床上由医生通过“石膏固定术”施加，完全免除二次伤害并消除畸形愈合风险。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>15</stackLimit>
+    <statBases>
+      <MaxHitPoints>60</MaxHitPoints>
+      <MarketValue>18</MarketValue>
+      <Mass>0.4</Mass>
+      <Flammability>0.2</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- ================= 制作配方 ================= -->
+
+  <RecipeDef>
+    <defName>Make_EE_PrimitiveSplint</defName>
+    <label>制作简易硬夹板</label>
+    <description>使用木材和少量皮革或布料制作简易的正骨固定板。</description>
+    <jobString>制作简易硬夹板中。</jobString>
+    <workAmount>600</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>WoodLog</li>
+          </thingDefs>
+        </filter>
+        <count>5</count>
+      </li>
+      <li>
+        <filter>
+          <categories>
+            <li>Leathers</li>
+            <li>Textiles</li>
+          </categories>
+        </filter>
+        <count>8</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>WoodLog</li>
+      </thingDefs>
+      <categories>
+        <li>Leathers</li>
+        <li>Textiles</li>
+      </categories>
+    </fixedIngredientFilter>
+    <products>
+      <EE_PrimitiveSplint>1</EE_PrimitiveSplint>
+    </products>
+    <recipeUsers>
+      <li>CraftingSpot</li>
+      <li>HandTailoringBench</li>
+      <li>ElectricTailoringBench</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>Make_EE_PlasterBandage</defName>
+    <label>制作石膏绷带</label>
+    <description>利用石块磨粉、草药提取液和纺织品绷带制作坚固的医用固定石膏。</description>
+    <jobString>制作石膏绷带中。</jobString>
+    <workAmount>1000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>StoneChunks</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <categories>
+            <li>Textiles</li>
+          </categories>
+        </filter>
+        <count>15</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineHerbal</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>StoneChunks</li>
+        <li>Textiles</li>
+      </categories>
+      <thingDefs>
+        <li>MedicineHerbal</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <EE_PlasterBandage>2</EE_PlasterBandage>
+    </products>
+    <recipeUsers>
+      <li>DrugLab</li>
+      <li>CraftingSpot</li>
+    </recipeUsers>
+  </RecipeDef>
+
 </Defs>

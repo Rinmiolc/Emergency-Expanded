@@ -39,5 +39,9 @@ namespace EmergencyExpanded
         // ================= 动脉破裂 (Arterial Rupture) =================
         public static float ArterialRuptureChanceTorso => EE_Mod.Settings?.arterialRuptureChanceTorso ?? 0.90f;
         public static float ArterialRuptureChanceLimb => EE_Mod.Settings?.arterialRuptureChanceLimb ?? 0.90f;
+
+        // ================= 骨折机制 (Bone Fracture) =================
+        public static float FractureChanceMultiplier => EE_Mod.Settings?.fractureChanceMultiplier ?? 1.0f;
+        public static float SecondaryDamageChance => EE_Mod.Settings?.secondaryDamageChance ?? 0.08f;
     }
 }

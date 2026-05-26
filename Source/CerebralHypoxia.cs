@@ -90,15 +90,8 @@ namespace EmergencyExpanded
                 severityAdjustment -= Props.recoveryPerDay / 1000f;
             }
 
-            // 2. 达到阈值触发植物人 (脑死亡)
-            if (parent.Severity >= EE_Settings.VegStateThreshold)
-            {
-                TriggerVegetativeState();
-                return;
-            }
-
-            // 3. 大脑发生不可逆损伤 (平滑且确定性的持续累加，避免随机大跨度跃升)
-            if (parent.Severity >= EE_Settings.BrainDamageStartThreshold)
+            // 2. 只有当脑缺氧进度达到100%（Severity >= 1.0）时，缺氧性脑损伤的进度才会开始累加！
+            if (parent.Severity >= 1.0f)
             {
                 float severityFactor = parent.Severity >= EE_Settings.BrainDamageCriticalThreshold ? EE_Settings.BrainDamageCriticalMultiplier : 1f;
                 float increment = EE_Settings.BrainDamageBaseChance * severityFactor * EE_Settings.BrainDamageSeverityIncrement;
@@ -116,10 +109,18 @@ namespace EmergencyExpanded
             {
                 Hediff vegHediff = HediffMaker.MakeHediff(vegDef, Pawn, brain);
                 Pawn.health.AddHediff(vegHediff, brain, null, null);
-                Find.LetterStack.ReceiveLetter("脑死亡", $"{Pawn.NameShortColored} 因长时间脑部缺氧，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。", LetterDefOf.NegativeEvent, Pawn);
+                Find.LetterStack.ReceiveLetter("脑死亡", $"{Pawn.NameShortColored} 因长时间脑部缺氧与严重脑损伤，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。", LetterDefOf.NegativeEvent, Pawn);
             }
 
+            // 脑死亡触发后，安全地移除脑缺氧状态
             Pawn.health.RemoveHediff(parent);
+
+            // 脑死亡触发后，安全地移除脑损伤状态，保持列表清爽
+            Hediff damage = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.HypoxicBrainDamage);
+            if (damage != null)
+            {
+                Pawn.health.RemoveHediff(damage);
+            }
         }
 
         private void ApplySmoothBrainDamage(float increment)
@@ -134,12 +135,22 @@ namespace EmergencyExpanded
             if (existingDamage != null)
             {
                 existingDamage.Severity += increment; 
+                // 只有当脑损伤走到100%时触发脑死亡
+                if (existingDamage.Severity >= 1.0f)
+                {
+                    TriggerVegetativeState();
+                }
             }
             else
             {
                 Hediff damage = HediffMaker.MakeHediff(damageDef, Pawn, brain);
                 damage.Severity = increment; 
                 Pawn.health.AddHediff(damage, brain, null, null);
+                
+                if (damage.Severity >= 1.0f)
+                {
+                    TriggerVegetativeState();
+                }
             }
         }
     }

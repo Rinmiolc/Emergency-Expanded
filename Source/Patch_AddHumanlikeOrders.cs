@@ -97,4 +97,46 @@ namespace EmergencyExpanded
             }
         }
     }
+
+
+    // Harmony 补丁：阻止医生自动去使用普通药品包扎骨折，也杜绝右键菜单产生普通包扎选项
+    [HarmonyPatch(typeof(WorkGiver_Tend), "HasJobOnThing")]
+    public static class Patch_WorkGiver_Tend_HasJobOnThing
+    {
+        [HarmonyPrefix]
+        public static bool Prefix(Pawn pawn, Thing t, bool forced, ref bool __result)
+        {
+            Pawn patient = t as Pawn;
+            if (patient == null) return true;
+
+            if (OnlyHasFracturesNeedTending(patient))
+            {
+                __result = false;
+                return false; // 拦截原版逻辑
+            }
+            return true;
+        }
+
+        private static bool OnlyHasFracturesNeedTending(Pawn patient)
+        {
+            bool hasFracture = false;
+            foreach (Hediff hediff in patient.health.hediffSet.hediffs)
+            {
+                if (hediff.TendableNow())
+                {
+                    if (hediff is Hediff_Fracture)
+                    {
+                        hasFracture = true;
+                    }
+                    else
+                    {
+                        // 还有其他需要包扎的常规伤口，允许继续常规包扎
+                        return false;
+                    }
+                }
+            }
+            return hasFracture;
+        }
+    }
+
 }

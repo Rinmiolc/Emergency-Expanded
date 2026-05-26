@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 传统正骨术 (Traditional Bone Setting) -->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>EE_Recipe_TraditionalBoneSetting</defName>
+    <label>传统正骨术</label>
+    <description>使用传统手法进行复位牵引，并用大量草药外敷和简易夹板进行重度卧床固定。只适用于闭合性骨折。手术完成后，患者必须绝对静卧在床，若中途起床活动极易导致固定失效而发生畸形愈合。</description>
+    <workerClass>EmergencyExpanded.Recipe_BoneSetting</workerClass>
+    <jobString>正在进行传统正骨术。</jobString>
+    <workAmount>1500</workAmount>
+    <surgerySuccessChanceFactor>1.00</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.01</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>4</Medicine>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineHerbal</li>
+            <li>MedicineIndustrial</li>
+            <li>MedicineUltratech</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>WoodLog</li>
+          </thingDefs>
+        </filter>
+        <count>5</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>MedicineHerbal</li>
+        <li>MedicineIndustrial</li>
+        <li>MedicineUltratech</li>
+        <li>WoodLog</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <!-- 医用石膏固定术 (Plaster Casting) -->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>EE_Recipe_PlasterCasting</defName>
+    <label>医用石膏固定术</label>
+    <description>在病床上对骨折肢体进行手法复位并缠绕医用石膏绷带进行硬化固定。石膏提供极佳的物理力学刚性，完全免除二次伤害并消除畸形愈合风险，且比夹板轻便，允许小人进行中度强度的活动。</description>
+    <workerClass>EmergencyExpanded.Recipe_PlasterCasting</workerClass>
+    <jobString>正在实施医用石膏固定术。</jobString>
+    <workAmount>1200</workAmount>
+    <surgerySuccessChanceFactor>1.00</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.01</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>6</Medicine>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineHerbal</li>
+            <li>MedicineIndustrial</li>
+            <li>MedicineUltratech</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>EE_PlasterBandage</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>MedicineHerbal</li>
+        <li>MedicineIndustrial</li>
+        <li>MedicineUltratech</li>
+        <li>EE_PlasterBandage</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <!-- 切开复位内固定术 (ORIF Surgery) -->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>EE_Recipe_ORIF</defName>
+    <label>切开复位内固定术</label>
+    <description>通过外科手术切开软组织，将接骨钢板或钛合金螺钉直接打入碎骨进行刚性内固定。能对最严重的开放性或粉碎性骨折实现完美复位。术后无需卧床且骨折将以极快速度康复，不留任何后遗症。</description>
+    <workerClass>EmergencyExpanded.Recipe_ORIF</workerClass>
+    <jobString>正在进行切开复位内固定术。</jobString>
+    <workAmount>3000</workAmount>
+    <surgerySuccessChanceFactor>0.95</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.05</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>8</Medicine>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineIndustrial</li>
+            <li>MedicineUltratech</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>MedicineIndustrial</li>
+        <li>MedicineUltratech</li>
+        <li>ComponentIndustrial</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <!-- 畸形接骨重折术 (Osteotomy) -->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>EE_Recipe_Osteotomy</defName>
+    <label>畸形接骨重折术</label>
+    <description>使用外科手术刀与骨锯，强行打断小人因先前处理不当而畸形愈合的错位骨骼，清除多余骨痂，使其重新回到开放性骨折状态，以便重新进行正确复位与固定。</description>
+    <workerClass>EmergencyExpanded.Recipe_Osteotomy</workerClass>
+    <jobString>正在执行畸形接骨重折术。</jobString>
+    <workAmount>3500</workAmount>
+    <surgerySuccessChanceFactor>0.90</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.08</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>10</Medicine>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineIndustrial</li>
+            <li>MedicineUltratech</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>MedicineIndustrial</li>
+        <li>MedicineUltratech</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+  </RecipeDef>
+
+</Defs>

@@ -8,33 +8,35 @@ namespace EmergencyExpanded
     public enum EmergencyItemType
     {
         None,
-        Medicine,        // 常规医药 (Herbal, Industrial, Ultratech)
-        FirstAidKit,     // 战地急救包 (EE_HerbalFirstAidKit, EE_FirstAidKit)
-        Tourniquet,      // 止血带
-        IngestibleDirect // 所有可食用/可注射的食物与成瘾品
+        Medicine,        // Medicine (Herbal, Industrial, Ultratech)
+        FirstAidKit,     // First Aid Kit (EE_HerbalFirstAidKit, EE_FirstAidKit)
+        Tourniquet,      // Tourniquet
+        IngestibleDirect, // Ingestible items/drugs
+        Splint           // Primitive Splint [NEW]
     }
 
     public static class EE_FirstAidUtility
     {
-        // 动态判定物品的急救类别，提供极高的Mod兼容性
+        // Dynamically get the emergency item type, provides high mod compatibility
         public static EmergencyItemType GetEmergencyItemType(ThingDef def)
         {
             if (def == null) return EmergencyItemType.None;
 
-            // 1. 特殊定制急救品
+            // 1. Custom emergency items
             if (def.defName == "EE_Tourniquet") return EmergencyItemType.Tourniquet;
+            if (def.defName == "EE_PrimitiveSplint") return EmergencyItemType.Splint;
             if (def.defName == "EE_HerbalFirstAidKit" || def.defName == "EE_FirstAidKit") return EmergencyItemType.FirstAidKit;
 
-            // 2. 原版与Mod常规医药
+            // 2. Vanilla & modded medicines
             if (def.IsMedicine) return EmergencyItemType.Medicine;
 
-            // 3. 所有可在背包使用的食品与成瘾品/药物
+            // 3. Ingestible items used from inventory
             if (def.IsIngestible) return EmergencyItemType.IngestibleDirect;
 
             return EmergencyItemType.None;
         }
 
-        // 扫描施救者背包里所有能对他人使用的消耗品
+        // Scan carrying pawn inventory for emergency items
         public static List<Thing> GetUsableItemsInInventory(Pawn pawn)
         {
             List<Thing> items = new List<Thing>();
@@ -50,7 +52,7 @@ namespace EmergencyExpanded
             return items;
         }
 
-        // 判断目标是否能接受此类物品的紧急施用
+        // Determine if target pawn can receive this first aid item
         public static bool CanApplyToTarget(Pawn patient, EmergencyItemType type, ThingDef itemDef)
         {
             if (patient == null || patient.Dead) return false;
@@ -58,21 +60,29 @@ namespace EmergencyExpanded
             switch (type)
             {
                 case EmergencyItemType.Tourniquet:
-                    // 止血带：必须有四肢流血伤口
+                    // Tourniquet: Must have a bleeding limb wound
                     return HasBleedingLimbWound(patient);
+
+                case EmergencyItemType.Splint:
+                    // Splint: Must have an un-immobilized fracture
+                    return HasUnimmobilizedFracture(patient);
 
                 case EmergencyItemType.FirstAidKit:
                 case EmergencyItemType.Medicine:
-                    // 急救包/医药：身上有任何需要包扎(tendable)的伤口或疾病
-                    return patient.health.hediffSet.HasTendableHediff();
+                    // First Aid Kit / Medicine: Must have tendable wounds or conditions (EXCLUDING fractures)
+                    foreach (Hediff hediff in patient.health.hediffSet.hediffs)
+                    {
+                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture)) return true;
+                    }
+                    return false;
 
                 case EmergencyItemType.IngestibleDirect:
-                    // 血原质包：在有失血症时允许输血施用
+                    // Hemogen pack: reduce blood loss
                     if (itemDef.defName == "HemogenPack")
                     {
                         return patient.health.hediffSet.HasHediff(HediffDefOf.BloodLoss);
                     }
-                    // 食物/成瘾品：只要对方是活体，且没有饱腹；或者是成瘾品且对方倒地
+                    // Drugs/Food: Allowed if downed or hungry
                     if (itemDef.IsDrug && patient.Downed) return true;
                     if (itemDef.ingestible != null && itemDef.ingestible.CachedNutrition > 0f && patient.needs?.food != null && patient.needs.food.CurLevelPercentage < 0.9f) return true;
                     return false;
@@ -99,7 +109,23 @@ namespace EmergencyExpanded
             return false;
         }
 
-        // 核心应用：读条完成时的医学结算
+        private static bool HasUnimmobilizedFracture(Pawn patient)
+        {
+            foreach (Hediff hediff in patient.health.hediffSet.hediffs)
+            {
+                if (hediff is Hediff_Fracture fracture)
+                {
+                    bool isImmobilized = fracture.isSplinted || fracture.isCasted || fracture.isInternallyFixed || fracture.isStrictBedrest;
+                    if (!isImmobilized)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        // Apply item effects when job completes
         public static void ApplyFirstAidEffect(Pawn doctor, Pawn patient, Thing item)
         {
             if (doctor == null || patient == null || item == null) return;
@@ -113,6 +139,9 @@ namespace EmergencyExpanded
                 case EmergencyItemType.Tourniquet:
                     ApplyTourniquet(doctor, patient);
                     break;
+                case EmergencyItemType.Splint:
+                    ApplyPrimitiveSplint(doctor, patient);
+                    break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? 0.35f : 0.65f;
                     consumeItem = ApplyFieldTend(doctor, patient, kitQuality, allowConsecutive: true);
@@ -123,7 +152,6 @@ namespace EmergencyExpanded
                     float docSkill = doctor.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
                     float finalMedQuality = UnityEngine.Mathf.Clamp01((docSkill * 0.05f + 0.2f) * medMultiplier);
                     
-                    // 仅限原版三种医药允许连续使用
                     bool allowConsecutive = item.def == ThingDefOf.MedicineHerbal || 
                                             item.def == ThingDefOf.MedicineIndustrial || 
                                             item.def == ThingDefOf.MedicineUltratech;
@@ -132,57 +160,53 @@ namespace EmergencyExpanded
                 case EmergencyItemType.IngestibleDirect:
                     if (item.def.defName == "HemogenPack")
                     {
-                        // 输血逻辑：降低失血 Hediff 的严重度
                         Hediff bloodLoss = patient.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
                         if (bloodLoss != null)
                         {
-                            // 根据配置的致死流血量上限，按现实比例精准恢复（一包血原质约恢复 12% 的全身血液量）
                             float lethal = HediffDefOf.BloodLoss.lethalSeverity;
-                            float reduction = lethal * 0.12f; // 约减少 0.066 严重度
+                            float reduction = lethal * 0.12f;
                             bloodLoss.Severity -= reduction;
                             if (bloodLoss.Severity <= 0.001f)
                             {
                                 patient.health.RemoveHediff(bloodLoss);
                             }
-                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "输血成功: 失血减轻 12%", 4.0f);
+                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "输血：失血已减轻", 4.0f);
                         }
-                        consumeItem = true; // 正常扣除消耗品
+                        consumeItem = true;
                     }
                     else
                     {
-                        // 强行给队友喂食/注射成瘾品/血包
                         item.Ingested(patient, patient.needs?.food?.MaxLevel ?? 1.0f);
-                        consumeItem = false; // 原版 Ingested 方法会自动处理扣除和销毁！
+                        consumeItem = false;
                     }
                     break;
             }
 
-            if (consumeItem && !item.Destroyed)
+            if (consumeItem)
             {
-                // 扣除背包库存
-                if (item.stackCount > 1)
+                if (!item.Destroyed)
                 {
-                    item.stackCount--;
+                    if (item.stackCount > 1)
+                    {
+                        item.stackCount--;
+                    }
+                    else
+                    {
+                        doctor.carryTracker?.innerContainer?.Remove(item);
+                        doctor.inventory?.innerContainer?.Remove(item);
+                        if (!item.Destroyed) item.Destroy();
+                    }
                 }
-                else
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{item.def.LabelCap}已使用", 3.0f);
+                if (doctor.skills != null)
                 {
-                    doctor.carryTracker?.innerContainer?.Remove(item);
-                    doctor.inventory?.innerContainer?.Remove(item);
-                    if (!item.Destroyed) item.Destroy();
+                    doctor.skills.Learn(SkillDefOf.Medicine, 180f);
                 }
-            }
-
-            // 产生浮空文字和音效
-            MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{item.def.LabelCap} 已施用", 3.0f);
-            if (doctor.skills != null)
-            {
-                doctor.skills.Learn(SkillDefOf.Medicine, 180f);
             }
         }
 
         private static void ApplyTourniquet(Pawn doctor, Pawn patient)
         {
-            // 止血带简单粗暴：直接将受损最严重的那条流血四肢上的所有伤口强制止血 (Tended 100%)
             BodyPartRecord targetLimb = null;
             float maxBleeding = 0f;
 
@@ -212,20 +236,40 @@ namespace EmergencyExpanded
                 {
                     if (hediff.Part == targetLimb && hediff is Hediff_Injury injury && injury.Bleeding)
                     {
-                        injury.Tended(1.0f, 1.0f); // 瞬间包扎，流血归零
+                        injury.Tended(1.0f, 1.0f);
                     }
                 }
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"肢体 {targetLimb.Label} 已结扎止血", 3.5f);
+                patient.Drawer?.renderer?.SetAllGraphicsDirty();
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{targetLimb.Label}已施加止血带", 3.5f);
+            }
+        }
+
+        private static void ApplyPrimitiveSplint(Pawn doctor, Pawn patient)
+        {
+            foreach (Hediff hediff in patient.health.hediffSet.hediffs)
+            {
+                if (hediff is Hediff_Fracture fracture)
+                {
+                    bool isImmobilized = fracture.isSplinted || fracture.isCasted || fracture.isInternallyFixed || fracture.isStrictBedrest;
+                    if (!isImmobilized)
+                    {
+                        fracture.isSplinted = true;
+                        fracture.alignmentQuality = 0.20f; // Primitive splint gives 20% alignment quality
+                        fracture.Tended(0.40f, 1.0f); // Standard tend to trigger the bandage and mote!
+                        patient.Drawer?.renderer?.SetAllGraphicsDirty();
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{fracture.Part.Label}已固定夹板", 3.5f);
+                        break;
+                    }
+                }
             }
         }
 
         private static bool ApplyFieldTend(Pawn doctor, Pawn patient, float tendQuality, bool allowConsecutive)
         {
-            // 战地倾向逻辑
             List<Hediff> hediffsToTend = new List<Hediff>();
             foreach (Hediff hediff in patient.health.hediffSet.hediffs)
             {
-                if (hediff.TendableNow())
+                if (hediff.TendableNow() && !(hediff is Hediff_Fracture))
                 {
                     hediffsToTend.Add(hediff);
                 }
@@ -233,41 +277,42 @@ namespace EmergencyExpanded
 
             if (hediffsToTend.Count == 0) return false;
 
-            // 优先处理最危险的动脉破裂和严重流血伤口
             hediffsToTend.Sort((a, b) =>
             {
                 bool aRupture = a.def == EE_DefOf.ArterialRupture;
                 bool bRupture = b.def == EE_DefOf.ArterialRupture;
                 if (aRupture != bRupture) return bRupture.CompareTo(aRupture);
+
+                bool aBleeds = a is Hediff_Injury aInj && aInj.Bleeding;
+                bool bBleeds = b is Hediff_Injury bInj && bInj.Bleeding;
+                if (aBleeds != bBleeds) return bBleeds.CompareTo(aBleeds);
+
                 return b.Severity.CompareTo(a.Severity);
             });
 
             Hediff primaryWound = hediffsToTend[0];
             if (primaryWound.def == EE_DefOf.ArterialRupture)
             {
-                // 【大出血伤口特殊机制】：一次只能包扎一部分，根据治疗品质降低严重度 0.1 ~ 0.25
                 float reduction = UnityEngine.Mathf.Clamp(0.1f + tendQuality * 0.15f, 0.1f, 0.25f);
                 primaryWound.Severity -= reduction;
                 
-                // 原版 Tend 状态更新
                 primaryWound.Tended(tendQuality, 1.0f);
 
                 if (primaryWound.Severity <= 0.001f)
                 {
                     patient.health.RemoveHediff(primaryWound);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已缝合消除!", 4.0f);
-                    return true; // 缝合完毕，消耗物品
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已闭合！", 4.0f);
+                    return true;
                 }
                 else
                 {
                     int remainTimes = (int)System.Math.Ceiling(primaryWound.Severity / reduction);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"大出血伤口缝合中 (还需 {remainTimes} 次)", 3.5f);
-                    return !allowConsecutive; // 如果允许连续使用则暂不消耗物品，否则强制每次都消耗
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"正在缝合 (还需 {remainTimes} 次)", 3.5f);
+                    return !allowConsecutive;
                 }
             }
             else
             {
-                // 普通伤口：1 次包扎即可解决
                 primaryWound.Tended(tendQuality, 1.0f);
                 return true;
             }

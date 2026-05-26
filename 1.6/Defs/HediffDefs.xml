@@ -271,7 +271,7 @@
     <initialSeverity>1.0</initialSeverity>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>-8.0</severityPerDay>
+        <severityPerDay>-2.0</severityPerDay>
       </li>
       <li Class="EmergencyExpanded.HediffCompProperties_AdrenalineBoost"/>
     </comps>
@@ -328,7 +328,7 @@
     <initialSeverity>1.0</initialSeverity>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>-4.0</severityPerDay>
+        <severityPerDay>-2.0</severityPerDay>
       </li>
     </comps>
     <stages>
@@ -350,6 +350,57 @@
           <li><capacity>Moving</capacity><offset>-0.10</offset></li>
           <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
         </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef ParentName="InjuryBase">
+    <defName>EE_ClosedFracture</defName>
+    <label>闭合性骨折</label>
+    <labelNoun>闭合性骨折的伤口</labelNoun>
+    <description>骨骼断裂但皮肤完整。导致剧烈疼痛和严重的肢体功能损耗。如果不进行固定就移动，会造成内部肌肉血管二次损伤，甚至错位导致畸形愈合。</description>
+    <hediffClass>EmergencyExpanded.Hediff_Fracture</hediffClass>
+    <injuryProps>
+      <painPerSeverity>0.04</painPerSeverity>
+      <canMerge>false</canMerge>
+      <destroyedLabel>彻底粉碎</destroyedLabel>
+    </injuryProps>
+  </HediffDef>
+
+  <HediffDef ParentName="InjuryBase">
+    <defName>EE_OpenFracture</defName>
+    <label>开放性骨折</label>
+    <labelNoun>开放性骨折的伤口</labelNoun>
+    <description>碎骨刺穿皮肤外露。伴随剧烈疼痛、大出血以及极高的伤口感染概率。需要立即进行野外紧急夹板固定并回院手术。</description>
+    <hediffClass>EmergencyExpanded.Hediff_Fracture</hediffClass>
+    <comps>
+      <li Class="HediffCompProperties_TendDuration">
+        <labelTendedWell>bandaged</labelTendedWell>
+        <labelTendedWellInner>sutured</labelTendedWellInner>
+        <labelSolidTendedWell>treated</labelSolidTendedWell>
+      </li>
+      <li Class="HediffCompProperties_Infecter">
+        <infectionChance>0.60</infectionChance>
+      </li>
+    </comps>
+    <injuryProps>
+      <painPerSeverity>0.06</painPerSeverity>
+      <bleedRate>1.5</bleedRate>
+      <canMerge>false</canMerge>
+      <destroyedLabel>彻底粉碎</destroyedLabel>
+    </injuryProps>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>EE_Malunion</defName>
+    <label>畸形愈合</label>
+    <description>骨折后未经过正确的复位固定而愈合，碎骨以错误的姿态长死。使肢体效率永久下降，并伴随慢性疼痛。只能通过畸形接骨重折术进行物理打断并重置治疗。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <stages>
+      <li>
+        <painOffset>0.10</painOffset>
+        <partEfficiencyOffset>-0.30</partEfficiencyOffset>
       </li>
     </stages>
   </HediffDef>
