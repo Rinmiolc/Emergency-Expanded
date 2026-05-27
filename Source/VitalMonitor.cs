@@ -172,74 +172,70 @@ namespace EmergencyExpanded
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
-            // 定义 Gizmo 面板的整块区域 (160 x 75 像素)
             Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
-            
-            // 【UI对齐核心修复】：显式绘制全尺寸 160x75 的原版切角面板背景。
-            // 这将彻底消除底层由于引擎默认 Command 引起的 75x75 灰色方块残留，确保与旁边所有按钮在高度与外观上完美对齐。
             Widgets.DrawWindowBackground(rect);
             
-            // 获取与更新生理缓存
             CachedVitals vitals = VitalTracker.GetOrCreateVitals(pawn);
             if (vitals == null) return new GizmoResult(GizmoState.Clear);
 
             VitalTracker.UpdateVitalsIfNeed(pawn, vitals);
             float bpm = vitals.displayHeartRate;
-
-            // 获取 SpO2 血氧饱和度
             int spo2 = Mathf.RoundToInt(vitals.displaySpO2);
 
-            // 1. 动态决定颜色主题 (医疗青/黄/红)
             Color gridColor;
             Color coreColor;
             Color glowColor;
 
-            if (bpm < 0.1f) // 心跳骤停
+            if (bpm < 0.1f)
             {
-                gridColor = new Color(0.4f, 0.0f, 0.0f, 0.15f);    // 红色警戒背景网格
-                coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);     // 荧光红折线核心
-                glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);       // 红色外发光
+                gridColor = new Color(0.4f, 0.0f, 0.0f, 0.15f);
+                coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);
+                glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);
             }
             else if (bpm > 140f || bpm < 45f || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
             {
-                gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);      // 橙黄警戒背景网格
-                coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);       // 荧光橙黄折线核心
-                glowColor = new Color(1.0f, 0.5f, 0.0f, 0.4f);       // 橙黄外发光
+                gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);
+                coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);
+                glowColor = new Color(1.0f, 0.5f, 0.0f, 0.4f);
             }
             else
             {
-                gridColor = new Color(0f, 0.4f, 0.4f, 0.15f);        // 医疗青绿网格
-                coreColor = new Color(0.2f, 1.0f, 0.8f, 1.0f);       // 荧光青绿折线核心
-                glowColor = new Color(0.0f, 0.8f, 0.6f, 0.4f);       // 青绿外发光
+                gridColor = new Color(0f, 0.4f, 0.4f, 0.15f);
+                coreColor = new Color(0.2f, 1.0f, 0.8f, 1.0f);
+                glowColor = new Color(0.0f, 0.8f, 0.6f, 0.4f);
             }
 
-            // --- 绘制高级质感背景 ---
-            // 【UI重塑】：彻底删除硬直角的自定义外框 DrawBoxSolid，直接利用原版斜切角 Gizmo 背景作为物理外壳！
-            // 黑色屏幕向内稍微缩进 4 像素，以形成完美的一体化“嵌入式液晶屏”视觉效果。
             Rect innerScreen = rect.ContractedBy(4f);
-            // 纯黑深邃液晶屏幕
             Widgets.DrawBoxSolid(innerScreen, new Color(0.02f, 0.02f, 0.025f, 1f));
             
-            // 顶部玻璃微反光质感
+            // 顶层微弱玻璃渐变反光 (用透明度实现上亮下暗)
             Rect glassRect = innerScreen;
-            glassRect.height = innerScreen.height * 0.35f;
-            Widgets.DrawBoxSolid(glassRect, new Color(1f, 1f, 1f, 0.025f));
+            glassRect.height = innerScreen.height * 0.4f;
+            Widgets.DrawBoxSolid(glassRect, new Color(1f, 1f, 1f, 0.02f));
 
-            // 绘制网格
+            // 绘制精细毫米级网格
             GUI.color = gridColor;
-            for (int i = 0; i <= 4; i++)
+            // 粗横线
+            for (int i = 1; i < 4; i++)
             {
                 float y = innerScreen.y + (innerScreen.height / 4f) * i;
                 Widgets.DrawLine(new Vector2(innerScreen.x, y), new Vector2(innerScreen.xMax, y), GUI.color, 1f);
             }
-            for (int i = 0; i <= 8; i++)
+            // 粗竖线
+            for (int i = 1; i < 8; i++)
             {
                 float x = innerScreen.x + (innerScreen.width / 8f) * i;
                 Widgets.DrawLine(new Vector2(x, innerScreen.y), new Vector2(x, innerScreen.yMax), GUI.color, 1f);
             }
+            // 辅助细线
+            GUI.color = gridColor * new Color(1f, 1f, 1f, 0.35f);
+            for (int i = 1; i < 8; i++)
+            {
+                float y = innerScreen.y + (innerScreen.height / 8f) * i;
+                Widgets.DrawLine(new Vector2(innerScreen.x, y), new Vector2(innerScreen.xMax, y), GUI.color, 1f);
+            }
             GUI.color = Color.white;
 
-            // --- 从左至右扫描的波形渲染逻辑 (环形缓冲区防止抽动) ---
             Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 20f, 105f, 46f);
             float centerY = waveRect.y + waveRect.height / 2f;
             float waveWidth = waveRect.width;
@@ -248,14 +244,13 @@ namespace EmergencyExpanded
             if (vitals.lastTime < 0f) vitals.lastTime = t;
             float dt = t - vitals.lastTime;
             
-            // 核心修复：仅在 Repaint 事件中更新生理波形状态与时间步长，杜绝 IMGUI 多重调用（Layout/Repaint 等）造成的波形抽动与抖动
             if (Event.current.type == EventType.Repaint)
             {
                 vitals.lastTime = t;
-                if (dt > 0.1f) dt = 0.1f; // 限制最大步长防卡顿跳跃
+                if (dt > 0.1f) dt = 0.1f;
 
                 float beatDuration = (bpm > 0.1f) ? (60f / bpm) : 1f;
-                float sweepSpeed = waveWidth / 2.4f; // 2.4秒扫满一屏
+                float sweepSpeed = waveWidth / 2.4f;
                 
                 int oldX = Mathf.FloorToInt(vitals.sweepX);
                 vitals.sweepX += dt * sweepSpeed;
@@ -268,7 +263,6 @@ namespace EmergencyExpanded
                 int stepPixels = newX - oldX;
                 if (stepPixels < 0) stepPixels += Mathf.FloorToInt(waveWidth);
 
-                // 补全这一帧扫过的像素点波形
                 if (stepPixels > 0)
                 {
                     for (int step = 1; step <= stepPixels; step++)
@@ -280,24 +274,21 @@ namespace EmergencyExpanded
                         float val = 0f;
                         if (bpm < 0.1f)
                         {
-                            // 心跳骤停 (Flatline) 微弱起伏：包含极其缓慢的基线游走波动 (胸腔起伏/残余电信号) 与电磁干扰噪声抖动
                             float timeAtPixel = t - dt * (1f - fraction);
                             val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
                         }
                         else if (vitals.hasVentricularFibrillation && bpm > 180f)
                         {
-                            // 【高拟真室颤波重塑】：融合质数频率谐波与缓慢的低频调制，塑造出极度无规则、波幅宽窄动态漂移的混沌乱颤蠕动波
                             float timeAtPixel = t - dt * (1f - fraction);
-                            float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f; // 7.5Hz低频振幅漂移
+                            float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f;
                             float baseWave = Mathf.Sin(timeAtPixel * 37f) * 0.32f + 
                                              Mathf.Cos(timeAtPixel * 79f) * 0.18f + 
                                              Mathf.Sin(timeAtPixel * 131f) * 0.10f;
-                            float noise = Rand.Range(-0.08f, 0.08f); // 高频微颤抖动
+                            float noise = Rand.Range(-0.08f, 0.08f);
                             val = baseWave * amplitudeMod + noise;
                         }
                         else
                         {
-                            // 缺氧与心肌严重缺血病理判定
                             bool isHypoxic = vitals.hasCerebralHypoxia || bpm > 140f;
                             val = GetBaseECGValue(p, isHypoxic);
                         }
@@ -308,22 +299,20 @@ namespace EmergencyExpanded
                 vitals.phase = newPhase % 1f;
             }
 
-            // 绘制波形线段
-            for (int i = 0; i < Mathf.FloorToInt(waveWidth) - 1; i++)
+            // 绘制波形线段 (亚像素平滑绘制，弃用 FloorToInt)
+            for (int i = 0; i < 104; i++)
             {
-                // 计算该点到扫描头的顺时针距离（即扫描头前方的距离）
                 float distToSweep = i - vitals.sweepX;
                 if (distToSweep < 0f) distToSweep += waveWidth;
                 
-                // 扫描头前方 8 像素内逐渐淡出到 0，完美实现扫描阴影断层，杜绝硬剔除带来的边缘毛糙与视觉断点
                 float alpha = 1f;
-                if (distToSweep < 8f)
+                // 拉长尾部的阴影渐隐区，视觉更柔和
+                if (distToSweep < 14f)
                 {
-                    alpha = distToSweep / 8f; // 0 到 1 线性渐变
+                    alpha = distToSweep / 14f; 
                 }
                 
-                // 跨越扫描线时不连接，防止首尾两端产生突变的粘连折线
-                if (i + 1 > vitals.sweepX && i < vitals.sweepX) continue;
+                if (i + 1 > vitals.sweepX && i <= vitals.sweepX) continue;
                 
                 float v1 = vitals.waveBuffer[i];
                 float v2 = vitals.waveBuffer[i + 1];
@@ -336,54 +325,64 @@ namespace EmergencyExpanded
                 Color drawGlow = glowColor * new Color(1f, 1f, 1f, alpha);
                 Color drawCore = coreColor * new Color(1f, 1f, 1f, alpha);
                 
-                // 外辉光 (带 Alpha 渐变)
                 Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawGlow, 2.5f);
-                // 亮芯 (带 Alpha 渐变)
                 Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawCore, 1.2f);
             }
 
-            // 绘制扫描头亮线
+            // 绘制扫描头亮线与高能光斑点 (CRT Effect)
             float headX = waveRect.x + vitals.sweepX;
-            Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.15f), 1f);
-
+            Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.18f), 1.5f);
+            
+            int headIdx = Mathf.Clamp(Mathf.FloorToInt(vitals.sweepX), 0, 104);
+            float headY = centerY - vitals.waveBuffer[headIdx] * (waveRect.height * 0.42f);
+            Widgets.DrawBoxSolid(new Rect(headX - 1.5f, headY - 1.5f, 3f, 3f), coreColor * new Color(1f, 1f, 1f, 0.95f));
 
             // --- 绘制右侧数值面板与精美排版 ---
-            Rect rightPanel = new Rect(innerScreen.xMax - 46f, innerScreen.y, 46f, innerScreen.height);
+            Rect rightPanel = new Rect(innerScreen.xMax - 48f, innerScreen.y, 48f, innerScreen.height);
             TextAnchor origAnchor = Text.Anchor;
 
-            // ECG 标识
+            // 左上角 ECG 与 心跳闪烁图标
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = new Color(0.5f, 0.6f, 0.5f, 0.7f);
-            Widgets.Label(new Rect(innerScreen.x + 18f, innerScreen.y + 2f, 50f, 15f), "ECG");
-
-            // 跳动的心脏图标 ♥
+            Widgets.Label(new Rect(innerScreen.x + 4f, innerScreen.y + 2f, 30f, 15f), "ECG");
+            
             bool isBlinking = bpm > 0.1f && (vitals.phase < 0.15f);
             GUI.color = isBlinking ? coreColor : coreColor * new Color(1f, 1f, 1f, 0.2f);
-            Widgets.Label(new Rect(innerScreen.x + 4f, innerScreen.y + 2f, 15f, 15f), "♥");
+            Widgets.Label(new Rect(innerScreen.x + 28f, innerScreen.y + 2f, 15f, 15f), "♥");
 
-            // 心率数值 (大号字体，偏上居中，去掉英文标签)
+            // 右侧分割线
+            Widgets.DrawLine(new Vector2(rightPanel.x - 2f, innerScreen.y + 4f), new Vector2(rightPanel.x - 2f, innerScreen.yMax - 4f), new Color(1f, 1f, 1f, 0.1f), 1f);
+
+            // HR (心率区域)
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.UpperRight;
+            GUI.color = new Color(0.4f, 0.8f, 0.4f, 0.75f);
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 2f, rightPanel.width - 2f, 15f), "HR");
+
             Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.UpperRight;
             GUI.color = coreColor;
-            string bpmStr = Mathf.RoundToInt(bpm).ToString(); // 骤停时直接显示数字 0，符合现实
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 10f, rightPanel.width - 2f, 26f), bpmStr);
+            string bpmStr = Mathf.RoundToInt(bpm).ToString();
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 12f, rightPanel.width - 2f, 26f), bpmStr);
 
-            // 血氧数值 (中号字体，偏下居中，去掉英文标签)
-            Color spo2Color = new Color(0.2f, 0.8f, 1.0f); // 医疗蓝
+            // SpO2 (血氧区域)
+            Color spo2Color = new Color(0.2f, 0.8f, 1.0f);
             if (spo2 < 90) spo2Color = new Color(1.0f, 0.3f, 0.3f);
+            
+            Text.Font = GameFont.Tiny;
+            GUI.color = spo2Color * new Color(1f, 1f, 1f, 0.75f);
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 38f, rightPanel.width - 2f, 15f), "SpO2");
+
             Text.Font = GameFont.Small;
-            Text.Anchor = TextAnchor.UpperRight;
             GUI.color = spo2Color;
-            string spo2Str = spo2.ToString() + "%"; // 骤停时直接显示数字 0%，符合现实
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 42f, rightPanel.width - 2f, 18f), spo2Str);
+            string spo2Str = spo2.ToString() + "%";
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 50f, rightPanel.width - 2f, 20f), spo2Str);
 
             // 还原状态
             Text.Anchor = origAnchor;
             GUI.color = Color.white;
             Text.Font = GameFont.Small;
 
-            // 4. 监听左键点击 (精简无干扰)
             if (Widgets.ButtonInvisible(rect))
             {
                 return new GizmoResult(GizmoState.Interacted);
