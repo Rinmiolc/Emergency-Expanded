@@ -36,8 +36,15 @@ namespace EmergencyExpanded
             {
                 if (fractureAdded) break; // 单次打击最多只触发一次骨折，防止刷屏
 
-                if (hediff.Part != null && (hediff is Hediff_Injury || hediff is Hediff_MissingPart))
+                if (hediff.Part != null && hediff is Hediff_Injury)
                 {
+                    // 核心修复：如果这个部位已经被这次伤害彻底摧毁（生命值为0）或已经缺失，就不应该再添加骨折状态。
+                    // 否则会触发 RimWorld 引擎底层报错 "Tried to add health diff to missing part"
+                    if (pawn.health.hediffSet.GetPartHealth(hediff.Part) <= 0 || pawn.health.hediffSet.PartIsMissing(hediff.Part))
+                    {
+                        continue;
+                    }
+
                     if (IsBonePart(hediff.Part, pawn))
                     {
                         // 判定是否已经具有该部位的骨折，避免重复生成
@@ -111,7 +118,8 @@ namespace EmergencyExpanded
 
                             if (fracDef != null)
                             {
-                                BodyPartRecord targetPart = EE_MedicalUtility.GetNearestNonMissingPart(pawn, hediff.Part);
+                                // 直接加在受击部位上，因为上面已经拦截了缺失的部位
+                                BodyPartRecord targetPart = hediff.Part;
 
                                 // 实例化并添加骨折 Hediff
                                 Hediff_Fracture fracture = (Hediff_Fracture)HediffMaker.MakeHediff(fracDef, pawn, targetPart);
