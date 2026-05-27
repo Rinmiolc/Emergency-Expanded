@@ -22,6 +22,11 @@ namespace EmergencyExpanded
         public float phase = 0f;
         public float sweepX = 0f;
         public float displaySpO2 = 98f;
+        
+        // 缓存的病理状态，每 120 ticks 更新一次
+        public bool hasCerebralHypoxia = false;
+        public bool hasMetabolicAcidosis = false;
+        public bool hasVentricularFibrillation = false;
     }
 
     // ================= 2. 动态生理心搏计算管理器 =================
@@ -109,6 +114,11 @@ namespace EmergencyExpanded
                 vitals.lastUpdateTick = currentTick;
                 vitals.heartRate = CalculateDynamicHeartRate(pawn);
                 
+                // 更新病理状态缓存，避免每帧在 UI 渲染中遍历 Hediff 列表
+                vitals.hasCerebralHypoxia = pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia);
+                vitals.hasMetabolicAcidosis = pawn.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis);
+                vitals.hasVentricularFibrillation = pawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation);
+                
                 if (vitals.heartRate > 0.1f)
                 {
                     // 添加 ±2 bpm 的正常呼吸性心律不齐波动
@@ -190,7 +200,7 @@ namespace EmergencyExpanded
                 coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);     // 荧光红折线核心
                 glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);       // 红色外发光
             }
-            else if (bpm > 140f || bpm < 45f || pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia) || pawn.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis))
+            else if (bpm > 140f || bpm < 45f || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
             {
                 gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);      // 橙黄警戒背景网格
                 coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);       // 荧光橙黄折线核心
@@ -274,7 +284,7 @@ namespace EmergencyExpanded
                             float timeAtPixel = t - dt * (1f - fraction);
                             val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
                         }
-                        else if (pawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation) && bpm > 180f)
+                        else if (vitals.hasVentricularFibrillation && bpm > 180f)
                         {
                             // 【高拟真室颤波重塑】：融合质数频率谐波与缓慢的低频调制，塑造出极度无规则、波幅宽窄动态漂移的混沌乱颤蠕动波
                             float timeAtPixel = t - dt * (1f - fraction);
@@ -288,7 +298,7 @@ namespace EmergencyExpanded
                         else
                         {
                             // 缺氧与心肌严重缺血病理判定
-                            bool isHypoxic = pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia) || bpm > 140f;
+                            bool isHypoxic = vitals.hasCerebralHypoxia || bpm > 140f;
                             val = GetBaseECGValue(p, isHypoxic);
                         }
                         if (x >= 0 && x < vitals.waveBuffer.Length)

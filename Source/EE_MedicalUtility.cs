@@ -30,9 +30,9 @@ namespace EmergencyExpanded
             }
 
             // 4. 后备字符串模糊判断，确保兼容某些未规范使用标签的异形/非标肢体Mod
-            string defNameLower = part.def.defName.ToLower();
-            if (defNameLower.Contains("arm") || defNameLower.Contains("leg") || 
-                defNameLower.Contains("shoulder") || defNameLower.Contains("thigh"))
+            string defName = part.def.defName;
+            if (defName.IndexOf("arm", System.StringComparison.OrdinalIgnoreCase) >= 0 || defName.IndexOf("leg", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
+                defName.IndexOf("shoulder", System.StringComparison.OrdinalIgnoreCase) >= 0 || defName.IndexOf("thigh", System.StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return true;
             }

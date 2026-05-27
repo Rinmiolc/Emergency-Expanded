@@ -138,14 +138,14 @@ namespace EmergencyExpanded
             if (part == null || pawn == null) return false;
 
             // 优先检查新版本 1.6 的 Bone 标签 (动态扫描 defName，完美避免 BodyPartTagDefOf 缺少预定义字段的问题)
-            if (part.def.tags != null && part.def.tags.Any(t => t.defName.ToLower().Contains("bone") || t.defName.ToLower().Contains("skeletal"))) return true;
+            if (part.def.tags != null && part.def.tags.Any(t => t.defName.IndexOf("bone", System.StringComparison.OrdinalIgnoreCase) >= 0 || t.defName.IndexOf("skeletal", System.StringComparison.OrdinalIgnoreCase) >= 0)) return true;
 
             // 字符串模糊匹配，提供 100% 的后备稳定性
-            string name = part.def.defName.ToLower();
-            if (name.Contains("femur") || name.Contains("tibia") || name.Contains("humerus") || 
-                name.Contains("radius") || name.Contains("clavicle") || name.Contains("spine") || 
-                name.Contains("pelvis") || name.Contains("rib") || name.Contains("skull") || 
-                name.Contains("jaw") || name.Contains("bone"))
+            string name = part.def.defName;
+            if (name.IndexOf("femur", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("tibia", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("humerus", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
+                name.IndexOf("radius", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("clavicle", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("spine", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
+                name.IndexOf("pelvis", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("rib", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("skull", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
+                name.IndexOf("jaw", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("bone", System.StringComparison.OrdinalIgnoreCase) >= 0)
             {
                 return true;
             }

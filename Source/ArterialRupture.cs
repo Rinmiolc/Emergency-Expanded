@@ -35,9 +35,10 @@ namespace EmergencyExpanded
             bool ruptureAdded = false;
 
             // 4. 遍历刚刚结算生成的伤口（包括普通外伤与断肢）。使用 ToList() 避免后续 AddHediff 修改集合导致 InvalidOperationException
-            foreach (Hediff hediff in __result.hediffs.ToList())
+            for (int i = __result.hediffs.Count - 1; i >= 0; i--)
             {
                 if (ruptureAdded) break; // 保证单次受击(例如一颗子弹)最多只引发一次动脉破裂
+                Hediff hediff = __result.hediffs[i];
 
                 if (hediff.Part != null && (hediff is Hediff_Injury || hediff is Hediff_MissingPart))
                 {

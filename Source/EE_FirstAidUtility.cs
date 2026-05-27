@@ -99,8 +99,8 @@ namespace EmergencyExpanded
                     BodyPartRecord part = injury.Part;
                     if (part != null && (part.def.tags != null && (part.def.tags.Contains(BodyPartTagDefOf.MovingLimbCore) || 
                                          part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbCore)) ||
-                                         part.def.defName.ToLower().Contains("arm") || 
-                                         part.def.defName.ToLower().Contains("leg")))
+                                         part.def.defName.IndexOf("arm", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
+                                         part.def.defName.IndexOf("leg", System.StringComparison.OrdinalIgnoreCase) >= 0))
                     {
                         return true;
                     }
@@ -220,8 +220,8 @@ namespace EmergencyExpanded
                         BodyPartRecord part = injury.Part;
                         if (part != null && (part.def.tags != null && (part.def.tags.Contains(BodyPartTagDefOf.MovingLimbCore) || 
                                              part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbCore)) ||
-                                             part.def.defName.ToLower().Contains("arm") || 
-                                             part.def.defName.ToLower().Contains("leg")))
+                                             part.def.defName.IndexOf("arm", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
+                                             part.def.defName.IndexOf("leg", System.StringComparison.OrdinalIgnoreCase) >= 0))
                         {
                             maxBleeding = bleed;
                             targetLimb = part;
