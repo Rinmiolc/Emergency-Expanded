@@ -42,7 +42,7 @@ namespace EmergencyExpanded
 
         /// <summary>
         /// 寻找一个部位最近的、未缺失的祖先部位。
-        /// 主要是为了防止将“动脉破裂”等Hediff直接加在已缺失（PartIsMissing）的断肢上，
+        /// 主要是为了防止将“大出血”等Hediff直接加在已缺失（PartIsMissing）的断肢上，
         /// 从而触发原版游戏的错误日志（Tried to add hediff to missing part...）。
         /// </summary>
         public static BodyPartRecord GetNearestNonMissingPart(Pawn pawn, BodyPartRecord part)

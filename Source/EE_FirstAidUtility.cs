@@ -279,8 +279,8 @@ namespace EmergencyExpanded
 
             hediffsToTend.Sort((a, b) =>
             {
-                bool aRupture = a.def == EE_DefOf.ArterialRupture;
-                bool bRupture = b.def == EE_DefOf.ArterialRupture;
+                bool aRupture = a.def == EE_DefOf.MassiveBleeding;
+                bool bRupture = b.def == EE_DefOf.MassiveBleeding;
                 if (aRupture != bRupture) return bRupture.CompareTo(aRupture);
 
                 bool aBleeds = a is Hediff_Injury aInj && aInj.Bleeding;
@@ -291,7 +291,7 @@ namespace EmergencyExpanded
             });
 
             Hediff primaryWound = hediffsToTend[0];
-            if (primaryWound.def == EE_DefOf.ArterialRupture)
+            if (primaryWound.def == EE_DefOf.MassiveBleeding)
             {
                 float reduction = UnityEngine.Mathf.Clamp(0.1f + tendQuality * 0.15f, 0.1f, 0.25f);
                 primaryWound.Severity -= reduction;

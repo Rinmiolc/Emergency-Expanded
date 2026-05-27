@@ -7,7 +7,7 @@ using UnityEngine;
 namespace EmergencyExpanded
 {
     [HarmonyPatch(typeof(DamageWorker_AddInjury), "Apply")]
-    public static class Patch_DamageWorker_ArterialRupture
+    public static class Patch_DamageWorker_MassiveBleeding
     {
         // ==========================================
         // 【AI/开发者注意】：
@@ -17,6 +17,9 @@ namespace EmergencyExpanded
         // ==========================================
         public static void Postfix(DamageInfo dinfo, Thing thing, DamageWorker.DamageResult __result)
         {
+            // 0. 特殊情况排除：如果原版正在强制将小人击倒（如生成远古仓小人），禁止添加大出血导致意外死亡
+            if (EE_GlobalFlags.IsForcingDown) return;
+
             // 1. 基础过滤：如果没有造成任何伤口，直接跳过
             if (__result == null || __result.hediffs == null || !__result.hediffs.Any()) return;
             
@@ -37,7 +40,7 @@ namespace EmergencyExpanded
             // 4. 遍历刚刚结算生成的伤口（包括普通外伤与断肢）。使用 ToList() 避免后续 AddHediff 修改集合导致 InvalidOperationException
             for (int i = __result.hediffs.Count - 1; i >= 0; i--)
             {
-                if (ruptureAdded) break; // 保证单次受击(例如一颗子弹)最多只引发一次动脉破裂
+                if (ruptureAdded) break; // 保证单次受击(例如一颗子弹)最多只引发一次大出血
                 Hediff hediff = __result.hediffs[i];
 
                 if (hediff.Part != null && (hediff is Hediff_Injury || hediff is Hediff_MissingPart))
@@ -50,11 +53,11 @@ namespace EmergencyExpanded
                         // 部位判定
                         if (hediff.Part == pawn.RaceProps.body.corePart)
                         {
-                            ruptureChance = EE_Settings.ArterialRuptureChanceTorso; 
+                            ruptureChance = EE_Settings.MassiveBleedingChanceTorso; 
                         }
                         else
                         {
-                            ruptureChance = EE_Settings.ArterialRuptureChanceLimb; 
+                            ruptureChance = EE_Settings.MassiveBleedingChanceLimb; 
                         }
 
                         // 【硬核几率平衡】几率与单次伤害量线性挂钩：伤害量以 15（突击步枪级别）为 100% 基础几率，最小 4 点起判
@@ -64,13 +67,13 @@ namespace EmergencyExpanded
                         // 5. 掷骰子判定是否破裂
                         if (dinfo.Amount >= 4f && Rand.Chance(finalChance))
                         {
-                            HediffDef ruptureDef = EE_DefOf.ArterialRupture;
+                            HediffDef ruptureDef = EE_DefOf.MassiveBleeding;
                             if (ruptureDef != null)
                             {
                                 // 安全地获取最近的未缺失身体部分（如果该部位已断开，则加到其母体断面上，防止原版引擎报错）
                                 BodyPartRecord targetPart = EE_MedicalUtility.GetNearestNonMissingPart(pawn, hediff.Part);
 
-                                // 往该部位添加“动脉破裂”状态
+                                // 往该部位添加“大出血”状态
                                 Hediff rupture = HediffMaker.MakeHediff(ruptureDef, pawn, targetPart);
                                 rupture.Severity = 1.0f; // 初始严重度
                                 pawn.health.AddHediff(rupture, targetPart, dinfo, __result);

@@ -28,7 +28,7 @@
   <ThingDef ParentName="ResourceBase">
     <defName>EE_FirstAidKit</defName>
     <label>战地急救箱</label>
-    <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干动脉破裂的核心耗材。不能用于基地的常规手术。</description>
+    <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干大出血的核心耗材。不能用于基地的常规手术。</description>
     <graphicData>
       <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>

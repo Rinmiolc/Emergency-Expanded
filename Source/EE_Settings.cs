@@ -36,9 +36,9 @@ namespace EmergencyExpanded
         // ================= 物理流血 (Blood Loss) =================
         public static float MinBleedMultiplier => EE_Mod.Settings?.minBleedMultiplier ?? 0.1f;
         
-        // ================= 动脉破裂 (Arterial Rupture) =================
-        public static float ArterialRuptureChanceTorso => EE_Mod.Settings?.arterialRuptureChanceTorso ?? 0.90f;
-        public static float ArterialRuptureChanceLimb => EE_Mod.Settings?.arterialRuptureChanceLimb ?? 0.90f;
+        // ================= 大出血 (Massive Bleeding) =================
+        public static float MassiveBleedingChanceTorso => EE_Mod.Settings?.massiveBleedingChanceTorso ?? 0.90f;
+        public static float MassiveBleedingChanceLimb => EE_Mod.Settings?.massiveBleedingChanceLimb ?? 0.90f;
 
         // ================= 骨折机制 (Bone Fracture) =================
         public static float FractureChanceMultiplier => EE_Mod.Settings?.fractureChanceMultiplier ?? 1.0f;

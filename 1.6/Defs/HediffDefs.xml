@@ -248,7 +248,7 @@
   </HediffDef>
 
   <HediffDef ParentName="InjuryBase">
-    <defName>ArterialRupture</defName>
+    <defName>MassiveBleeding</defName>
     <label>大出血</label>
     <labelNoun>大出血的伤口</labelNoun>
     <description>由于主要血管或动脉破损引发的灾难性大出血。如果不立即就地施加压迫包扎或止血带结扎，伤员将在极短时间内死于失血性休克。</description>

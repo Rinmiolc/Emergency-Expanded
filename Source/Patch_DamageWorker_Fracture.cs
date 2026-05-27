@@ -16,6 +16,8 @@ namespace EmergencyExpanded
         [HarmonyPostfix]
         public static void Postfix(DamageInfo dinfo, Thing thing, DamageWorker.DamageResult __result)
         {
+            if (EE_GlobalFlags.IsForcingDown) return;
+
             // 1. 基础过滤：如果没有造成实质伤口，直接跳过
             if (__result == null || __result.hediffs == null || !__result.hediffs.Any()) return;
 
@@ -112,10 +114,10 @@ namespace EmergencyExpanded
                                 pawn.health.AddHediff(fracture, targetPart, dinfo, __result);
                                 fractureAdded = true;
 
-                                // 开放性骨折自带高额出血，在此联动大动脉破裂机制，极其真实
-                                if (isOpen && EE_DefOf.ArterialRupture != null)
+                                // 开放性骨折自带高额出血，在此联动大出血机制，极其真实
+                                if (isOpen && EE_DefOf.MassiveBleeding != null)
                                 {
-                                    Hediff rupture = HediffMaker.MakeHediff(EE_DefOf.ArterialRupture, pawn, targetPart);
+                                    Hediff rupture = HediffMaker.MakeHediff(EE_DefOf.MassiveBleeding, pawn, targetPart);
                                     rupture.Severity = 1.0f;
                                     pawn.health.AddHediff(rupture, targetPart, dinfo, __result);
                                 }

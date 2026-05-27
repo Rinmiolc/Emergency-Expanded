@@ -11,7 +11,7 @@ namespace EmergencyExpanded
         public static HediffDef CerebralHypoxia;
         public static HediffDef HypoxicBrainDamage;
         public static HediffDef VegetativeState;
-        public static HediffDef ArterialRupture;
+        public static HediffDef MassiveBleeding;
         public static HediffDef VentricularFibrillation;
         public static HediffDef AdrenalineBoost;
         public static HediffDef AdrenalineCrash;
