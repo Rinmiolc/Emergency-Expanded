@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+    <DesignationDef>
+        <defName>EE_FastFirstAid</defName>
+        <label>fast first aid</label>
+        <description>Designates a pawn to receive fast first aid.</description>
+        <texturePath>UI/Designators/Haul</texturePath>
+        <designateCancelable>true</designateCancelable>
+        <targetType>Thing</targetType>
+    </DesignationDef>
+</Defs>

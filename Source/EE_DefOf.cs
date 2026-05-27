@@ -31,6 +31,8 @@ namespace EmergencyExpanded
         
         public static JobDef EE_ApplyFirstAid;
         
+        public static DesignationDef EE_FastFirstAid;
+        
         public static BodyPartDef Brain;
 
         static EE_DefOf()

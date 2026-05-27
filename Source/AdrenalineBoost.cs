@@ -60,6 +60,10 @@ namespace EmergencyExpanded
                 dinfo.Def == DamageDefOf.EMP || 
                 dinfo.Def == DamageDefOf.Psychic) return; // 排除眩晕、电磁、精神等纯控制或非实体外伤伤害
 
+            // 核心修复：如果在强制击倒流程中（如生成远古小人），禁止触发肾上腺素。
+            // 否则肾上腺素会提高倒地阈值，导致系统为了击倒小人而施加致命的过量伤害（如脖子中枪）从而意外死亡。
+            if (EE_GlobalFlags.IsForcingDown) return;
+
             HediffDef boostDef = EE_DefOf.AdrenalineBoost;
             HediffDef crashDef = EE_DefOf.AdrenalineCrash;
             if (boostDef == null) return;

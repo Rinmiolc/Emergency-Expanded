@@ -15,13 +15,52 @@ namespace EmergencyExpanded
 
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
-            return pawn.Reserve(Patient, job, 1, -1, null, errorOnFailed);
+            return pawn.Reserve(Patient, job, 5, 0, null, errorOnFailed);
         }
 
         protected override IEnumerable<Toil> MakeNewToils()
         {
             this.FailOnDespawnedOrNull(PatientIndex);
             this.FailOn(() => Patient.Dead);
+
+            bool wasDesignated = EE_DefOf.EE_FastFirstAid != null && Map.designationManager.DesignationOn(Patient, EE_DefOf.EE_FastFirstAid) != null;
+            if (wasDesignated)
+            {
+                this.FailOn(() => Map.designationManager.DesignationOn(Patient, EE_DefOf.EE_FastFirstAid) == null);
+                
+                this.AddFinishAction((JobCondition condition) => 
+                {
+                    if (EE_DefOf.EE_FastFirstAid != null && Map.designationManager.DesignationOn(Patient, EE_DefOf.EE_FastFirstAid) != null)
+                    {
+                        bool anyoneElseTreating = false;
+                        foreach (Pawn p in Map.mapPawns.FreeColonistsSpawned)
+                        {
+                            if (p != pawn && p.CurJob != null && p.CurJob.def == EE_DefOf.EE_ApplyFirstAid && p.CurJob.GetTarget(TargetIndex.A).Thing == Patient)
+                            {
+                                anyoneElseTreating = true;
+                                break;
+                            }
+                            if (p != pawn && p.jobs != null && p.jobs.jobQueue != null)
+                            {
+                                foreach (var qj in p.jobs.jobQueue)
+                                {
+                                    if (qj.job.def == EE_DefOf.EE_ApplyFirstAid && qj.job.GetTarget(TargetIndex.A).Thing == Patient)
+                                    {
+                                        anyoneElseTreating = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (anyoneElseTreating) break;
+                        }
+                        
+                        if (!anyoneElseTreating)
+                        {
+                            Map.designationManager.DesignationOn(Patient, EE_DefOf.EE_FastFirstAid)?.Delete();
+                        }
+                    }
+                });
+            }
 
             yield return Toils_Goto.GotoThing(PatientIndex, PathEndMode.Touch);
 
