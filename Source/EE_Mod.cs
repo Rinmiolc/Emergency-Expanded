@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Verse;
 using System.Collections.Generic;
 
@@ -27,11 +27,13 @@ namespace EmergencyExpanded
         public float acidosisCoreAttackChance = 0.3f;
         public float acidosisCoreDamageMultiplier = 2.0f;
         public float minBleedMultiplier = 0.1f;
-        public float massiveBleedingChanceTorso = 0.90f;
-        public float massiveBleedingChanceLimb = 0.90f;
+        public float massiveBleedingChanceTorso = 0.25f;
+        public float massiveBleedingChanceLimb = 0.25f;
         public float fractureChanceMultiplier = 1.0f;
         public float secondaryDamageChance = 0.08f;
         public bool advancedMode = false;
+        public bool debugMode = false;
+        public bool enableEcgGui = true;
 
         public override void ExposeData()
         {
@@ -57,11 +59,13 @@ namespace EmergencyExpanded
             Scribe_Values.Look(ref acidosisCoreAttackChance, "acidosisCoreAttackChance", 0.3f);
             Scribe_Values.Look(ref acidosisCoreDamageMultiplier, "acidosisCoreDamageMultiplier", 2.0f);
             Scribe_Values.Look(ref minBleedMultiplier, "minBleedMultiplier", 0.1f);
-            Scribe_Values.Look(ref massiveBleedingChanceTorso, "massiveBleedingChanceTorso", 0.90f);
-            Scribe_Values.Look(ref massiveBleedingChanceLimb, "massiveBleedingChanceLimb", 0.90f);
+            Scribe_Values.Look(ref massiveBleedingChanceTorso, "massiveBleedingChanceTorso", 0.25f);
+            Scribe_Values.Look(ref massiveBleedingChanceLimb, "massiveBleedingChanceLimb", 0.25f);
             Scribe_Values.Look(ref fractureChanceMultiplier, "fractureChanceMultiplier", 1.0f);
             Scribe_Values.Look(ref secondaryDamageChance, "secondaryDamageChance", 0.08f);
             Scribe_Values.Look(ref advancedMode, "advancedMode", false);
+            Scribe_Values.Look(ref debugMode, "debugMode", false);
+            Scribe_Values.Look(ref enableEcgGui, "enableEcgGui", true);
         }
     }
 
@@ -96,6 +100,8 @@ namespace EmergencyExpanded
             listing.Begin(viewRect);
 
             listing.CheckboxLabeled("开启高级/核心数值设置 (硬核警告)", ref Settings.advancedMode, "显示所有的底层精细调整参数。如果你不清楚它们的作用，建议保持关闭。");
+            listing.CheckboxLabeled("显示心电图监测仪 (ECG GUI)", ref Settings.enableEcgGui, "选中目标时在底部显示实时动态心电图与血氧饱和度。");
+            listing.CheckboxLabeled("开启调试模式 (Debug Mode)", ref Settings.debugMode, "测试专用：将大出血、骨折等主要危机事件发生率强制提升至 90%。");
             listing.GapLine();
 
             switch (currentTab)
@@ -136,8 +142,8 @@ namespace EmergencyExpanded
 
             if (listing.ButtonText("恢复本页默认设置"))
             {
-                Settings.massiveBleedingChanceTorso = 0.90f;
-                Settings.massiveBleedingChanceLimb = 0.90f;
+                Settings.massiveBleedingChanceTorso = 0.25f;
+                Settings.massiveBleedingChanceLimb = 0.25f;
                 Settings.fractureChanceMultiplier = 1.0f;
                 Settings.secondaryDamageChance = 0.08f;
             }

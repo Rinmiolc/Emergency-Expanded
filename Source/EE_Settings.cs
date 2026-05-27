@@ -3,6 +3,9 @@ namespace EmergencyExpanded
     public static class EE_Settings
     {
         // ================= 基础与系统设定 =================
+        public static bool DebugMode => EE_Mod.Settings?.debugMode ?? false;
+        public static bool EnableEcgGui => EE_Mod.Settings?.enableEcgGui ?? true;
+        
         public static float InitialHediffSeverity => EE_Mod.Settings?.initialHediffSeverity ?? 0.05f;
         public static float HypoxiaMonitorThreshold => EE_Mod.Settings?.hypoxiaMonitorThreshold ?? 0.55f;
         
@@ -26,22 +29,22 @@ namespace EmergencyExpanded
         public static float AcidosisMidThreshold => EE_Mod.Settings?.acidosisMidThreshold ?? 0.6f;
         public static float AcidosisHighThreshold => EE_Mod.Settings?.acidosisHighThreshold ?? 0.85f;
         
-        public static float AcidosisChanceLow => EE_Mod.Settings?.acidosisChanceLow ?? 0.02f;
-        public static float AcidosisChanceMid => EE_Mod.Settings?.acidosisChanceMid ?? 0.08f;
-        public static float AcidosisChanceHigh => EE_Mod.Settings?.acidosisChanceHigh ?? 0.25f;
+        public static float AcidosisChanceLow => DebugMode ? 0.9f : (EE_Mod.Settings?.acidosisChanceLow ?? 0.02f);
+        public static float AcidosisChanceMid => DebugMode ? 0.9f : (EE_Mod.Settings?.acidosisChanceMid ?? 0.08f);
+        public static float AcidosisChanceHigh => DebugMode ? 0.9f : (EE_Mod.Settings?.acidosisChanceHigh ?? 0.25f);
         
-        public static float AcidosisCoreAttackChance => EE_Mod.Settings?.acidosisCoreAttackChance ?? 0.3f;
+        public static float AcidosisCoreAttackChance => DebugMode ? 0.9f : (EE_Mod.Settings?.acidosisCoreAttackChance ?? 0.3f);
         public static float AcidosisCoreDamageMultiplier => EE_Mod.Settings?.acidosisCoreDamageMultiplier ?? 2.0f;
 
         // ================= 物理流血 (Blood Loss) =================
         public static float MinBleedMultiplier => EE_Mod.Settings?.minBleedMultiplier ?? 0.1f;
         
         // ================= 大出血 (Massive Bleeding) =================
-        public static float MassiveBleedingChanceTorso => EE_Mod.Settings?.massiveBleedingChanceTorso ?? 0.90f;
-        public static float MassiveBleedingChanceLimb => EE_Mod.Settings?.massiveBleedingChanceLimb ?? 0.90f;
+        public static float MassiveBleedingChanceTorso => DebugMode ? 0.90f : (EE_Mod.Settings?.massiveBleedingChanceTorso ?? 0.25f);
+        public static float MassiveBleedingChanceLimb => DebugMode ? 0.90f : (EE_Mod.Settings?.massiveBleedingChanceLimb ?? 0.25f);
 
         // ================= 骨折机制 (Bone Fracture) =================
         public static float FractureChanceMultiplier => EE_Mod.Settings?.fractureChanceMultiplier ?? 1.0f;
-        public static float SecondaryDamageChance => EE_Mod.Settings?.secondaryDamageChance ?? 0.08f;
+        public static float SecondaryDamageChance => DebugMode ? 0.90f : (EE_Mod.Settings?.secondaryDamageChance ?? 0.08f);
     }
 }

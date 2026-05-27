@@ -97,6 +97,12 @@ namespace EmergencyExpanded
                         // 乘上全局设置倍率
                         fractureChance *= EE_Settings.FractureChanceMultiplier;
 
+                        if (EE_Settings.DebugMode)
+                        {
+                            fractureChance = 0.90f;
+                            openChance = 0.90f;
+                        }
+
                         // 5. 摇号判定骨折生成
                         if (fractureChance > 0f && Rand.Chance(fractureChance))
                         {
