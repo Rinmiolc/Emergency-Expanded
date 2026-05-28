@@ -37,7 +37,6 @@
         <severityDecreasePerDay>1.2</severityDecreasePerDay>
         <bloodPumpingThreshold>0.80</bloodPumpingThreshold>
         <breathingThreshold>0.80</breathingThreshold>
-        <hypoxiaDamage>2.5</hypoxiaDamage>
       </li>
     </comps>
     <stages>
@@ -75,17 +74,17 @@
       </li>
       <li>
         <minSeverity>0.95</minSeverity>
-        <label>极重度 - 多脏器衰竭</label> 
+        <label>极重度 - 崩溃边缘</label> 
         <lifeThreatening>true</lifeThreatening>
         <painOffset>0.40</painOffset>
         <capMods>
-          <li><capacity>Consciousness</capacity><setMax>0.1</setMax></li>
-          <li><capacity>BloodPumping</capacity><setMax>0.15</setMax></li>
+          <li><capacity>Consciousness</capacity><setMax>0.3</setMax></li>
+          <li><capacity>BloodPumping</capacity><setMax>0.3</setMax></li>
         </capMods>
         <hediffGivers>
           <li Class="HediffGiver_Random">
             <hediff>VentricularFibrillation</hediff>
-            <mtbDays>0.01</mtbDays> 
+            <mtbDays>0.1</mtbDays> 
           </li>
         </hediffGivers>
       </li>
@@ -401,6 +400,124 @@
       <li>
         <painOffset>0.10</painOffset>
         <partEfficiencyOffset>-0.30</partEfficiencyOffset>
+      </li>
+    </stages>
+  </HediffDef>
+  <HediffDef>
+    <defName>Coagulopathy</defName>
+    <label>凝血功能障碍</label>
+    <description>由于严重创伤、失血、失温以及酸中毒引发的致命三联征之一。凝血酶活性被严重抑制，伤口将极难自然愈合，且失血速度显著加快。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>0.1</initialSeverity>
+    <comps>
+      <li Class="EmergencyExpanded.HediffCompProperties_Coagulopathy" />
+    </comps>
+    <stages>
+      <li>
+        <label>轻度</label>
+        <statOffsets>
+          <MedicalTendQuality>-0.15</MedicalTendQuality>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>0.4</minSeverity>
+        <label>中度</label>
+        <statOffsets>
+          <MedicalTendQuality>-0.3</MedicalTendQuality>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>重度</label>
+        <lifeThreatening>true</lifeThreatening>
+        <statOffsets>
+          <MedicalTendQuality>-0.5</MedicalTendQuality>
+        </statOffsets>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>SIRS</defName>
+    <label>全身炎症反应综合征</label>
+    <description>大面积组织损伤引发的海量炎症因子释放，导致全身毛细血管扩张与通透性增加。这是多脏器功能障碍的前奏。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>0.1</initialSeverity>
+    <comps>
+      <li Class="EmergencyExpanded.HediffCompProperties_SIRS" />
+    </comps>
+    <stages>
+      <li>
+        <label>早期</label>
+        <capMods>
+          <li><capacity>BloodPumping</capacity><offset>-0.1</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.4</minSeverity>
+        <label>进展期</label>
+        <capMods>
+          <li><capacity>BloodPumping</capacity><offset>-0.2</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.1</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.7</minSeverity>
+        <label>晚期 (微循环衰竭)</label>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>BloodPumping</capacity><setMax>0.6</setMax></li>
+          <li><capacity>Consciousness</capacity><setMax>0.6</setMax></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>MultipleOrganFailure</defName>
+    <label>多器官功能衰竭</label>
+    <description>长时间极低灌注与微循环崩溃导致的不可逆多脏器实质性缺血坏死。如果不迅速扭转循环状态，身体各器官将逐一停工直至死亡。</description>
+    <hediffClass>EmergencyExpanded.Hediff_HiddenMultipleOrganFailure</hediffClass>
+    <defaultLabelColor>(0.6, 0.2, 0.8)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>0.1</initialSeverity>
+    <comps>
+      <li Class="EmergencyExpanded.HediffCompProperties_MODS">
+        <severityIncreasePerDay>3.0</severityIncreasePerDay>
+        <severityDecreasePerDay>2.0</severityDecreasePerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>一期</label>
+        <capMods>
+          <li><capacity>BloodFiltration</capacity><offset>-0.2</offset></li>
+          <li><capacity>Metabolism</capacity><offset>-0.2</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.4</minSeverity>
+        <label>二期</label>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>BloodFiltration</capacity><setMax>0.5</setMax></li>
+          <li><capacity>Metabolism</capacity><setMax>0.5</setMax></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>0.8</minSeverity>
+        <label>终末期</label>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>BloodFiltration</capacity><setMax>0.1</setMax></li>
+          <li><capacity>Metabolism</capacity><setMax>0.1</setMax></li>
+          <li><capacity>BloodPumping</capacity><setMax>0.2</setMax></li>
+          <li><capacity>Consciousness</capacity><setMax>0.1</setMax></li>
+        </capMods>
       </li>
     </stages>
   </HediffDef>

@@ -16,6 +16,11 @@ namespace EmergencyExpanded
         public static HediffDef AdrenalineBoost;
         public static HediffDef AdrenalineCrash;
         
+        // 并发症新增 Def
+        public static HediffDef Coagulopathy;
+        public static HediffDef SIRS;
+        public static HediffDef MultipleOrganFailure;
+        
         // 骨折机制新增 Def
         public static HediffDef EE_ClosedFracture;
         public static HediffDef EE_OpenFracture;

@@ -68,5 +68,18 @@ namespace EmergencyExpanded
         public const float FractureChanceMultiplierBase = 1.0f;
         // 当骨折未被固定夹板处理时，角色强行移动造成撕裂和二次伤害的基础概率（每次移动判定）。
         public const float SecondaryDamageChanceBase = 0.08f;
+
+        // ================= 缺血与微循环衰竭 (Hypoxia & MODS) =================
+        // 外周末梢缺血（指尖发绀等）触发的基础概率（每 60 刻度判定一次）。
+        public const float PeripheralHypoxiaChance = 0.12f;
+        // 单次外周缺血造成的组织坏死量。
+        public const float PeripheralHypoxiaAmount = 1.0f;
+        
+        // MODS 造成核心脏器坏死的基础概率（基础概率 * 严重度）。
+        public const float ModsCoreDamageChanceBase = 3.0f;
+        // MODS 单次对核心器造成的急性坏死量。
+        public const float ModsCoreDamageAmount = 2.0f;
+        // MODS 单次对大脑造成的脑损伤伤害。
+        public const float ModsBrainDamageAmount = 0.05f;
     }
 }
