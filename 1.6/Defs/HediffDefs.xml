@@ -229,7 +229,7 @@
     <defName>VegetativeState</defName>
     <label>脑死亡 (植物状态)</label>
     <description>不可逆的广泛性脑神经元坏死。伤者失去了所有高级神经活动，仅依靠脑干维持最基础的心跳和呼吸。如果没有生命维持设备的干预，伤者永远无法醒来。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.4, 0.4, 0.4)</defaultLabelColor>
     <isBad>true</isBad>
     <stages>
@@ -270,7 +270,7 @@
     <defName>AdrenalineBoost</defName>
     <label>肾上腺素增强</label>
     <description>小人在受到物理创伤或致命危机刺激时分泌的强力肾上腺素，能临时显著增强移动、操作和意识能力，并能够极大削弱身体痛觉感知，防止休克倒地。但在激素消退后会产生强烈的脱水与疲劳反应。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.9, 0.6, 0.2)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
@@ -327,7 +327,7 @@
     <defName>AdrenalineCrash</defName>
     <label>肾上腺素后遗症</label>
     <description>强烈肾上腺素应激爆发后的崩溃与脱水疲劳期。由于身体机能极度透支以及乳酸的大量堆积，小人的运动能力、操作精度及意识会明显下降，并且创伤的炎性反应使得痛觉感受器变得异常敏感。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.5, 0.4, 0.4)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
@@ -400,7 +400,7 @@
     <defName>EE_Malunion</defName>
     <label>畸形愈合</label>
     <description>骨折后未经过正确的复位固定而愈合，碎骨以错误的姿态长死。使肢体效率永久下降，并伴随慢性疼痛。只能通过畸形接骨重折术进行物理打断并重置治疗。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <stages>
       <li>
@@ -413,7 +413,7 @@
     <defName>Coagulopathy</defName>
     <label>凝血功能障碍</label>
     <description>由于严重创伤、失血、失温以及酸中毒引发的致命三联征之一。凝血酶活性被严重抑制，伤口将极难自然愈合，且失血速度显著加快。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.1</initialSeverity>
@@ -449,7 +449,7 @@
     <defName>SIRS</defName>
     <label>全身炎症反应综合征</label>
     <description>大面积组织损伤引发的海量炎症因子释放，导致全身毛细血管扩张与通透性增加。这是多脏器功能障碍的前奏。</description>
-    <hediffClass>HediffWithComps</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.1</initialSeverity>
