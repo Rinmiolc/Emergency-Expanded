@@ -207,11 +207,6 @@ namespace EmergencyExpanded
 
             Rect innerScreen = rect.ContractedBy(4f);
             Widgets.DrawBoxSolid(innerScreen, new Color(0.02f, 0.02f, 0.025f, 1f));
-            
-            // 顶层微弱玻璃渐变反光 (用透明度实现上亮下暗) -> 已根据用户要求移除
-            // Rect glassRect = innerScreen;
-            // glassRect.height = innerScreen.height * 0.4f;
-            // Widgets.DrawBoxSolid(glassRect, new Color(1f, 1f, 1f, 0.02f));
 
             // 绘制精细毫米级网格
             GUI.color = gridColor;
@@ -291,6 +286,14 @@ namespace EmergencyExpanded
                         {
                             bool isHypoxic = vitals.hasCerebralHypoxia || bpm > 140f;
                             val = GetBaseECGValue(p, isHypoxic);
+                            
+                            // 反走样峰值捕捉：如果在这两帧相位之间跨越了波峰或波谷，强制该像素显示极限值
+                            float pPrev = (vitals.phase + phaseDelta * (step - 1f) / stepPixels) % 1f;
+                            if (pPrev < p)
+                            {
+                                if (pPrev < 0.23f && p >= 0.23f) val = 1.20f;
+                                else if (pPrev < 0.26f && p >= 0.26f) val = -0.35f;
+                            }
                         }
                         if (x >= 0 && x < vitals.waveBuffer.Length)
                             vitals.waveBuffer[x] = val;
@@ -337,14 +340,6 @@ namespace EmergencyExpanded
                 Widgets.DrawLine(pt1, pt2, drawCore, 1.2f);
             }
 
-            // 绘制扫描头亮线与高能光斑点 (CRT Effect) -> 已根据用户要求隐藏
-            // float headX = waveRect.x + vitals.sweepX;
-            // Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.18f), 1.5f);
-            
-            // int headIdx = Mathf.Clamp(Mathf.FloorToInt(vitals.sweepX), 0, 104);
-            // float headY = centerY - vitals.waveBuffer[headIdx] * (waveRect.height * 0.42f);
-            // Widgets.DrawBoxSolid(new Rect(headX - 1.5f, headY - 1.5f, 3f, 3f), coreColor * new Color(1f, 1f, 1f, 0.95f));
-
             // --- 绘制右侧数值面板与精美排版 ---
             Rect rightPanel = new Rect(innerScreen.xMax - 48f, innerScreen.y, 48f, innerScreen.height);
             TextAnchor origAnchor = Text.Anchor;
@@ -358,9 +353,6 @@ namespace EmergencyExpanded
             bool isBlinking = bpm > 0.1f && (vitals.phase < 0.15f);
             GUI.color = isBlinking ? coreColor : coreColor * new Color(1f, 1f, 1f, 0.2f);
             Widgets.Label(new Rect(innerScreen.x + 28f, innerScreen.y + 2f, 15f, 15f), "♥");
-
-            // 右侧分割线 -> 已根据用户要求隐藏
-            // Widgets.DrawLine(new Vector2(rightPanel.x - 2f, innerScreen.y + 4f), new Vector2(rightPanel.x - 2f, innerScreen.yMax - 4f), new Color(1f, 1f, 1f, 0.1f), 1f);
 
             // HR (心率区域)
             Text.Font = GameFont.Tiny;
