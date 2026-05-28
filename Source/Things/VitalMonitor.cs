@@ -208,10 +208,10 @@ namespace EmergencyExpanded
             Rect innerScreen = rect.ContractedBy(4f);
             Widgets.DrawBoxSolid(innerScreen, new Color(0.02f, 0.02f, 0.025f, 1f));
             
-            // 顶层微弱玻璃渐变反光 (用透明度实现上亮下暗)
-            Rect glassRect = innerScreen;
-            glassRect.height = innerScreen.height * 0.4f;
-            Widgets.DrawBoxSolid(glassRect, new Color(1f, 1f, 1f, 0.02f));
+            // 顶层微弱玻璃渐变反光 (用透明度实现上亮下暗) -> 已根据用户要求移除
+            // Rect glassRect = innerScreen;
+            // glassRect.height = innerScreen.height * 0.4f;
+            // Widgets.DrawBoxSolid(glassRect, new Color(1f, 1f, 1f, 0.02f));
 
             // 绘制精细毫米级网格
             GUI.color = gridColor;
@@ -322,11 +322,19 @@ namespace EmergencyExpanded
                 float screenX2 = waveRect.x + i + 1;
                 float screenY2 = centerY - v2 * (waveRect.height * 0.42f);
                 
+                Vector2 pt1 = new Vector2(screenX1, screenY1);
+                Vector2 pt2 = new Vector2(screenX2, screenY2);
+                
+                // 延长线段以使其首尾互相重叠，消除像素渲染产生的虚线间隙现象
+                Vector2 dir = (pt2 - pt1).normalized;
+                pt1 -= dir * 0.1f;
+                pt2 += dir * 0.6f;
+                
                 Color drawGlow = glowColor * new Color(1f, 1f, 1f, alpha);
                 Color drawCore = coreColor * new Color(1f, 1f, 1f, alpha);
                 
-                Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawGlow, 2.5f);
-                Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawCore, 1.2f);
+                Widgets.DrawLine(pt1, pt2, drawGlow, 2.5f);
+                Widgets.DrawLine(pt1, pt2, drawCore, 1.2f);
             }
 
             // 绘制扫描头亮线与高能光斑点 (CRT Effect) -> 已根据用户要求隐藏
