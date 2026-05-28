@@ -329,13 +329,13 @@ namespace EmergencyExpanded
                 Widgets.DrawLine(new Vector2(screenX1, screenY1), new Vector2(screenX2, screenY2), drawCore, 1.2f);
             }
 
-            // 绘制扫描头亮线与高能光斑点 (CRT Effect)
-            float headX = waveRect.x + vitals.sweepX;
-            Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.18f), 1.5f);
+            // 绘制扫描头亮线与高能光斑点 (CRT Effect) -> 已根据用户要求隐藏
+            // float headX = waveRect.x + vitals.sweepX;
+            // Widgets.DrawLine(new Vector2(headX, innerScreen.y + 2f), new Vector2(headX, innerScreen.yMax - 2f), coreColor * new Color(1f, 1f, 1f, 0.18f), 1.5f);
             
-            int headIdx = Mathf.Clamp(Mathf.FloorToInt(vitals.sweepX), 0, 104);
-            float headY = centerY - vitals.waveBuffer[headIdx] * (waveRect.height * 0.42f);
-            Widgets.DrawBoxSolid(new Rect(headX - 1.5f, headY - 1.5f, 3f, 3f), coreColor * new Color(1f, 1f, 1f, 0.95f));
+            // int headIdx = Mathf.Clamp(Mathf.FloorToInt(vitals.sweepX), 0, 104);
+            // float headY = centerY - vitals.waveBuffer[headIdx] * (waveRect.height * 0.42f);
+            // Widgets.DrawBoxSolid(new Rect(headX - 1.5f, headY - 1.5f, 3f, 3f), coreColor * new Color(1f, 1f, 1f, 0.95f));
 
             // --- 绘制右侧数值面板与精美排版 ---
             Rect rightPanel = new Rect(innerScreen.xMax - 48f, innerScreen.y, 48f, innerScreen.height);
@@ -351,13 +351,13 @@ namespace EmergencyExpanded
             GUI.color = isBlinking ? coreColor : coreColor * new Color(1f, 1f, 1f, 0.2f);
             Widgets.Label(new Rect(innerScreen.x + 28f, innerScreen.y + 2f, 15f, 15f), "♥");
 
-            // 右侧分割线
-            Widgets.DrawLine(new Vector2(rightPanel.x - 2f, innerScreen.y + 4f), new Vector2(rightPanel.x - 2f, innerScreen.yMax - 4f), new Color(1f, 1f, 1f, 0.1f), 1f);
+            // 右侧分割线 -> 已根据用户要求隐藏
+            // Widgets.DrawLine(new Vector2(rightPanel.x - 2f, innerScreen.y + 4f), new Vector2(rightPanel.x - 2f, innerScreen.yMax - 4f), new Color(1f, 1f, 1f, 0.1f), 1f);
 
             // HR (心率区域)
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperRight;
-            GUI.color = new Color(0.4f, 0.8f, 0.4f, 0.75f);
+            GUI.color = coreColor * new Color(1f, 1f, 1f, 0.75f);
             Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 2f, rightPanel.width - 2f, 15f), "HR");
 
             Text.Font = GameFont.Medium;

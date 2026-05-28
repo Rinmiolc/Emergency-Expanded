@@ -27,7 +27,7 @@ namespace EmergencyExpanded
             float hypothermiaSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia)?.Severity ?? 0f;
             float bloodLossSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
 
-            if (acidosisSev > 0.2f || (acidosisSev > 0f && hypothermiaSev > 0f && bloodLossSev > 0.2f))
+            if (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold || (acidosisSev > 0f && hypothermiaSev > 0f && bloodLossSev > EE_Settings.CoagulopathyBloodLossThreshold))
             {
                 float factor = acidosisSev * 2f + hypothermiaSev * 2f + bloodLossSev;
                 severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);

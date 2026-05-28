@@ -40,6 +40,8 @@ namespace EmergencyExpanded
         public static float BrainDamageSeverityIncrement => EE_Constants.BrainDamageSeverityIncrement;
 
         // ================= 代谢性酸中毒 (Metabolic Acidosis) =================
+        public static float AcidosisBloodLossThreshold1 => EE_Constants.AcidosisBloodLossThreshold1;
+        public static float AcidosisBloodLossThreshold2 => EE_Constants.AcidosisBloodLossThreshold2;
         public static float AcidosisSilentHypoxiaStart => EE_Constants.AcidosisSilentHypoxiaStart;
         public static float AcidosisMidThreshold => EE_Constants.AcidosisMidThreshold;
         public static float AcidosisHighThreshold => EE_Constants.AcidosisHighThreshold;
@@ -51,10 +53,17 @@ namespace EmergencyExpanded
         public static float AcidosisCoreAttackChance => DebugMode ? 0.9f : EE_Constants.AcidosisCoreAttackChance;
         public static float AcidosisCoreDamageMultiplier => EE_Constants.AcidosisCoreDamageMultiplier;
 
+        // ================= 凝血病 (Coagulopathy) =================
+        public static float CoagulopathyAcidosisThreshold => EE_Constants.CoagulopathyAcidosisThreshold;
+        public static float CoagulopathyBloodLossThreshold => EE_Constants.CoagulopathyBloodLossThreshold;
+
         // ================= 物理流血 (Blood Loss) =================
+        public static float GlobalBleedingFactor => EE_Constants.GlobalBleedingFactor;
         public static float MinBleedMultiplier => EE_Constants.MinBleedMultiplier;
         
         // ================= 大出血 (Massive Bleeding) =================
+        public static float MassiveBleedingDamageScaleBase => EE_Constants.MassiveBleedingDamageScaleBase;
+        public static float MassiveBleedingMinDamage => EE_Constants.MassiveBleedingMinDamage;
         public static float MassiveBleedingChanceTorso => DebugMode ? 0.90f : (EE_Constants.MassiveBleedingChanceTorsoBase * BleedingMultiplier);
         public static float MassiveBleedingChanceLimb => DebugMode ? 0.90f : (EE_Constants.MassiveBleedingChanceLimbBase * BleedingMultiplier);
 

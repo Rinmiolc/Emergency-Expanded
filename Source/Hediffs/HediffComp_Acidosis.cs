@@ -29,21 +29,21 @@ namespace EmergencyExpanded
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
             float bloodLossSeverity = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
 
-            // 触发门槛提高至 30%失血 (Class III休克)
-            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bloodLossSeverity > 0.30f)
+            // 触发门槛提高至设定失血阈值 (默认30%, Class III休克)
+            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bloodLossSeverity > EE_Settings.AcidosisBloodLossThreshold1)
             {
                 float severityFactor = 0.05f; // 基础增长极低，拉长游戏时间至 4-8 小时
 
-                if (bloodLossSeverity > 0.30f)
+                if (bloodLossSeverity > EE_Settings.AcidosisBloodLossThreshold1)
                 {
-                    if (bloodLossSeverity <= 0.40f)
+                    if (bloodLossSeverity <= EE_Settings.AcidosisBloodLossThreshold2)
                     {
-                        severityFactor += (bloodLossSeverity - 0.30f) * 1.0f; 
+                        severityFactor += (bloodLossSeverity - EE_Settings.AcidosisBloodLossThreshold1) * 1.0f; 
                     }
                     else
                     {
                         // Class IV
-                        severityFactor += 0.1f + (bloodLossSeverity - 0.40f) * 3.0f; 
+                        severityFactor += 0.1f + (bloodLossSeverity - EE_Settings.AcidosisBloodLossThreshold2) * 3.0f; 
                     }
                 }
 

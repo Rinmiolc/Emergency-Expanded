@@ -34,6 +34,11 @@ namespace EmergencyExpanded
         public const float BrainDamageSeverityIncrement = 0.15f;
 
         // ================= 代谢性酸中毒 (Metabolic Acidosis) =================
+        // 触发酸中毒的失血严重度阈值 1。
+        public const float AcidosisBloodLossThreshold1 = 0.30f;
+        // 触发酸中毒的失血严重度阈值 2（Class IV 休克）。
+        public const float AcidosisBloodLossThreshold2 = 0.40f;
+        
         // 开始出现“无症状缺氧”并可能导致器官坏死或轻度酸中毒的严重度起始门槛。
         public const float AcidosisSilentHypoxiaStart = 0.4f;
         // 触发中度代谢性酸中毒判定的严重度阈值。
@@ -53,11 +58,21 @@ namespace EmergencyExpanded
         // 酸中毒对核心器官造成损伤的严重度倍率，体现多器官衰竭的致命性。
         public const float AcidosisCoreDamageMultiplier = 2.0f;
 
+        // ================= 凝血病 (Coagulopathy) =================
+        public const float CoagulopathyAcidosisThreshold = 0.2f;
+        public const float CoagulopathyBloodLossThreshold = 0.2f;
+
         // ================= 物理流血 (Blood Loss) =================
+        // 全局流血速度乘数，用来调整普通伤和大出血的流血速度
+        public const float GlobalBleedingFactor = 0.5f;
         // 当心脏停跳后，因残余血压和重力导致的被动流血速度下限（占正常流血速度的百分比）。
         public const float MinBleedMultiplier = 0.1f;
         
         // ================= 大出血 (Massive Bleeding) =================
+        // 大出血判定基准伤害量（例如突击步枪伤害为15点）。
+        public const float MassiveBleedingDamageScaleBase = 15f;
+        // 触发大出血判定的最小伤害阈值。
+        public const float MassiveBleedingMinDamage = 4f;
         // 当角色躯干部位受到创伤判定时，触发致命“大出血”事件的基础概率。
         public const float MassiveBleedingChanceTorsoBase = 0.25f;
         // 当角色四肢核心部位受到创伤判定时，触发致命“大出血”事件的基础概率。

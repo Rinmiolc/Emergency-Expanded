@@ -60,12 +60,12 @@ namespace EmergencyExpanded
                             ruptureChance = EE_Settings.MassiveBleedingChanceLimb; 
                         }
 
-                        // 【硬核几率平衡】几率与单次伤害量线性挂钩：伤害量以 15（突击步枪级别）为 100% 基础几率，最小 4 点起判
-                        float damageScale = Mathf.Clamp01(dinfo.Amount / 15f);
+                        // 【硬核几率平衡】几率与单次伤害量线性挂钩：伤害量以设定值（突击步枪级别）为 100% 基础几率，最小伤害起判
+                        float damageScale = Mathf.Clamp01(dinfo.Amount / EE_Settings.MassiveBleedingDamageScaleBase);
                         float finalChance = ruptureChance * damageScale;
 
                         // 5. 掷骰子判定是否破裂
-                        if (dinfo.Amount >= 4f && Rand.Chance(finalChance))
+                        if (dinfo.Amount >= EE_Settings.MassiveBleedingMinDamage && Rand.Chance(finalChance))
                         {
                             HediffDef ruptureDef = EE_DefOf.MassiveBleeding;
                             if (ruptureDef != null)

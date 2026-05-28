@@ -23,7 +23,7 @@ namespace EmergencyExpanded
                 isCalculating = true;
                 float pumping = __instance.pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
                 float multiplier = Mathf.Clamp(pumping, EE_Settings.MinBleedMultiplier, 1.0f);
-                __result *= multiplier;
+                __result *= (multiplier * EE_Settings.GlobalBleedingFactor);
             }
             finally
             {
