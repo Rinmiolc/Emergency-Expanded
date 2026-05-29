@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 伤口冲洗液 (Saline/Antiseptic Irrigation) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_Saline</defName>
+    <label>伤口冲洗液</label>
+    <description>用于在包扎前彻底冲洗伤口，冲走异物和脏污。配合普通包扎可以大幅度降低伤口的初始污染度，从而避免局部感染和坏死。由于不是正式药品，只能用于急救，不能用于手术。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+      <!-- 使用原版药草图标占位，实际可替换为盐水袋图标 -->
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>50</stackLimit>
+    <statBases>
+      <MaxHitPoints>40</MaxHitPoints>
+      <MarketValue>5</MarketValue>
+      <Mass>0.2</Mass>
+      <Flammability>0</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
+  <!-- 广谱静脉抗生素 (IV Broad-Spectrum Antibiotics) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_IVAntibiotics</defName>
+    <label>广谱静脉抗生素</label>
+    <description>强效的静脉注射级广谱抗生素。专门用于对抗已经爆发的严重化脓、败血症以及其他致命感染。不可用于预防，只在治疗发作期感染时有奇效。</description>
+    <graphicData>
+      <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>25</stackLimit>
+    <statBases>
+      <MaxHitPoints>50</MaxHitPoints>
+      <MarketValue>35</MarketValue>
+      <Mass>0.1</Mass>
+      <Flammability>0.5</Flammability>
+      <Nutrition>0</Nutrition>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+    <ingestible>
+      <preferability>NeverForNutrition</preferability>
+      <foodType>Processed</foodType>
+      <baseIngestTicks>120</baseIngestTicks>
+      <chairSearchRadius>0</chairSearchRadius>
+      <ingestSound>Ingest_Pill</ingestSound>
+      <ingestHoldUsesTable>false</ingestHoldUsesTable>
+      <ingestCommandString>静脉注射 {0}</ingestCommandString>
+      <ingestReportString>正在注射 {0}。</ingestReportString>
+      <outcomeDoers>
+        <li Class="IngestionOutcomeDoer_GiveHediff">
+          <hediffDef>EE_AntibioticsHigh</hediffDef>
+          <severity>1.0</severity>
+        </li>
+      </outcomeDoers>
+    </ingestible>
+  </ThingDef>
+
+  <RecipeDef>
+    <defName>Make_EE_Saline</defName>
+    <label>制作伤口冲洗液</label>
+    <description>使用清水和少许草药提取物制作简单的冲洗液。</description>
+    <jobString>制作伤口冲洗液中。</jobString>
+    <workAmount>300</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineHerbal</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>MedicineHerbal</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <EE_Saline>3</EE_Saline>
+    </products>
+    <recipeUsers>
+      <li>DrugLab</li>
+      <li>CraftingSpot</li>
+    </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>Make_EE_IVAntibiotics</defName>
+    <label>制作静脉抗生素</label>
+    <description>通过工业级的制药台提纯中性胺合成强效广谱抗生素。</description>
+    <jobString>制作静脉抗生素中。</jobString>
+    <workAmount>1200</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Neutroamine</li>
+          </thingDefs>
+        </filter>
+        <count>2</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>MedicineHerbal</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Neutroamine</li>
+        <li>MedicineHerbal</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <EE_IVAntibiotics>1</EE_IVAntibiotics>
+    </products>
+    <recipeUsers>
+      <li>DrugLab</li>
+    </recipeUsers>
+    <researchPrerequisite>PenoxycylineProduction</researchPrerequisite>
+  </RecipeDef>
+
+</Defs>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 局部化脓性感染 (Localized Infection) -->
+  <HediffDef ParentName="InfectionBase">
+    <defName>EE_LocalizedInfection</defName>
+    <label>局部感染</label>
+    <description>伤口处细菌增殖引发的局部炎症与化脓。会导致该部位剧烈疼痛和功能下降。如果不及时用抗生素控制，可能会恶化为坏死或诱发全身性败血症。</description>
+    <makesSickThought>true</makesSickThought>
+    <tendable>false</tendable>
+    <comps>
+      <li Class="HediffCompProperties_Immunizable">
+        <severityPerDayNotImmune>0.5</severityPerDayNotImmune>
+        <immunityPerDaySick>0.4</immunityPerDaySick>
+        <severityPerDayImmune>-0.6</severityPerDayImmune>
+        <immunityPerDayNotSick>-0.1</immunityPerDayNotSick>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>轻度</label>
+        <partEfficiencyOffset>-0.1</partEfficiencyOffset>
+        <painOffset>0.1</painOffset>
+      </li>
+      <li>
+        <label>中度</label>
+        <minSeverity>0.33</minSeverity>
+        <partEfficiencyOffset>-0.2</partEfficiencyOffset>
+        <painOffset>0.25</painOffset>
+      </li>
+      <li>
+        <label>严重(化脓)</label>
+        <minSeverity>0.66</minSeverity>
+        <partEfficiencyOffset>-0.4</partEfficiencyOffset>
+        <painOffset>0.4</painOffset>
+      </li>
+      <li>
+        <label>极限</label>
+        <minSeverity>0.85</minSeverity>
+        <lifeThreatening>true</lifeThreatening>
+        <partEfficiencyOffset>-0.8</partEfficiencyOffset>
+        <painOffset>0.6</painOffset>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 坏死 (Necrosis) -->
+  <HediffDef ParentName="DiseaseBase">
+    <defName>EE_Necrosis</defName>
+    <label>坏死</label>
+    <description>伤口组织因严重感染或缺血而死亡。坏死的组织不仅失去功能，还会不断释放毒素。必须通过外科清创手术彻底切除，否则患肢将逐渐坏死并威胁生命。</description>
+    <tendable>false</tendable>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>0.2</severityPerDay>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>初期</label>
+        <partEfficiencyOffset>-0.3</partEfficiencyOffset>
+        <painOffset>0.3</painOffset>
+      </li>
+      <li>
+        <label>扩散</label>
+        <minSeverity>0.4</minSeverity>
+        <partEfficiencyOffset>-0.6</partEfficiencyOffset>
+        <painOffset>0.5</painOffset>
+      </li>
+      <li>
+        <label>完全坏死</label>
+        <minSeverity>0.8</minSeverity>
+        <partEfficiencyOffset>-1.0</partEfficiencyOffset>
+        <painOffset>0.8</painOffset>
+        <destroyPart>true</destroyPart>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- 败血症 (Sepsis) -->
+  <HediffDef ParentName="InfectionBase">
+    <defName>EE_Sepsis</defName>
+    <label>败血症</label>
+    <description>病原体侵入血液循环系统引起的全身性严重感染。会极大地破坏免疫系统，并直接诱发全身炎症反应综合征(SIRS)，从而导致多器官衰竭甚至死亡。</description>
+    <makesSickThought>true</makesSickThought>
+    <lethalSeverity>1.0</lethalSeverity>
+    <tendable>false</tendable>
+    <comps>
+      <li Class="HediffCompProperties_Immunizable">
+        <severityPerDayNotImmune>0.7</severityPerDayNotImmune>
+        <immunityPerDaySick>0.3</immunityPerDaySick>
+        <severityPerDayImmune>-0.8</severityPerDayImmune>
+        <immunityPerDayNotSick>-0.2</immunityPerDayNotSick>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <label>初期</label>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.9</setMax></li>
+          <li><capacity>BloodFiltration</capacity><offset>-0.2</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>严重</label>
+        <minSeverity>0.5</minSeverity>
+        <vomitMtbDays>1.5</vomitMtbDays>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.7</setMax></li>
+          <li><capacity>BloodFiltration</capacity><offset>-0.4</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <label>休克前期</label>
+        <minSeverity>0.8</minSeverity>
+        <vomitMtbDays>0.5</vomitMtbDays>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.3</setMax></li>
+          <li><capacity>BloodFiltration</capacity><offset>-0.6</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>-0.3</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+  <!-- 抗生素药效 (Antibiotics Effect) -->
+  <HediffDef>
+    <defName>EE_AntibioticsHigh</defName>
+    <label>广谱抗生素</label>
+    <description>血液中含有高浓度的强效广谱抗生素成分。正在主动强力杀灭体内的有害细菌，能显著抑制和治愈发作期感染，同时大幅增强肾脏的血液过滤效率。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.5, 0.8, 0.9)</defaultLabelColor>
+    <isBad>false</isBad>
+    <maxSeverity>1.0</maxSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-1.5</severityPerDay> <!-- 药效持续不到1天 -->
+      </li>
+      <li Class="EmergencyExpanded.HediffCompProperties_Antibiotics">
+        <severityReductionPerDay>1.2</severityReductionPerDay> <!-- 每天硬核减少 1.2 严重度，足以压制败血症的 0.7 -->
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <capMods>
+          <li><capacity>BloodFiltration</capacity><offset>1.0</offset></li> <!-- 额外提供 100% 血液过滤增益 -->
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+</Defs>

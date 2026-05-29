@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <!-- 清创术 (Debridement Surgery) -->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>EE_Recipe_Debridement</defName>
+    <label>清创术</label>
+    <description>在无菌病床上通过外科手术切开患处，彻底清除坏死组织、肌肉碎片和深层脏污。可瞬间将伤口污染度清零，并移除坏死状态。代价是该伤口会受到少许额外切割伤害。</description>
+    <workerClass>EmergencyExpanded.Recipe_Debridement</workerClass>
+    <jobString>正在进行清创术。</jobString>
+    <workAmount>1800</workAmount>
+    <surgerySuccessChanceFactor>0.95</surgerySuccessChanceFactor>
+    <deathOnFailedSurgeryChance>0.02</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>6</Medicine>
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>EE_Saline</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <thingDefs>
+        <li>EE_Saline</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+  </RecipeDef>
+  <!-- 伤口冲洗术 (Wound Irrigation) -->
+  <RecipeDef ParentName="SurgeryFlesh">
+    <defName>EE_Recipe_Irrigation</defName>
+    <label>伤口冲洗术</label>
+    <description>使用无菌冲洗液彻底清理伤口上的异物和环境污染物。此操作可以完全清空伤口的污染度，是预防伤口化脓感染和坏死的最佳前置手段。无需全麻手术，但需要基本的医疗常识。</description>
+    <workerClass>EmergencyExpanded.Recipe_Irrigation</workerClass>
+    <jobString>正在进行伤口冲洗。</jobString>
+    <workAmount>600</workAmount> <!-- 比清创术快很多 -->
+    <surgerySuccessChanceFactor>1.2</surgerySuccessChanceFactor> <!-- 几乎不会失败 -->
+    <deathOnFailedSurgeryChance>0</deathOnFailedSurgeryChance>
+    <skillRequirements>
+      <Medicine>3</Medicine> <!-- 门槛更低 -->
+    </skillRequirements>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>EE_Saline</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>EE_Saline</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+  </RecipeDef>
+
+</Defs>
