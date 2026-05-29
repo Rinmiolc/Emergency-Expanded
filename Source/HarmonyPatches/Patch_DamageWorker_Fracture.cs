@@ -131,9 +131,17 @@ namespace EmergencyExpanded
                                 // 开放性骨折自带高额出血，在此联动大出血机制，极其真实
                                 if (isOpen && EE_DefOf.MassiveBleeding != null)
                                 {
-                                    Hediff rupture = HediffMaker.MakeHediff(EE_DefOf.MassiveBleeding, pawn, targetPart);
-                                    rupture.Severity = 1.0f;
-                                    pawn.health.AddHediff(rupture, targetPart, dinfo, __result);
+                                    // 修复：大出血不应生成在骨头上，而是生成在包裹骨头的血肉（即父节点部位）上
+                                    BodyPartRecord bleedPart = targetPart.parent ?? targetPart;
+
+                                    // 关键修复：添加骨折的物理伤害可能刚好压垮了这根骨头最后的血量，导致部位在上一行代码被彻底摧毁。
+                                    // 因此，在叠加血管破裂前，必须再次确认部位是否存活，否则会引发 "Tried to add health diff to missing part" 报错。
+                                    if (!pawn.health.hediffSet.PartIsMissing(bleedPart))
+                                    {
+                                        Hediff rupture = HediffMaker.MakeHediff(EE_DefOf.MassiveBleeding, pawn, bleedPart);
+                                        rupture.Severity = 1.0f;
+                                        pawn.health.AddHediff(rupture, bleedPart, dinfo, __result);
+                                    }
                                 }
 
                                 // 飘字警示
