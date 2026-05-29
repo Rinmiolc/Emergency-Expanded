@@ -6,7 +6,7 @@ namespace EmergencyExpanded
     public class HediffCompProperties_Coagulopathy : HediffCompProperties
     {
         public float severityIncreasePerDay = 5.0f;
-        public float severityDecreasePerDay = 2.0f;
+        public float severityDecreasePerDay = 4.0f;
         
         public HediffCompProperties_Coagulopathy()
         {

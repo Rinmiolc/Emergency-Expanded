@@ -33,16 +33,32 @@ namespace EmergencyExpanded
                 return;
             }
 
-            // 获取全身循环和呼吸能力，如果血泵或呼吸低于安全阈值 (默认0.55)，组织处于缺氧瘫痪中，无法被自愈/包扎治愈
             float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
             
             if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold)
             {
-                return; // 直接拦截 Heal，冻结伤口恶化/愈合进度
+                return; 
             }
 
             base.Heal(amount);
+        }
+
+        public override void Tick()
+        {
+            base.Tick();
+            if (pawn == null || pawn.Dead) return;
+
+            // 如果血液循环恢复，则快速逆转缺氧状态
+            if (pawn.IsHashIntervalTick(60))
+            {
+                float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+                float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+                if (pumping >= 0.55f && breathing >= 0.55f)
+                {
+                    base.Heal(0.08f); // 每天可恢复约 80 点缺氧程度，快速好转
+                }
+            }
         }
     }
 

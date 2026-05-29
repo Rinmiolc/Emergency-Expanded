@@ -6,7 +6,7 @@ namespace EmergencyExpanded
     public class HediffCompProperties_Acidosis : HediffCompProperties
     {
         public float severityIncreasePerDay = 3.0f;
-        public float severityDecreasePerDay = 1.0f;
+        public float severityDecreasePerDay = 2.0f;
         public float bloodPumpingThreshold = 0.50f;  
         public float breathingThreshold = 0.50f;      
         

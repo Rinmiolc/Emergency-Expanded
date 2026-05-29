@@ -18,7 +18,11 @@ namespace EmergencyExpanded
             float pumping = __instance.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = __instance.capacities.GetLevel(PawnCapacityDefOf.Breathing);
             float bleedRate = __instance.hediffSet.BleedRateTotal;
-            float bloodLossSeverity = __instance.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
+            Hediff bloodLoss = __instance.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
+            float bloodLossSeverity = bloodLoss?.Severity ?? 0f;
+            float lethalSeverity = bloodLoss?.def?.lethalSeverity ?? 1f;
+            if (lethalSeverity <= 0f) lethalSeverity = 1f;
+            float bloodLossRatio = bloodLossSeverity / lethalSeverity; // 相对失血率 (0.0~1.0)
 
             // 1. 脑缺氧判定门槛
             if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold)
@@ -43,7 +47,7 @@ namespace EmergencyExpanded
             }
 
             // 2. 代谢性酸中毒 (Class III 30%失血门槛)
-            if (pumping <= 0.50f || breathing <= 0.50f || bloodLossSeverity > 0.30f)
+            if (pumping <= 0.50f || breathing <= 0.50f || bloodLossRatio > 0.30f)
             {
                 if (EE_DefOf.MetabolicAcidosis != null && !__instance.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis))
                 {
@@ -57,12 +61,27 @@ namespace EmergencyExpanded
             float traumaLoad = 0f;
             foreach (var hediff in __instance.hediffSet.hediffs)
             {
-                if (hediff is Hediff_Injury || hediff.def == EE_DefOf.TissueHypoxia)
+                if (hediff is Hediff_Injury injury)
+                {
+                    // 现实中：包扎好的伤口引发的全身炎症反应要小得多
+                    traumaLoad += injury.Severity * (injury.IsTended() ? 0.2f : 1.0f);
+                }
+                else if (hediff.def == EE_DefOf.TissueHypoxia)
                 {
                     traumaLoad += hediff.Severity;
                 }
+                // 感染引发的强烈炎症
+                else if (EE_DefOf.EE_Sepsis != null && hediff.def == EE_DefOf.EE_Sepsis)
+                {
+                    traumaLoad += hediff.Severity * 40f; 
+                }
+                else if (EE_DefOf.EE_Necrosis != null && hediff.def == EE_DefOf.EE_Necrosis)
+                {
+                    traumaLoad += hediff.Severity * 10f;
+                }
             }
-            if (traumaLoad > 10f || bloodLossSeverity > 0.30f)
+            // 现实中，引发SIRS需要严重的创伤（如多处枪伤/断肢）或重度失血休克
+            if (traumaLoad > 25f || bloodLossRatio > 0.45f)
             {
                 if (EE_DefOf.SIRS != null && !__instance.hediffSet.HasHediff(EE_DefOf.SIRS))
                 {
@@ -75,7 +94,7 @@ namespace EmergencyExpanded
             // 4. 凝血功能障碍 (致死三联征)
             float acidosisSev = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis)?.Severity ?? 0f;
             float hypothermiaSev = __instance.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia)?.Severity ?? 0f;
-            if (acidosisSev > 0.2f || (acidosisSev > 0f && hypothermiaSev > 0f && bloodLossSeverity > 0.2f))
+            if (acidosisSev > 0.2f || (acidosisSev > 0f && hypothermiaSev > 0f && bloodLossRatio > 0.2f))
             {
                 if (EE_DefOf.Coagulopathy != null && !__instance.hediffSet.HasHediff(EE_DefOf.Coagulopathy))
                 {
@@ -97,7 +116,9 @@ namespace EmergencyExpanded
                 }
             }
             // 6. 外周血管收缩与末梢缺血 (极早发生，缓慢累积，保护核心)
-            if (pumping <= 0.70f || bloodLossSeverity > 0.20f)
+            // 修正：只有在重度失血(休克边缘)、心力衰竭、或伴随严重活动性出血时才触发。
+            bool activeSevereBleeding = bleedRate > 0.3f && bloodLossRatio > 0.20f;
+            if (pumping <= 0.40f || bloodLossRatio > 0.45f || activeSevereBleeding)
             {
                 if (Rand.Chance(EE_Constants.PeripheralHypoxiaChance))
                 {

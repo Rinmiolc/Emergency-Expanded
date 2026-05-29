@@ -25,6 +25,11 @@ namespace EmergencyExpanded
         public static HediffDef EE_ClosedFracture;
         public static HediffDef EE_OpenFracture;
         public static HediffDef EE_Malunion;
+        
+        // 感染机制新增 Def
+        public static HediffDef EE_LocalizedInfection;
+        public static HediffDef EE_Necrosis;
+        public static HediffDef EE_Sepsis;
 
         public static ThingDef EE_PrimitiveSplint;
         public static ThingDef EE_PlasterBandage;
