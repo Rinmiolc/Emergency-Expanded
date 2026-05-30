@@ -326,6 +326,9 @@ namespace EmergencyExpanded
         {
             if (EE_DefOf.VentricularFibrillation == null) return;
 
+            // 触发心电图电击波峰
+            VitalTracker.TriggerDefibrillatorShock(patient);
+
             Hediff vf = patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
             if (vf == null) return;
 

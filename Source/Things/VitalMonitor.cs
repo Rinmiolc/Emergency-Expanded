@@ -22,6 +22,7 @@ namespace EmergencyExpanded
         public float phase = 0f;
         public float sweepX = 0f;
         public float displaySpO2 = 98f;
+        public float lastShockTime = -999f;
         
         // 缓存的病理状态，每 120 ticks 更新一次
         public bool hasCerebralHypoxia = false;
@@ -39,6 +40,15 @@ namespace EmergencyExpanded
         {
             if (pawn == null) return null;
             return cachedTable.GetValue(pawn, p => new CachedVitals());
+        }
+
+        public static void TriggerDefibrillatorShock(Pawn pawn)
+        {
+            CachedVitals vitals = GetOrCreateVitals(pawn);
+            if (vitals != null)
+            {
+                vitals.lastShockTime = Time.realtimeSinceStartup;
+            }
         }
 
         // 动态生理计算心率
@@ -150,7 +160,10 @@ namespace EmergencyExpanded
                 else
                 {
                     vitals.displayHeartRate = 0f;
-                    vitals.displaySpO2 = 0f; // 心跳骤停时，指夹式血氧仪测不到波形数据
+                    // 心跳骤停时，指夹式血氧仪测不到波形数据
+                    // 但为了游戏性和拟真，让血氧逐步下降而不是瞬间归零
+                    vitals.displaySpO2 -= 0.5f; 
+                    if (vitals.displaySpO2 < 0f) vitals.displaySpO2 = 0f;
                 }
             }
         }
@@ -267,14 +280,23 @@ namespace EmergencyExpanded
                         float p = (vitals.phase + phaseDelta * fraction) % 1f;
                         
                         float val = 0f;
-                        if (bpm < 0.1f)
+                        float timeAtPixel = t - dt * (1f - fraction);
+
+                        if (vitals.lastShockTime > 0f && timeAtPixel >= vitals.lastShockTime && timeAtPixel < vitals.lastShockTime + 0.6f)
                         {
-                            float timeAtPixel = t - dt * (1f - fraction);
+                            // 电复律波峰模拟
+                            float shockDt = timeAtPixel - vitals.lastShockTime;
+                            if (shockDt < 0.05f) val = (shockDt / 0.05f) * 2.5f;
+                            else if (shockDt < 0.15f) val = 2.5f - ((shockDt - 0.05f) / 0.1f) * 4.5f;
+                            else if (shockDt < 0.35f) val = -2.0f + ((shockDt - 0.15f) / 0.2f) * 2.0f;
+                            else val = Mathf.Sin((shockDt - 0.35f) * 15f) * 0.1f * (0.6f - shockDt);
+                        }
+                        else if (bpm < 0.1f)
+                        {
                             val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
                         }
                         else if (vitals.hasVentricularFibrillation && bpm > 180f)
                         {
-                            float timeAtPixel = t - dt * (1f - fraction);
                             float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f;
                             float baseWave = Mathf.Sin(timeAtPixel * 37f) * 0.32f + 
                                              Mathf.Cos(timeAtPixel * 79f) * 0.18f + 

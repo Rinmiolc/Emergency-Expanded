@@ -10,13 +10,7 @@ namespace EmergencyExpanded
         public override void Tick()
         {
             base.Tick();
-            if (pawn == null || pawn.Dead) return;
-
-            // 如果病情恶化到 100% (1.0f)，代表心肌坏死，直接导致不可逆的临床死亡
-            if (this.Severity >= 1.0f)
-            {
-                pawn.Kill(null, this);
-            }
+            // 心肌梗死 100% 进度不再强制致死，交由后续多脏器缺氧衰竭机制处理
         }
     }
 }
