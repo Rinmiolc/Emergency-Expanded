@@ -214,5 +214,25 @@ namespace EmergencyExpanded
         public const float FractureSharpChance = 0.30f;
         // 锐器砍劈极易引发开放性骨折（60%）。
         public const float FractureSharpOpenChance = 0.60f;
+
+        // ================= 脑缺氧速度参数 (Cerebral Hypoxia Rates) =================
+        // 脑部缺氧每天增加的基础严重度百分比（放慢到原来的0.5倍，原为8.0f，现为4.0f）
+        public const float HypoxiaPerDay = 4.0f;
+        // 脑部缺氧在供氧充足时每天自然消除的基础严重度百分比（保持原版3.0f不变）
+        public const float HypoxiaRecoveryPerDay = 3.0f;
+
+        // ================= 心肺复苏与除颤仪 (CPR & Defibrillator) =================
+        // CPR 时维持患者呼吸和血液循环能力的最低数值。
+        public const float CprMinCapacityLevel = 0.60f;
+        // 除颤仪对心室颤动（VF，严重度 < 60%）阶段的除颤基础成功率。
+        public const float DefibSuccessRateVF = 0.80f;
+        // 除颤仪对完全心跳骤停（Cardiac Arrest，严重度 >= 60%）阶段的除颤基础成功率。
+        public const float DefibSuccessRateCardiacArrestBase = 0.15f;
+        // 接受 CPR 状态（EE_CPR_Receiving）对心跳骤停阶段除颤成功率的额外加成。
+        public const float DefibSuccessRateCprBoost = 0.35f;
+        // 医生的医疗技能（Medicine）对除颤成功率的加成系数（每级增加的概率）。
+        public const float DefibSuccessRateSkillFactor = 0.015f;
+        // 除颤失败时，由于电流通过对躯干造成的灼伤伤害量。
+        public const float DefibFailureBurnDamage = 4f;
     }
 }

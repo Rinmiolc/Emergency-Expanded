@@ -12,7 +12,8 @@ namespace EmergencyExpanded
         FirstAidKit,     // First Aid Kit (EE_HerbalFirstAidKit, EE_FirstAidKit)
         Tourniquet,      // Tourniquet
         IngestibleDirect, // Ingestible items/drugs
-        Splint           // Primitive Splint [NEW]
+        Splint,          // Primitive Splint [NEW]
+        Defibrillator    // 除颤仪 [NEW]
     }
 
     public static class EE_FirstAidUtility
@@ -26,6 +27,7 @@ namespace EmergencyExpanded
             if (def.defName == "EE_Tourniquet") return EmergencyItemType.Tourniquet;
             if (def.defName == "EE_PrimitiveSplint") return EmergencyItemType.Splint;
             if (def.defName == "EE_HerbalFirstAidKit" || def.defName == "EE_FirstAidKit") return EmergencyItemType.FirstAidKit;
+            if (def.defName == "EE_Defibrillator") return EmergencyItemType.Defibrillator;
 
             // 2. Vanilla & modded medicines
             if (def.IsMedicine) return EmergencyItemType.Medicine;
@@ -75,6 +77,10 @@ namespace EmergencyExpanded
                         if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax) return true;
                     }
                     return false;
+
+                case EmergencyItemType.Defibrillator:
+                    // 除颤仪：目标必须具有心室颤动/心肌梗死状态，且未死亡
+                    return EE_DefOf.VentricularFibrillation != null && patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation);
 
                 case EmergencyItemType.IngestibleDirect:
                     // Hemogen pack: reduce blood loss
@@ -138,6 +144,10 @@ namespace EmergencyExpanded
                     break;
                 case EmergencyItemType.Splint:
                     ApplyPrimitiveSplint(doctor, patient);
+                    break;
+                case EmergencyItemType.Defibrillator:
+                    ApplyDefibrillatorEffect(doctor, patient);
+                    consumeItem = true;
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
@@ -309,6 +319,76 @@ namespace EmergencyExpanded
             {
                 primaryWound.Tended(tendQuality, 1.0f);
                 return true;
+            }
+        }
+
+        private static void ApplyDefibrillatorEffect(Pawn doctor, Pawn patient)
+        {
+            if (EE_DefOf.VentricularFibrillation == null) return;
+
+            Hediff vf = patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
+            if (vf == null) return;
+
+            // 确定当前病情状态成功率
+            float baseChance = vf.Severity < 0.60f 
+                ? EE_Constants.DefibSuccessRateVF 
+                : EE_Constants.DefibSuccessRateCardiacArrestBase;
+
+            // CPR 灌注加成
+            bool hasCpr = EE_DefOf.EE_CPR_Receiving != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_CPR_Receiving);
+            if (hasCpr && vf.Severity >= 0.60f)
+            {
+                baseChance += EE_Constants.DefibSuccessRateCprBoost;
+            }
+
+            // 医生医疗技能加成 (每级 +1.5%)
+            float docSkill = doctor.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
+            baseChance += docSkill * EE_Constants.DefibSuccessRateSkillFactor;
+
+            // 限制成功率在 5% 至 95% 之间，保持拟真和游戏悬念
+            baseChance = UnityEngine.Mathf.Clamp(baseChance, 0.05f, 0.95f);
+
+            // 摇点判定
+            if (Rand.Value <= baseChance)
+            {
+                // 除颤成功
+                patient.health.RemoveHediff(vf);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤成功！恢复窦性心律", EE_Constants.FirstAidMoteDurationCritical);
+                
+                // 如果伴有脑缺氧，飘字提醒
+                if (patient.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia))
+                {
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "自主循环已恢复", EE_Constants.FirstAidMoteDurationLong);
+                }
+            }
+            else
+            {
+                // 除颤失败
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤未成功！", EE_Constants.FirstAidMoteDurationCritical);
+
+                // 物理副作用：对 Torso（或防守后退部位）造成电击微量灼伤
+                BodyPartRecord burnPart = null;
+                foreach (BodyPartRecord part in patient.health.hediffSet.GetNotMissingParts())
+                {
+                    if (part.def == BodyPartDefOf.Torso)
+                    {
+                        burnPart = part;
+                        break;
+                    }
+                }
+
+                // 防御性回退：如果没有躯干，则使用大脑或任意部位
+                if (burnPart == null)
+                {
+                    burnPart = patient.health.hediffSet.GetBrain() ?? patient.RaceProps.body.AllParts.FirstOrDefault();
+                }
+
+                if (burnPart != null)
+                {
+                    DamageInfo dinfo = new DamageInfo(DamageDefOf.Burn, EE_Constants.DefibFailureBurnDamage, 0f, -1f, doctor, burnPart);
+                    patient.TakeDamage(dinfo);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤副作用：轻度皮肤灼伤", EE_Constants.FirstAidMoteDurationLong);
+                }
             }
         }
     }

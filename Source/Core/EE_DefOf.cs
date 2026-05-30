@@ -42,8 +42,12 @@ namespace EmergencyExpanded
         public static RecipeDef EE_Recipe_NeedleDecompression;
         
         public static JobDef EE_ApplyFirstAid;
+        public static JobDef EE_PerformCPR;
         
         public static DesignationDef EE_FastFirstAid;
+        
+        public static HediffDef EE_CPR_Receiving;
+        public static ThingDef EE_Defibrillator;
         
         public static BodyPartDef Brain;
 

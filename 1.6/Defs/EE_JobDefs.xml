@@ -6,4 +6,11 @@
     <reportString>正在对 {0} 进行紧急处理。</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
+
+  <JobDef>
+    <defName>EE_PerformCPR</defName>
+    <driverClass>EmergencyExpanded.JobDriver_PerformCPR</driverClass>
+    <reportString>正在对 {0} 进行心肺复苏。</reportString>
+    <casualInterruptible>false</casualInterruptible>
+  </JobDef>
 </Defs>

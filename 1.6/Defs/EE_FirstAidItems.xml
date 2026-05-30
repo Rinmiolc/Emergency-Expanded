@@ -116,6 +116,29 @@
     </thingCategories>
   </ThingDef>
 
+  <!-- 除颤仪 (Defibrillator) -->
+  <ThingDef ParentName="ResourceBase">
+    <defName>EE_Defibrillator</defName>
+    <label>便携式除颤仪</label>
+    <description>一台精密的便携式战地除颤仪，专门用于抢救发生心肌梗死与心室颤动（VF）的小人。除颤仪对前期的“心室颤动”（病情严重度低于60%）有极高成功率，而对晚期完全“心跳骤停”的小人，直接电击除颤成功率极低，除非有另一人正在对其实施心肺复苏（CPR）以建立微灌注，方能大幅提升成功率。使用时消耗除颤仪本身。除颤失败时，高能电流会对患者的躯体造成微量电击灼伤。</description>
+    <graphicData>
+      <texPath>Thing/Defibrillator</texPath>
+      <graphicClass>Graphic_StackCount</graphicClass>
+    </graphicData>
+    <soundInteract>Standard_Drop</soundInteract>
+    <soundDrop>Standard_Drop</soundDrop>
+    <stackLimit>10</stackLimit>
+    <statBases>
+      <MaxHitPoints>100</MaxHitPoints>
+      <MarketValue>350</MarketValue>
+      <Mass>1.5</Mass>
+      <Flammability>0.4</Flammability>
+    </statBases>
+    <thingCategories>
+      <li>Medicine</li>
+    </thingCategories>
+  </ThingDef>
+
   <!-- ================= 制作配方 ================= -->
 
   <RecipeDef>
@@ -210,6 +233,57 @@
       <li>DrugLab</li>
       <li>CraftingSpot</li>
     </recipeUsers>
+  </RecipeDef>
+
+  <RecipeDef>
+    <defName>Make_EE_Defibrillator</defName>
+    <label>制作便携式除颤仪</label>
+    <description>利用钢铁、工业元器件和高级元器件，精细装配一台便携式战地除颤仪。</description>
+    <jobString>制作便携式除颤仪中。</jobString>
+    <workAmount>2000</workAmount>
+    <ingredients>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>Steel</li>
+          </thingDefs>
+        </filter>
+        <count>30</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentIndustrial</li>
+          </thingDefs>
+        </filter>
+        <count>3</count>
+      </li>
+      <li>
+        <filter>
+          <thingDefs>
+            <li>ComponentSpacer</li>
+          </thingDefs>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <thingDefs>
+        <li>Steel</li>
+        <li>ComponentIndustrial</li>
+        <li>ComponentSpacer</li>
+      </thingDefs>
+    </fixedIngredientFilter>
+    <products>
+      <EE_Defibrillator>1</EE_Defibrillator>
+    </products>
+    <recipeUsers>
+      <li>TableMachining</li>
+      <li>FabricationBench</li>
+    </recipeUsers>
+    <skillRequirements>
+      <Crafting>6</Crafting>
+    </skillRequirements>
   </RecipeDef>
 
 </Defs>

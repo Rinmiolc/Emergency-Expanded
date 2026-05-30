@@ -103,7 +103,7 @@
     <description>由于冠状动脉急性阻塞导致心肌大面积缺血缺氧坏死。会引发毁灭性的泵血与循环功能衰竭，如不及时除颤与抢救，将导致全身多脏器缺氧衰竭而死亡。</description>
     <hediffClass>EmergencyExpanded.Hediff_VentricularFibrillation</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
-    <initialSeverity>0.2</initialSeverity>
+    <initialSeverity>0.01</initialSeverity>
     <tendable>true</tendable> 
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
@@ -149,29 +149,29 @@
     </comps>
     <stages>
       <li>
-        <label>轻度 - 意识模糊</label>
+        <label>轻度 - 意识丧失并倒地</label>
         <capMods>
-          <li><capacity>Consciousness</capacity><offset>-0.15</offset></li>
+          <li><capacity>Consciousness</capacity><setMax>0.10</setMax></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.25</minSeverity>
-        <label>中度 - 神经紊乱</label>
+        <label>中度 - 神经紊乱昏迷</label>
         <capMods>
-          <li><capacity>Consciousness</capacity><setMax>0.5</setMax></li>
+          <li><capacity>Consciousness</capacity><setMax>0.08</setMax></li>
           <li><capacity>Talking</capacity><setMax>0.5</setMax></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度 - 昏迷边缘</label>
+        <label>重度 - 深度昏迷</label>
         <capMods>
-          <li><capacity>Consciousness</capacity><setMax>0.2</setMax></li>
+          <li><capacity>Consciousness</capacity><setMax>0.05</setMax></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
-        <label>极重度 - 深昏迷</label>
+        <label>极重度 - 濒临脑死亡</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.01</setMax></li> 
@@ -526,5 +526,21 @@
         </capMods>
       </li>
     </stages>
+  </HediffDef>
+
+  <HediffDef>
+    <defName>EE_CPR_Receiving</defName>
+    <label>心肺复苏中</label>
+    <description>该伤员正在接受持续的人工心肺复苏（CPR）。胸外按压与人工呼吸为其脑部和核心器官提供了最基础的微循环灌注，冻结了脑缺氧与脑损伤的恶化，并能大幅度提高除颤成功率。医生一旦停手该状态将迅速消退。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.2, 0.8, 0.8)</defaultLabelColor>
+    <maxSeverity>1.0</maxSeverity>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>120</disappearsAfterTicks> <!-- 2秒无按压自动消退 -->
+        <showRemainingTime>false</showRemainingTime>
+      </li>
+    </comps>
   </HediffDef>
 </Defs>

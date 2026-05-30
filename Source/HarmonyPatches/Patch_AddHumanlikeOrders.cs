@@ -44,6 +44,22 @@ namespace EmergencyExpanded
             if (targetPawn == null || targetPawn == pawn) return; // 无法对自己通过右键实施野外急救
             if (!targetPawn.RaceProps.IsFlesh || targetPawn.RaceProps.BloodDef == null) return; // 必须是血肉生物且具有血液
 
+            // 2.5. CPR 心肺复苏判定 (不消耗任何道具，手空着也能做)
+            if (EE_DefOf.VentricularFibrillation != null && targetPawn.Downed && targetPawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation))
+            {
+                string cprLabel = $"为 {targetPawn.LabelShort} 进行心肺复苏 (CPR)";
+                Action cprAction = () =>
+                {
+                    if (EE_DefOf.EE_PerformCPR != null)
+                    {
+                        Job job = JobMaker.MakeJob(EE_DefOf.EE_PerformCPR, targetPawn);
+                        pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                    }
+                };
+                FloatMenuOption cprOption = new FloatMenuOption(cprLabel, cprAction, MenuOptionPriority.High, null, targetPawn);
+                __result.Add(FloatMenuUtility.DecoratePrioritizedTask(cprOption, pawn, targetPawn));
+            }
+
             // 3. 扫描治疗者背包里的急救道具和食物/药物
             List<Thing> availableItems = EE_FirstAidUtility.GetUsableItemsInInventory(pawn);
             if (availableItems.Count == 0) return;
@@ -71,6 +87,10 @@ namespace EmergencyExpanded
                     ((type == EmergencyItemType.FirstAidKit || type == EmergencyItemType.Medicine) && isBleeding))
                 {
                     optionLabel = $"为 {targetPawn.LabelShort} 紧急止血 (剩余: {totalCount})";
+                }
+                else if (type == EmergencyItemType.Defibrillator)
+                {
+                    optionLabel = $"使用除颤仪为 {targetPawn.LabelShort} 除颤 (剩余: {totalCount})";
                 }
                 else
                 {
@@ -112,7 +132,7 @@ namespace EmergencyExpanded
             if (OnlyHasFracturesNeedTending(patient))
             {
                 __result = false;
-                return false; // 拦截原版逻辑
+                return false; // 拦截原版 logic
             }
             return true;
         }
@@ -138,5 +158,4 @@ namespace EmergencyExpanded
             return hasFracture;
         }
     }
-
 }

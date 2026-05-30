@@ -64,8 +64,8 @@ namespace EmergencyExpanded
 
     public class HediffCompProperties_CerebralHypoxia : HediffCompProperties
     {
-        public float hypoxiaPerDay = 8.0f; 
-        public float recoveryPerDay = 3.0f; 
+        public float hypoxiaPerDay = EE_Constants.HypoxiaPerDay; 
+        public float recoveryPerDay = EE_Constants.HypoxiaRecoveryPerDay; 
         public float safePumpingThreshold = 0.55f;
         public float safeBreathingThreshold = 0.55f;
 

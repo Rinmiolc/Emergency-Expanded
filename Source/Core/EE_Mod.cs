@@ -37,11 +37,11 @@ namespace EmergencyExpanded
             listing.Label("全局难度预设 (Difficulty Preset)");
             Text.Font = GameFont.Small;
             
-            if (listing.RadioButton("简单 (Easy) - 更少的大出血与骨折，更充裕的抢救时间", Settings.difficulty == DifficultyPreset.Easy))
+            if (listing.RadioButton("简单 - 更少的大出血与骨折，更充裕的抢救时间", Settings.difficulty == DifficultyPreset.Easy))
                 Settings.difficulty = DifficultyPreset.Easy;
-            if (listing.RadioButton("硬核 (Hardcore) [默认] - 平衡且具有挑战性的体验", Settings.difficulty == DifficultyPreset.Hardcore))
+            if (listing.RadioButton("硬核 - 平衡且具有挑战性的体验", Settings.difficulty == DifficultyPreset.Hardcore))
                 Settings.difficulty = DifficultyPreset.Hardcore;
-            if (listing.RadioButton("拟真 (Realistic) - 极高的大出血与骨折率，濒死极快，适合受虐狂", Settings.difficulty == DifficultyPreset.Realistic))
+            if (listing.RadioButton("拟真 - 极高的大出血与骨折率。更符合现实，但你确定要这么做？", Settings.difficulty == DifficultyPreset.Realistic))
                 Settings.difficulty = DifficultyPreset.Realistic;
             
             listing.Gap(20f);
