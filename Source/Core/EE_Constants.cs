@@ -60,7 +60,7 @@ namespace EmergencyExpanded
 
         // ================= 凝血病 (Coagulopathy) =================
         public const float CoagulopathyAcidosisThreshold = 0.2f;
-        public const float CoagulopathyBloodLossThreshold = 0.2f;
+        public const float CoagulopathyBloodLossThreshold = 0.30f;
 
         // ================= 物理流血 (Blood Loss) =================
         // 全局流血速度乘数，用来调整普通伤和大出血的流血速度
@@ -236,7 +236,16 @@ namespace EmergencyExpanded
         public const float DefibSuccessRateCprBoost = 0.35f;
         // 医生的医疗技能（Medicine）对除颤成功率的加成系数（每级增加的概率）。
         public const float DefibSuccessRateSkillFactor = 0.015f;
-        // 除颤失败时，由于电流通过对躯干造成的灼伤伤害量。
         public const float DefibFailureBurnDamage = 4f;
+
+        // ================= ECG 与 体征仪 UI 参数 (ECG & Vital Monitor UI) =================
+        // 心动过速报警阈值（心率大于此值时，ECG变为黄色报警）
+        public const float EcgTachycardiaThreshold = 140f;
+        // 心动过缓报警阈值
+        public const float EcgBradycardiaThreshold = 45f;
+        // 心跳极微弱/停搏判定阈值
+        public const float EcgFlatlineThreshold = 0.1f;
+        // 血氧饱和度低下报警阈值
+        public const float EcgHypoxiaSpO2Threshold = 90f;
     }
 }

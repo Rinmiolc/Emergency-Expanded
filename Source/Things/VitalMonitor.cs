@@ -129,7 +129,7 @@ namespace EmergencyExpanded
                 vitals.hasMetabolicAcidosis = pawn.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis);
                 vitals.hasVentricularFibrillation = pawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation);
                 
-                if (vitals.heartRate > 0.1f)
+                if (vitals.heartRate > EE_Constants.EcgFlatlineThreshold)
                 {
                     // 添加 ±2 bpm 的正常呼吸性心律不齐波动
                     vitals.displayHeartRate = vitals.heartRate + Rand.Range(-2f, 2f);
@@ -181,7 +181,7 @@ namespace EmergencyExpanded
             this.pawn = pawn;
         }
 
-        public override float GetWidth(float maxWidth) => 160f; // 黄金比例加长型检测仪
+        public override float GetWidth(float maxWidth) => 175f; // 黄金比例加长型检测仪，优化排版空间
 
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
@@ -199,17 +199,23 @@ namespace EmergencyExpanded
             Color coreColor;
             Color glowColor;
 
-            if (bpm < 0.1f)
+            if (bpm < EE_Constants.EcgFlatlineThreshold)
             {
                 gridColor = new Color(0.4f, 0.0f, 0.0f, 0.15f);
                 coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);
                 glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);
             }
-            else if (bpm > 140f || bpm < 45f || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
+            else if (bpm > EE_Constants.EcgTachycardiaThreshold)
             {
                 gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);
                 coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);
                 glowColor = new Color(1.0f, 0.5f, 0.0f, 0.4f);
+            }
+            else if (bpm < EE_Constants.EcgBradycardiaThreshold || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
+            {
+                gridColor = new Color(0.3f, 0.1f, 0.4f, 0.15f);
+                coreColor = new Color(0.8f, 0.3f, 1.0f, 1.0f);
+                glowColor = new Color(0.6f, 0.0f, 0.8f, 0.4f);
             }
             else
             {
@@ -244,7 +250,7 @@ namespace EmergencyExpanded
             }
             GUI.color = Color.white;
 
-            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 20f, 105f, 46f);
+            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 20f, innerScreen.width - 48f - 6f, 46f);
             float centerY = waveRect.y + waveRect.height / 2f;
             float waveWidth = waveRect.width;
 
@@ -257,7 +263,7 @@ namespace EmergencyExpanded
                 vitals.lastTime = t;
                 if (dt > 0.1f) dt = 0.1f;
 
-                float beatDuration = (bpm > 0.1f) ? (60f / bpm) : 1f;
+                float beatDuration = (bpm > EE_Constants.EcgFlatlineThreshold) ? (60f / bpm) : 1f;
                 float sweepSpeed = waveWidth / 2.4f;
                 
                 int oldX = Mathf.FloorToInt(vitals.sweepX);
@@ -265,7 +271,7 @@ namespace EmergencyExpanded
                 if (vitals.sweepX >= waveWidth) vitals.sweepX -= waveWidth;
                 int newX = Mathf.FloorToInt(vitals.sweepX);
 
-                float phaseDelta = (bpm > 0.1f) ? (dt / beatDuration) : 0f;
+                float phaseDelta = (bpm > EE_Constants.EcgFlatlineThreshold) ? (dt / beatDuration) : 0f;
                 float newPhase = vitals.phase + phaseDelta;
 
                 int stepPixels = newX - oldX;
@@ -294,7 +300,7 @@ namespace EmergencyExpanded
                             // 限制最大振幅，防止溢出 GUI 界面
                             val = Mathf.Clamp(val, -1.15f, 1.15f);
                         }
-                        else if (bpm < 0.1f)
+                        else if (bpm < EE_Constants.EcgFlatlineThreshold)
                         {
                             val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
                         }
@@ -309,7 +315,7 @@ namespace EmergencyExpanded
                         }
                         else
                         {
-                            bool isHypoxic = vitals.hasCerebralHypoxia || bpm > 140f;
+                            bool isHypoxic = vitals.hasCerebralHypoxia || bpm > EE_Constants.EcgTachycardiaThreshold;
                             val = GetBaseECGValue(p, isHypoxic);
                             
                             // 反走样峰值捕捉：如果在这两帧相位之间跨越了波峰或波谷，强制该像素显示极限值
@@ -328,7 +334,8 @@ namespace EmergencyExpanded
             }
 
             // 绘制波形线段 (亚像素平滑绘制，弃用 FloorToInt)
-            for (int i = 0; i < 104; i++)
+            int drawPoints = Mathf.FloorToInt(waveWidth);
+            for (int i = 0; i < drawPoints; i++)
             {
                 float distToSweep = i - vitals.sweepX;
                 if (distToSweep < 0f) distToSweep += waveWidth;
@@ -375,7 +382,7 @@ namespace EmergencyExpanded
             GUI.color = new Color(0.5f, 0.6f, 0.5f, 0.7f);
             Widgets.Label(new Rect(innerScreen.x + 4f, innerScreen.y + 2f, 30f, 15f), "ECG");
             
-            bool isBlinking = bpm > 0.1f && (vitals.phase < 0.15f);
+            bool isBlinking = bpm > EE_Constants.EcgFlatlineThreshold && (vitals.phase < 0.15f);
             GUI.color = isBlinking ? coreColor : coreColor * new Color(1f, 1f, 1f, 0.2f);
             Widgets.Label(new Rect(innerScreen.x + 28f, innerScreen.y + 2f, 15f, 15f), "♥");
 
@@ -392,7 +399,7 @@ namespace EmergencyExpanded
 
             // SpO2 (血氧区域)
             Color spo2Color = new Color(0.2f, 0.8f, 1.0f);
-            if (spo2 < 90) spo2Color = new Color(1.0f, 0.3f, 0.3f);
+            if (spo2 < EE_Constants.EcgHypoxiaSpO2Threshold) spo2Color = new Color(1.0f, 0.3f, 0.3f);
             
             Text.Font = GameFont.Tiny;
             GUI.color = spo2Color * new Color(1f, 1f, 1f, 0.75f);

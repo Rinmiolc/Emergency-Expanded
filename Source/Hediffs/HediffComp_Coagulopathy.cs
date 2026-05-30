@@ -5,8 +5,8 @@ namespace EmergencyExpanded
 {
     public class HediffCompProperties_Coagulopathy : HediffCompProperties
     {
-        public float severityIncreasePerDay = 5.0f;
-        public float severityDecreasePerDay = 4.0f;
+        public float severityIncreasePerDay = 2.5f;
+        public float severityDecreasePerDay = 2.0f;
         
         public HediffCompProperties_Coagulopathy()
         {
@@ -27,7 +27,7 @@ namespace EmergencyExpanded
             float hypothermiaSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia)?.Severity ?? 0f;
             float bloodLossSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
 
-            if (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold || (acidosisSev > 0f && hypothermiaSev > 0f && bloodLossSev > EE_Settings.CoagulopathyBloodLossThreshold))
+            if (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold && bloodLossSev > EE_Settings.CoagulopathyBloodLossThreshold)
             {
                 float factor = acidosisSev * 2f + hypothermiaSev * 2f + bloodLossSev;
                 severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);

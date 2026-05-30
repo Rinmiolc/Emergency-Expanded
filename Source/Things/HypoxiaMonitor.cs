@@ -94,7 +94,7 @@ namespace EmergencyExpanded
             // 4. 凝血功能障碍 (致死三联征)
             float acidosisSev = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis)?.Severity ?? 0f;
             float hypothermiaSev = __instance.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia)?.Severity ?? 0f;
-            if (acidosisSev > 0.2f || (acidosisSev > 0f && hypothermiaSev > 0f && bloodLossRatio > 0.2f))
+            if (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold && bloodLossRatio > EE_Settings.CoagulopathyBloodLossThreshold)
             {
                 if (EE_DefOf.Coagulopathy != null && !__instance.hediffSet.HasHediff(EE_DefOf.Coagulopathy))
                 {
