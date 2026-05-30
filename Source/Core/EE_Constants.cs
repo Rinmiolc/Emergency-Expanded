@@ -96,5 +96,123 @@ namespace EmergencyExpanded
         public const float ModsCoreDamageAmount = 2.0f;
         // MODS 单次对大脑造成的脑损伤伤害。
         public const float ModsBrainDamageAmount = 0.05f;
+
+        // ================= 急救物品与医疗机制 (First Aid Items & Medical) =================
+        // 草药急救包的包扎质量倍率。
+        public const float FirstAidKitHerbalQuality = 0.35f;
+        // 标准急救包的包扎质量倍率。
+        public const float FirstAidKitStandardQuality = 0.65f;
+        // 草药的医疗效果倍率。
+        public const float MedicineHerbalMultiplier = 0.45f;
+        // 工业医药的医疗效果倍率。
+        public const float MedicineIndustrialMultiplier = 0.85f;
+        // 闪耀世界医药的医疗效果倍率。
+        public const float MedicineUltratechMultiplier = 1.7f;
+        // 医生医疗技能对最终包扎质量的权重影响。
+        public const float MedicineSkillWeight = 0.05f;
+        // 基础包扎质量。
+        public const float MedicineBaseQuality = 0.20f;
+        
+        // 简易夹板对骨折的固定对齐率（决定了后续愈合是否留下后遗症）。
+        public const float PrimitiveSplintAlignmentQuality = 0.20f;
+        // 使用简易夹板固定时的标准包扎质量。
+        public const float PrimitiveSplintTendQuality = 0.40f;
+        
+        // 单次大出血缝合的基础严重度削减量。
+        public const float MassiveBleedingTendReductionBase = 0.1f;
+        // 医生包扎质量对大出血缝合削减量的加成系数。
+        public const float MassiveBleedingTendReductionFactor = 0.15f;
+        // 单次大出血缝合削减量的最大上限。
+        public const float MassiveBleedingTendReductionMax = 0.25f;
+
+        // 血包（HemogenPack）直接使用时削减失血严重程度的比例（占致死量的百分比）。
+        public const float HemogenPackSeverityReductionFactor = 0.12f;
+        
+        // 标准急救动作提示飘字的持续时间（秒）。
+        public const float FirstAidMoteDurationStandard = 3.0f;
+        // 较长急救动作提示飘字的持续时间（秒）。
+        public const float FirstAidMoteDurationLong = 3.5f;
+        // 极危急救动作（如止大出血/输血）提示飘字的持续时间（秒）。
+        public const float FirstAidMoteDurationCritical = 4.0f;
+
+        // ================= 伤口污染机制 (Wound Contamination) =================
+        // 所有开放性伤口的默认基础污染度。
+        public const float ContaminationBase = 0.05f;
+        // 枪伤、破片等投射物造成的额外初始污染度。
+        public const float ContaminationRangedAdded = 0.15f;
+        // 动物撕咬造成的极高额外初始污染度。
+        public const float ContaminationBiteAdded = 0.25f;
+        // 刀剑等锐器砍伤造成的额外初始污染度。
+        public const float ContaminationSharpAdded = 0.10f;
+        // 钝器击打造成的额外初始污染度。
+        public const float ContaminationBluntAdded = 0.05f;
+        
+        // 小人倒在泥地、沼泽、浅水等肮脏地形上时，每秒（60 ticks）增加的污染度。
+        public const float ContaminationMudFactor = 0.0005f;
+        // 地板清洁度为负数时，每单位肮脏度造成的每秒污染度增加。
+        public const float ContaminationCleanlinessFactor = 0.0002f;
+        // 伤口接触到血迹、呕吐物等污垢时，每秒增加的污染度。
+        public const float ContaminationFilthFactor = 0.0003f;
+        // 伤口在未包扎暴露状态下，每秒自然增加的微量污染度。
+        public const float ContaminationUntendedFactor = 0.0001f;
+        
+        // 清创包扎动作降低污染度的基础值。
+        public const float ContaminationTendReductionBase = 0.05f;
+        // 包扎质量对降低污染度的加成系数。
+        public const float ContaminationTendReductionFactor = 0.15f;
+
+        // 伤口污染度达到此阈值时，必定引发局部伤口感染或组织坏死。
+        public const float ContaminationLocalInfectionThreshold = 0.35f;
+        // 伤口污染度达到此极限阈值时，病菌入血，触发全身败血症。
+        public const float ContaminationSepsisThreshold = 0.85f;
+
+        // ================= 急救动作与时间 (First Aid Action Ticks) =================
+        // 施加战术止血带所需的 Tick 时长（180 ticks = 3秒）。
+        public const int FirstAidTicksTourniquet = 180;
+        // 使用急救包快速包扎所需的 Tick 时长（90 ticks = 1.5秒）。
+        public const int FirstAidTicksKit = 90;
+        // 喂食药品/血包所需的 Tick 时长。
+        public const int FirstAidTicksIngestible = 100;
+        // 常规医疗包扎动作的基础 Tick 时长（240 ticks = 4秒）。
+        public const int FirstAidTicksMedicineBase = 240;
+        // 伤员未躺在床上（即地面野战急救）时，常规包扎动作的时间惩罚倍率。
+        public const float FirstAidGroundPenaltyMultiplier = 2.5f;
+
+        // ================= 骨折详细判定 (Fracture Mechanics) =================
+        // 触发钝器骨折判定的最小伤害阈值。
+        public const float FractureBluntDamageThreshold = 10f;
+        // 钝器伤害转化为骨折几率时，占部位最大生命值的折算比例基准。
+        public const float FractureBluntMaxHPRatio = 0.6f;
+        // 钝器骨折几率的基础乘数。
+        public const float FractureBluntBaseFactor = 0.8f;
+        // 只要达到钝器骨折伤害阈值，保底的骨折触发概率（50%）。
+        public const float FractureBluntMinChance = 0.50f;
+        // 触发钝器“重击必断”判定的极高伤害阈值。
+        public const float FractureBluntHeavyThreshold = 20f;
+        // 达到重击阈值时，保底的极高骨折触发概率（85%）。
+        public const float FractureBluntHeavyMinChance = 0.85f;
+        // 钝器伤害引发开放性（刺破皮肤）骨折的概率（通常很低，仅5%）。
+        public const float FractureBluntOpenChance = 0.05f;
+
+        // 触发枪伤/远程射击骨折判定的最小伤害阈值。
+        public const float FractureRangedDamageThreshold = 8f;
+        // 远程射击命中骨骼部位时的骨折触发概率（10%）。
+        public const float FractureRangedChance = 0.10f;
+        // 远程枪伤引发开放性骨折的概率。
+        public const float FractureRangedOpenChance = 0.20f;
+
+        // 触发爆炸/破片骨折判定的最小伤害阈值。
+        public const float FractureExplosionDamageThreshold = 10f;
+        // 爆炸波及骨骼部位时的骨折触发概率（30%）。
+        public const float FractureExplosionChance = 0.30f;
+        // 爆炸伤害引发开放性骨折的概率。
+        public const float FractureExplosionOpenChance = 0.50f;
+
+        // 触发锐器砍劈骨折判定的最小伤害阈值。
+        public const float FractureSharpDamageThreshold = 15f;
+        // 锐器重砍命中骨骼部位时的骨折触发概率（30%）。
+        public const float FractureSharpChance = 0.30f;
+        // 锐器砍劈极易引发开放性骨折（60%）。
+        public const float FractureSharpOpenChance = 0.60f;
     }
 }

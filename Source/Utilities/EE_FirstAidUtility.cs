@@ -140,14 +140,14 @@ namespace EmergencyExpanded
                     ApplyPrimitiveSplint(doctor, patient);
                     break;
                 case EmergencyItemType.FirstAidKit:
-                    float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? 0.35f : 0.65f;
+                    float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
                     consumeItem = ApplyFieldTend(doctor, patient, kitQuality, allowConsecutive: true);
                     break;
                 case EmergencyItemType.Medicine:
-                    float medMultiplier = item.def == ThingDefOf.MedicineHerbal ? 0.45f :
-                                         item.def == ThingDefOf.MedicineIndustrial ? 0.85f : 1.7f;
+                    float medMultiplier = item.def == ThingDefOf.MedicineHerbal ? EE_Constants.MedicineHerbalMultiplier :
+                                         item.def == ThingDefOf.MedicineIndustrial ? EE_Constants.MedicineIndustrialMultiplier : EE_Constants.MedicineUltratechMultiplier;
                     float docSkill = doctor.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
-                    float finalMedQuality = UnityEngine.Mathf.Clamp01((docSkill * 0.05f + 0.2f) * medMultiplier);
+                    float finalMedQuality = UnityEngine.Mathf.Clamp01((docSkill * EE_Constants.MedicineSkillWeight + EE_Constants.MedicineBaseQuality) * medMultiplier);
                     
                     bool allowConsecutive = item.def == ThingDefOf.MedicineHerbal || 
                                             item.def == ThingDefOf.MedicineIndustrial || 
@@ -161,13 +161,13 @@ namespace EmergencyExpanded
                         if (bloodLoss != null)
                         {
                             float lethal = HediffDefOf.BloodLoss.lethalSeverity;
-                            float reduction = lethal * 0.12f;
+                            float reduction = lethal * EE_Constants.HemogenPackSeverityReductionFactor;
                             bloodLoss.Severity -= reduction;
                             if (bloodLoss.Severity <= 0.001f)
                             {
                                 patient.health.RemoveHediff(bloodLoss);
                             }
-                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "输血：失血已减轻", 4.0f);
+                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "输血：失血已减轻", EE_Constants.FirstAidMoteDurationCritical);
                         }
                         consumeItem = true;
                     }
@@ -194,7 +194,7 @@ namespace EmergencyExpanded
                         if (!item.Destroyed) item.Destroy();
                     }
                 }
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{item.def.LabelCap}已使用", 3.0f);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{item.def.LabelCap}已使用", EE_Constants.FirstAidMoteDurationStandard);
                 if (doctor.skills != null)
                 {
                     doctor.skills.Learn(SkillDefOf.Medicine, 180f);
@@ -234,7 +234,7 @@ namespace EmergencyExpanded
                     }
                 }
                 patient.Drawer?.renderer?.SetAllGraphicsDirty();
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{targetLimb.Label}已施加止血带", 3.5f);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{targetLimb.Label}已施加止血带", EE_Constants.FirstAidMoteDurationLong);
             }
         }
 
@@ -248,10 +248,10 @@ namespace EmergencyExpanded
                     if (!isImmobilized)
                     {
                         fracture.isSplinted = true;
-                        fracture.alignmentQuality = 0.20f; // Primitive splint gives 20% alignment quality
-                        fracture.Tended(0.40f, 1.0f); // Standard tend to trigger the bandage and mote!
+                        fracture.alignmentQuality = EE_Constants.PrimitiveSplintAlignmentQuality; // Primitive splint gives 20% alignment quality
+                        fracture.Tended(EE_Constants.PrimitiveSplintTendQuality, 1.0f); // Standard tend to trigger the bandage and mote!
                         patient.Drawer?.renderer?.SetAllGraphicsDirty();
-                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{fracture.Part.Label}已固定夹板", 3.5f);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{fracture.Part.Label}已固定夹板", EE_Constants.FirstAidMoteDurationLong);
                         break;
                     }
                 }
@@ -287,7 +287,7 @@ namespace EmergencyExpanded
             Hediff primaryWound = hediffsToTend[0];
             if (primaryWound.def == EE_DefOf.MassiveBleeding)
             {
-                float reduction = UnityEngine.Mathf.Clamp(0.1f + tendQuality * 0.15f, 0.1f, 0.25f);
+                float reduction = UnityEngine.Mathf.Clamp(EE_Constants.MassiveBleedingTendReductionBase + tendQuality * EE_Constants.MassiveBleedingTendReductionFactor, EE_Constants.MassiveBleedingTendReductionBase, EE_Constants.MassiveBleedingTendReductionMax);
                 primaryWound.Severity -= reduction;
                 
                 primaryWound.Tended(tendQuality, 1.0f);
@@ -295,13 +295,13 @@ namespace EmergencyExpanded
                 if (primaryWound.Severity <= 0.001f)
                 {
                     patient.health.RemoveHediff(primaryWound);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已闭合！", 4.0f);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已闭合！", EE_Constants.FirstAidMoteDurationCritical);
                     return true;
                 }
                 else
                 {
                     int remainTimes = (int)System.Math.Ceiling(primaryWound.Severity / reduction);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"正在缝合 (还需 {remainTimes} 次)", 3.5f);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"正在缝合 (还需 {remainTimes} 次)", EE_Constants.FirstAidMoteDurationLong);
                     return !allowConsecutive;
                 }
             }

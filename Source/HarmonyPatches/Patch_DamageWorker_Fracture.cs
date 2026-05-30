@@ -65,41 +65,41 @@ namespace EmergencyExpanded
                         if (dinfo.Def == DamageDefOf.Blunt || dinfo.Def == DamageDefOf.Crush)
                         {
                             // 近战钝击：骨折的核心来源
-                            if (amt >= 10f)
+                            if (amt >= EE_Constants.FractureBluntDamageThreshold)
                             {
-                                fractureChance = Mathf.Clamp01(amt / (maxHP * 0.6f)) * 0.8f;
-                                fractureChance = Mathf.Max(fractureChance, 0.50f); // 钝击保底 50% 骨折率
+                                fractureChance = Mathf.Clamp01(amt / (maxHP * EE_Constants.FractureBluntMaxHPRatio)) * EE_Constants.FractureBluntBaseFactor;
+                                fractureChance = Mathf.Max(fractureChance, EE_Constants.FractureBluntMinChance);
                                 
-                                if (amt >= 20f) fractureChance = Mathf.Max(fractureChance, 0.85f); // 重钝击 85% 骨折率
+                                if (amt >= EE_Constants.FractureBluntHeavyThreshold) fractureChance = Mathf.Max(fractureChance, EE_Constants.FractureBluntHeavyMinChance);
 
-                                openChance = 0.05f; // 95% 闭合骨折，5% 开放骨折
+                                openChance = EE_Constants.FractureBluntOpenChance;
                             }
                         }
                         else if (dinfo.Def == DamageDefOf.Bullet || dinfo.Def.defName == "Arrow" || dinfo.Def.defName.Contains("Arrow"))
                         {
                             // 远程射击/箭矢：大幅度平衡下调，主要引发闭合骨折
-                            if (amt >= 8f)
+                            if (amt >= EE_Constants.FractureRangedDamageThreshold)
                             {
-                                fractureChance = 0.10f; // 仅 10% 几率
-                                openChance = 0.20f;     // 80% 闭合骨折，20% 开放骨折
+                                fractureChance = EE_Constants.FractureRangedChance;
+                                openChance = EE_Constants.FractureRangedOpenChance;
                             }
                         }
                         else if (dinfo.Def == DamageDefOf.Bomb || dinfo.Def.isExplosive || dinfo.Def.defName.Contains("Explosion"))
                         {
                             // 爆炸伤害：平衡性下调至 30% 几率
-                            if (amt >= 10f)
+                            if (amt >= EE_Constants.FractureExplosionDamageThreshold)
                             {
-                                fractureChance = 0.30f; // 30% 几率
-                                openChance = 0.50f;     // 50% 闭合，50% 开放
+                                fractureChance = EE_Constants.FractureExplosionChance;
+                                openChance = EE_Constants.FractureExplosionOpenChance;
                             }
                         }
                         else if (dinfo.Def.armorCategory == DamageArmorCategoryDefOf.Sharp)
                         {
                             // 近战锐器斩击：致残几率适中
-                            if (amt >= 15f)
+                            if (amt >= EE_Constants.FractureSharpDamageThreshold)
                             {
-                                fractureChance = 0.30f; // 30% 几率
-                                openChance = 0.60f;     // 40% 闭合，60% 开放
+                                fractureChance = EE_Constants.FractureSharpChance;
+                                openChance = EE_Constants.FractureSharpOpenChance;
                             }
                         }
 

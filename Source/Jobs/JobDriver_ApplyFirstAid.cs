@@ -177,26 +177,24 @@ namespace EmergencyExpanded
         {
             EmergencyItemType type = EE_FirstAidUtility.GetEmergencyItemType(def);
             
-            if (type == EmergencyItemType.Tourniquet) return 180;   // 3.0 seconds
+            if (type == EmergencyItemType.Tourniquet) return EE_Constants.FirstAidTicksTourniquet;
             
             if (type == EmergencyItemType.FirstAidKit)
             {
-                return 90; // 1.5 seconds - no bed penalty
+                return EE_Constants.FirstAidTicksKit; // no bed penalty
             }
 
             if (type == EmergencyItemType.IngestibleDirect)
             {
-                return 100; // 1.6 seconds
+                return EE_Constants.FirstAidTicksIngestible;
             }
 
-            // Normal medicine: 4.0 seconds base
-            int baseTicks = 240;
+            int baseTicks = EE_Constants.FirstAidTicksMedicineBase;
             
             bool inBed = patient.CurrentBed() != null;
             if (!inBed)
             {
-                // Ground tend speed penalty: 2.5x slower (10.0 seconds)
-                baseTicks = (int)(baseTicks * 2.5f); 
+                baseTicks = (int)(baseTicks * EE_Constants.FirstAidGroundPenaltyMultiplier); 
             }
 
             return baseTicks;

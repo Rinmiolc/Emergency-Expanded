@@ -34,29 +34,29 @@ namespace EmergencyExpanded
 
         private void InitializeContamination(DamageInfo dinfo)
         {
-            float baseContamination = 0.05f; // 默认基础污染
+            float baseContamination = EE_Constants.ContaminationBase; // 默认基础污染
 
             if (dinfo.Def != null)
             {
                 // 枪伤/破片伤：初始污染高 (兼容 CE 远程弹药与破片)
                 if (dinfo.Def.isRanged || dinfo.Def.defName.Contains("Fragment"))
                 {
-                    baseContamination += 0.15f;
+                    baseContamination += EE_Constants.ContaminationRangedAdded;
                 }
                 // 动物撕咬：污染极高
                 else if (dinfo.Def == DamageDefOf.Bite || dinfo.Def.defName.IndexOf("bite", System.StringComparison.OrdinalIgnoreCase) >= 0)
                 {
-                    baseContamination += 0.25f;
+                    baseContamination += EE_Constants.ContaminationBiteAdded;
                 }
                 // 利器砍伤 (兼容各类锋利近战武器)
                 else if (dinfo.Def.armorCategory == DamageArmorCategoryDefOf.Sharp)
                 {
-                    baseContamination += 0.10f;
+                    baseContamination += EE_Constants.ContaminationSharpAdded;
                 }
                 // 钝器伤/开放性骨折
                 else if (dinfo.Def == DamageDefOf.Blunt || dinfo.Def == DamageDefOf.Crush || (dinfo.Def.armorCategory != null && dinfo.Def.armorCategory.defName == "Blunt"))
                 {
-                    baseContamination += 0.05f;
+                    baseContamination += EE_Constants.ContaminationBluntAdded;
                 }
             }
 
@@ -93,7 +93,7 @@ namespace EmergencyExpanded
                     // 肮脏的地形（泥地、沼泽等）
                     if (terrain.defName.Contains("Mud") || terrain.defName.Contains("Water") || terrain.defName.Contains("Swamp"))
                     {
-                        environmentFactor += 0.0005f; // 每秒增加 0.05%，一天(1000秒)增加 50%
+                        environmentFactor += EE_Constants.ContaminationMudFactor; // 每秒增加 0.05%，一天(1000秒)增加 50%
                     }
                     // 地板清洁度影响
                     else
@@ -101,7 +101,7 @@ namespace EmergencyExpanded
                         float cleanliness = terrain.GetStatValueAbstract(StatDefOf.Cleanliness);
                         if (cleanliness < 0)
                         {
-                            environmentFactor += 0.0002f * Mathf.Abs(cleanliness);
+                            environmentFactor += EE_Constants.ContaminationCleanlinessFactor * Mathf.Abs(cleanliness);
                         }
                     }
                 }
@@ -120,14 +120,14 @@ namespace EmergencyExpanded
 
                 if (hasFilth)
                 {
-                    environmentFactor += 0.0003f;
+                    environmentFactor += EE_Constants.ContaminationFilthFactor;
                 }
             }
 
             // 伤口未包扎时，自然污染微量上升
             if (!this.parent.IsTended())
             {
-                environmentFactor += 0.0001f; // 降低自然恶化速度
+                environmentFactor += EE_Constants.ContaminationUntendedFactor; // 降低自然恶化速度
             }
 
             if (environmentFactor > 0f)
@@ -138,7 +138,7 @@ namespace EmergencyExpanded
 
         private void CheckInfectionProgression()
         {
-            if (this.contamination >= 0.35f)
+            if (this.contamination >= EE_Constants.ContaminationLocalInfectionThreshold)
             {
                 // 判断应该引发哪种局部感染
                 bool isBlunt = this.parent.def.defName.Contains("Bruise") || this.parent.def.defName.Contains("Crush") || this.parent.def.defName.Contains("Blunt");
@@ -155,7 +155,7 @@ namespace EmergencyExpanded
                 }
             }
 
-            if (this.contamination >= 0.85f)
+            if (this.contamination >= EE_Constants.ContaminationSepsisThreshold)
             {
                 // 触发全身败血症
                 if (!Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Sepsis))
@@ -180,7 +180,7 @@ namespace EmergencyExpanded
             base.CompTended(quality, maxQuality, batchPosition);
 
             // 包扎可以降低污染度，品质越高降低越多
-            float reduction = 0.05f + (quality * 0.15f); 
+            float reduction = EE_Constants.ContaminationTendReductionBase + (quality * EE_Constants.ContaminationTendReductionFactor); 
             this.contamination = Mathf.Clamp01(this.contamination - reduction);
         }
 
