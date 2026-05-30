@@ -177,13 +177,32 @@ namespace EmergencyExpanded
                 if (ticksLeftThisToil <= 0)
                 {
                     EE_FirstAidUtility.ApplyFirstAidEffect(pawn, Patient, job.GetTarget(MedicineIndex).Thing);
-                    this.JumpToToil(checkCondition);
+                    
+                    ThingDef currentMedDef = job.GetTarget(MedicineIndex).Thing?.def;
+                    if (currentMedDef != null && EE_FirstAidUtility.GetEmergencyItemType(currentMedDef) == EmergencyItemType.Defibrillator)
+                    {
+                        // Proceed to backswingToil naturally
+                    }
+                    else
+                    {
+                        this.JumpToToil(checkCondition);
+                    }
                 }
+            };
+
+            Toil backswingToil = ToilMaker.MakeToil("DefibBackswing");
+            backswingToil.defaultCompleteMode = ToilCompleteMode.Delay;
+            backswingToil.defaultDuration = EE_Constants.DefibBackswingTicks;
+            backswingToil.tickAction = () =>
+            {
+                pawn.rotationTracker?.FaceCell(Patient.Position);
             };
 
             yield return checkCondition;
             yield return extractMedicine;
             yield return treatToil;
+            yield return backswingToil;
+            yield return Toils_Jump.Jump(checkCondition);
         }
 
         private int CalculateTreatmentTicks(ThingDef def, Pawn patient)

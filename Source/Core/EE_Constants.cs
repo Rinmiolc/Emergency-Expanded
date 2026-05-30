@@ -237,6 +237,22 @@ namespace EmergencyExpanded
         // 医生的医疗技能（Medicine）对除颤成功率的加成系数（每级增加的概率）。
         public const float DefibSuccessRateSkillFactor = 0.015f;
         public const float DefibFailureBurnDamage = 4f;
+        
+        // ================= 动态除颤参数 (Dynamic Defibrillation) =================
+        // 除颤仪最大失败次数上限（达到后损毁）。
+        public const int DefibMaxFailures = 5;
+        // 患者年龄对除颤成功率的惩罚阈值（超过此年龄开始计算惩罚）。
+        public const float DefibAgePenaltyThreshold = 50f;
+        // 超过年龄阈值后，每年龄增加的成功率惩罚。
+        public const float DefibAgePenaltyPerYear = 0.005f;
+        // 失血严重度对除颤成功率的最大惩罚。
+        public const float DefibBloodLossMaxPenalty = 0.40f;
+        // 低温症对除颤成功率的最大惩罚（严重低温几乎无法除颤）。
+        public const float DefibHypothermiaMaxPenalty = 0.50f;
+        // 脑缺氧/缺血时间过长对除颤成功率的最大惩罚。
+        public const float DefibHypoxiaMaxPenalty = 0.30f;
+        // 除颤后摇时间（Tick），1秒 = 60 Ticks。
+        public const int DefibBackswingTicks = 60;
 
         // ================= ECG 与 体征仪 UI 参数 (ECG & Vital Monitor UI) =================
         // 心动过速报警阈值（心率大于此值时，ECG变为黄色报警）

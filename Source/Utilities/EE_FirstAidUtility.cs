@@ -146,8 +146,7 @@ namespace EmergencyExpanded
                     ApplyPrimitiveSplint(doctor, patient);
                     break;
                 case EmergencyItemType.Defibrillator:
-                    ApplyDefibrillatorEffect(doctor, patient);
-                    consumeItem = true;
+                    consumeItem = ApplyDefibrillatorEffect(doctor, patient, item);
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
@@ -322,9 +321,9 @@ namespace EmergencyExpanded
             }
         }
 
-        private static void ApplyDefibrillatorEffect(Pawn doctor, Pawn patient)
+        private static bool ApplyDefibrillatorEffect(Pawn doctor, Pawn patient, Thing item)
         {
-            if (EE_DefOf.VentricularFibrillation == null) return;
+            if (EE_DefOf.VentricularFibrillation == null) return false;
 
             // 触发心电图电击波峰
             VitalTracker.TriggerDefibrillatorShock(patient);
@@ -337,7 +336,7 @@ namespace EmergencyExpanded
             }
 
             Hediff vf = patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
-            if (vf == null) return;
+            if (vf == null) return false;
 
             // 确定当前病情状态成功率
             float baseChance = vf.Severity < 0.60f 
@@ -355,7 +354,37 @@ namespace EmergencyExpanded
             float docSkill = doctor.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
             baseChance += docSkill * EE_Constants.DefibSuccessRateSkillFactor;
 
-            // 限制成功率在 5% 至 95% 之间，保持拟真和游戏悬念
+            // ---- 新增：动态，高性能，符合现实情况的成功率判定 ----
+            
+            // 1. 年龄惩罚：年纪越大，心脏复苏越困难
+            float age = patient.ageTracker.AgeBiologicalYearsFloat;
+            if (age > EE_Constants.DefibAgePenaltyThreshold)
+            {
+                baseChance -= (age - EE_Constants.DefibAgePenaltyThreshold) * EE_Constants.DefibAgePenaltyPerYear;
+            }
+
+            // 2. 失血惩罚：体内没有足够的血液，除颤即使恢复心律也无法维持有效灌注
+            Hediff bloodLoss = patient.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
+            if (bloodLoss != null)
+            {
+                baseChance -= bloodLoss.Severity * EE_Constants.DefibBloodLossMaxPenalty;
+            }
+
+            // 3. 低温惩罚：严重的低温症会导致心脏对电击无反应
+            Hediff hypothermia = patient.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia);
+            if (hypothermia != null)
+            {
+                baseChance -= hypothermia.Severity * EE_Constants.DefibHypothermiaMaxPenalty;
+            }
+
+            // 4. 缺氧时间惩罚：脑缺氧和心肌缺血越严重，复苏希望越渺茫
+            Hediff hypoxia = patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia);
+            if (hypoxia != null)
+            {
+                baseChance -= hypoxia.Severity * EE_Constants.DefibHypoxiaMaxPenalty;
+            }
+
+            // 限制成功率在 5% 至 95% 之间
             baseChance = UnityEngine.Mathf.Clamp(baseChance, 0.05f, 0.95f);
 
             // 摇点判定
@@ -370,6 +399,8 @@ namespace EmergencyExpanded
                 {
                     MoteMaker.ThrowText(patient.DrawPos, patient.Map, "自主循环已恢复", EE_Constants.FirstAidMoteDurationLong);
                 }
+                
+                return true; // 成功直接消耗
             }
             else
             {
@@ -399,6 +430,21 @@ namespace EmergencyExpanded
                     patient.TakeDamage(dinfo);
                     MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤副作用：轻度皮肤灼伤", EE_Constants.FirstAidMoteDurationLong);
                 }
+                
+                // ---- 新增：五次失败消耗逻辑 ----
+                if (item != null && !item.Destroyed)
+                {
+                    int damageAmount = item.MaxHitPoints / EE_Constants.DefibMaxFailures;
+                    item.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, damageAmount));
+                    
+                    if (item.Destroyed || item.HitPoints <= 0)
+                    {
+                        MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "除颤仪损毁", EE_Constants.FirstAidMoteDurationStandard);
+                        return true; // 视为已消耗（被摧毁）
+                    }
+                }
+
+                return false; // 失败则不消耗（除非 HP <= 0）
             }
         }
     }
