@@ -69,10 +69,10 @@ namespace EmergencyExpanded
 
                 case EmergencyItemType.FirstAidKit:
                 case EmergencyItemType.Medicine:
-                    // First Aid Kit / Medicine: Must have tendable wounds or conditions (EXCLUDING fractures)
+                    // First Aid Kit / Medicine: Must have tendable wounds or conditions (EXCLUDING fractures and pneumothorax)
                     foreach (Hediff hediff in patient.health.hediffSet.hediffs)
                     {
-                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture)) return true;
+                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax) return true;
                     }
                     return false;
 
@@ -97,10 +97,7 @@ namespace EmergencyExpanded
                 if (hediff is Hediff_Injury injury && injury.Bleeding)
                 {
                     BodyPartRecord part = injury.Part;
-                    if (part != null && (part.def.tags != null && (part.def.tags.Contains(BodyPartTagDefOf.MovingLimbCore) || 
-                                         part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbCore)) ||
-                                         part.def.defName.IndexOf("arm", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
-                                         part.def.defName.IndexOf("leg", System.StringComparison.OrdinalIgnoreCase) >= 0))
+                    if (part != null && EE_BodyPartCache.IsLimbPart(part.def))
                     {
                         return true;
                     }
@@ -218,10 +215,7 @@ namespace EmergencyExpanded
                     if (bleed > maxBleeding)
                     {
                         BodyPartRecord part = injury.Part;
-                        if (part != null && (part.def.tags != null && (part.def.tags.Contains(BodyPartTagDefOf.MovingLimbCore) || 
-                                             part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbCore)) ||
-                                             part.def.defName.IndexOf("arm", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
-                                             part.def.defName.IndexOf("leg", System.StringComparison.OrdinalIgnoreCase) >= 0))
+                        if (part != null && EE_BodyPartCache.IsLimbPart(part.def))
                         {
                             maxBleeding = bleed;
                             targetLimb = part;
@@ -269,7 +263,7 @@ namespace EmergencyExpanded
             List<Hediff> hediffsToTend = new List<Hediff>();
             foreach (Hediff hediff in patient.health.hediffSet.hediffs)
             {
-                if (hediff.TendableNow() && !(hediff is Hediff_Fracture))
+                if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax)
                 {
                     hediffsToTend.Add(hediff);
                 }

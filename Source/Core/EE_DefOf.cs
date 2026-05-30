@@ -20,6 +20,7 @@ namespace EmergencyExpanded
         public static HediffDef Coagulopathy;
         public static HediffDef SIRS;
         public static HediffDef MultipleOrganFailure;
+        public static HediffDef EE_Pneumothorax;
         
         // 骨折机制新增 Def
         public static HediffDef EE_ClosedFracture;
@@ -38,6 +39,7 @@ namespace EmergencyExpanded
         public static RecipeDef EE_Recipe_PlasterCasting;
         public static RecipeDef EE_Recipe_ORIF;
         public static RecipeDef EE_Recipe_Osteotomy;
+        public static RecipeDef EE_Recipe_NeedleDecompression;
         
         public static JobDef EE_ApplyFirstAid;
         
@@ -48,6 +50,7 @@ namespace EmergencyExpanded
         static EE_DefOf()
         {
             DefOfHelper.EnsureInitializedInCtor(typeof(EE_DefOf));
+            Log.Message("[EmergencyExpanded] EE_DefOf initialized. Version 1.6 - Pneumothorax Patch Active.");
         }
     }
 }

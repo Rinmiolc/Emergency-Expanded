@@ -74,9 +74,9 @@ namespace EmergencyExpanded
         // 触发大出血判定的最小伤害阈值。
         public const float MassiveBleedingMinDamage = 4f;
         // 当角色躯干部位受到创伤判定时，触发致命“大出血”事件的基础概率。
-        public const float MassiveBleedingChanceTorsoBase = 0.25f;
+        public const float MassiveBleedingChanceTorsoBase = 0.35f;
         // 当角色四肢核心部位受到创伤判定时，触发致命“大出血”事件的基础概率。
-        public const float MassiveBleedingChanceLimbBase = 0.25f;
+        public const float MassiveBleedingChanceLimbBase = 0.35f;
 
         // ================= 骨折机制 (Bone Fracture) =================
         // 游戏中所有钝器或锐器伤害导致骨折判定的全局基础乘数。

@@ -38,23 +38,23 @@ namespace EmergencyExpanded
 
             if (dinfo.Def != null)
             {
-                // 枪伤/破片伤：初始污染高
-                if (dinfo.Def.defName.Contains("Bullet") || dinfo.Def.defName.Contains("Shot") || dinfo.Def.defName.Contains("Fragment"))
+                // 枪伤/破片伤：初始污染高 (兼容 CE 远程弹药与破片)
+                if (dinfo.Def.isRanged || dinfo.Def.defName.Contains("Fragment"))
                 {
                     baseContamination += 0.15f;
                 }
                 // 动物撕咬：污染极高
-                else if (dinfo.Def == DamageDefOf.Bite || dinfo.Def.defName.Contains("Bite"))
+                else if (dinfo.Def == DamageDefOf.Bite || dinfo.Def.defName.IndexOf("bite", System.StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     baseContamination += 0.25f;
                 }
-                // 利器砍伤
-                else if (dinfo.Def == DamageDefOf.Cut || dinfo.Def == DamageDefOf.Stab)
+                // 利器砍伤 (兼容各类锋利近战武器)
+                else if (dinfo.Def.armorCategory == DamageArmorCategoryDefOf.Sharp)
                 {
                     baseContamination += 0.10f;
                 }
-                // 钝器伤/开放性骨折（简化处理，默认钝器伤有一定的内部污染概率）
-                else if (dinfo.Def == DamageDefOf.Blunt || dinfo.Def == DamageDefOf.Crush)
+                // 钝器伤/开放性骨折
+                else if (dinfo.Def == DamageDefOf.Blunt || dinfo.Def == DamageDefOf.Crush || (dinfo.Def.armorCategory != null && dinfo.Def.armorCategory.defName == "Blunt"))
                 {
                     baseContamination += 0.05f;
                 }
@@ -98,7 +98,7 @@ namespace EmergencyExpanded
                     // 地板清洁度影响
                     else
                     {
-                        float cleanliness = terrain.statBases?.Find(s => s.stat == StatDefOf.Cleanliness)?.value ?? 0f;
+                        float cleanliness = terrain.GetStatValueAbstract(StatDefOf.Cleanliness);
                         if (cleanliness < 0)
                         {
                             environmentFactor += 0.0002f * Mathf.Abs(cleanliness);
@@ -107,8 +107,18 @@ namespace EmergencyExpanded
                 }
 
                 // 地面上是否有血迹、呕吐物等污垢
-                var filthList = Pawn.Position.GetThingList(Pawn.Map).FindAll(t => t.def.category == ThingCategory.Filth);
-                if (filthList.Count > 0)
+                var thingList = Pawn.Position.GetThingList(Pawn.Map);
+                bool hasFilth = false;
+                for (int i = 0; i < thingList.Count; i++)
+                {
+                    if (thingList[i].def.category == ThingCategory.Filth)
+                    {
+                        hasFilth = true;
+                        break;
+                    }
+                }
+
+                if (hasFilth)
                 {
                     environmentFactor += 0.0003f;
                 }

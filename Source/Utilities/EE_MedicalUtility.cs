@@ -12,32 +12,7 @@ namespace EmergencyExpanded
         public static bool IsMajorVesselPart(BodyPartRecord part, Pawn pawn)
         {
             if (part == null || pawn == null) return false;
-
-            // 1. 核心躯干 (主动脉群)
-            if (part == pawn.RaceProps.body.corePart) return true;
-
-            // 2. 脖子 (颈总动脉)
-            if (part.def == BodyPartDefOf.Neck) return true;
-
-            // 3. 主要肢体核心 (手臂和大腿根部，即肱动脉与股动脉)
-            if (part.def.tags != null)
-            {
-                if (part.def.tags.Contains(BodyPartTagDefOf.MovingLimbCore) || 
-                    part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbCore))
-                {
-                    return true;
-                }
-            }
-
-            // 4. 后备字符串模糊判断，确保兼容某些未规范使用标签的异形/非标肢体Mod
-            string defName = part.def.defName;
-            if (defName.IndexOf("arm", System.StringComparison.OrdinalIgnoreCase) >= 0 || defName.IndexOf("leg", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
-                defName.IndexOf("shoulder", System.StringComparison.OrdinalIgnoreCase) >= 0 || defName.IndexOf("thigh", System.StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return true;
-            }
-
-            return false;
+            return EE_BodyPartCache.IsMajorVesselPart(part.def, pawn);
         }
 
         /// <summary>

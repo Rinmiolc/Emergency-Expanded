@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+
+  <RecipeDef>
+    <defName>EE_Recipe_NeedleDecompression</defName>
+    <label>执行胸腔穿刺减压术</label>
+    <description>将针头插入胸膜腔以释放积聚的气体，缓解张力性气胸。需要医药。</description>
+    <workerClass>EmergencyExpanded.Recipe_NeedleDecompression</workerClass>
+    <jobString>正在进行胸腔穿刺减压...</jobString>
+    <workAmount>1000</workAmount>
+    <hideBodyPartNames>false</hideBodyPartNames>
+    <isViolation>false</isViolation>
+    <targetsBodyPart>true</targetsBodyPart>
+    <recipeUsers>
+      <li>Human</li>
+    </recipeUsers>
+    <ingredients>
+      <li>
+        <filter>
+          <categories>
+            <li>Medicine</li>
+          </categories>
+        </filter>
+        <count>1</count>
+      </li>
+    </ingredients>
+    <fixedIngredientFilter>
+      <categories>
+        <li>Medicine</li>
+      </categories>
+      <disallowedThingDefs>
+        <li>EE_HerbalFirstAidKit</li>
+        <li>EE_FirstAidKit</li>
+      </disallowedThingDefs>
+    </fixedIngredientFilter>
+    <skillRequirements>
+      <Medicine>6</Medicine>
+    </skillRequirements>
+  </RecipeDef>
+
+</Defs>

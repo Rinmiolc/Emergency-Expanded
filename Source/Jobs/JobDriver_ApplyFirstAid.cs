@@ -152,10 +152,10 @@ namespace EmergencyExpanded
                 // 确保在整个包扎/施药读条期间，被施救小人维持站立且不得移动走开
                 if (Patient.Spawned && !Patient.Downed && Patient.CurrentBed() == null)
                 {
-                    Patient.pather?.StopDead();
-                    if (Patient.stances != null && Patient.stances.stunner != null)
+                    if (Patient.stances != null && Patient.stances.stunner != null && Patient.stances.stunner.StunTicksLeft < 10)
                     {
-                        Patient.stances.stunner.StunFor(2, pawn, false, false);
+                        Patient.pather?.StopDead();
+                        Patient.stances.stunner.StunFor(60, pawn, false, false);
                     }
                     Patient.rotationTracker?.FaceCell(pawn.Position);
                 }

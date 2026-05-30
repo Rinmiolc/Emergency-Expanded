@@ -32,9 +32,11 @@ namespace EmergencyExpanded
             // 3. 遍历刚刚结算产生的伤口，寻找受损的骨骼部位
             bool fractureAdded = false;
 
-            foreach (Hediff hediff in __result.hediffs.ToList())
+            for (int i = __result.hediffs.Count - 1; i >= 0; i--)
             {
                 if (fractureAdded) break; // 单次打击最多只触发一次骨折，防止刷屏
+
+                Hediff hediff = __result.hediffs[i];
 
                 if (hediff.Part != null && hediff is Hediff_Injury)
                 {
@@ -45,7 +47,7 @@ namespace EmergencyExpanded
                         continue;
                     }
 
-                    if (IsBonePart(hediff.Part, pawn))
+                    if (EE_BodyPartCache.IsBonePart(hediff.Part.def))
                     {
                         // 判定是否已经具有该部位的骨折，避免重复生成
                         if (pawn.health.hediffSet.hediffs.Any(h => (h.def == EE_DefOf.EE_ClosedFracture || h.def == EE_DefOf.EE_OpenFracture) && h.Part == hediff.Part))
@@ -156,25 +158,5 @@ namespace EmergencyExpanded
             }
         }
 
-        // 识别骨骼身体部位的辅助判定
-        private static bool IsBonePart(BodyPartRecord part, Pawn pawn)
-        {
-            if (part == null || pawn == null) return false;
-
-            // 优先检查新版本 1.6 的 Bone 标签 (动态扫描 defName，完美避免 BodyPartTagDefOf 缺少预定义字段的问题)
-            if (part.def.tags != null && part.def.tags.Any(t => t.defName.IndexOf("bone", System.StringComparison.OrdinalIgnoreCase) >= 0 || t.defName.IndexOf("skeletal", System.StringComparison.OrdinalIgnoreCase) >= 0)) return true;
-
-            // 字符串模糊匹配，提供 100% 的后备稳定性
-            string name = part.def.defName;
-            if (name.IndexOf("femur", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("tibia", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("humerus", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
-                name.IndexOf("radius", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("clavicle", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("spine", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
-                name.IndexOf("pelvis", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("rib", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("skull", System.StringComparison.OrdinalIgnoreCase) >= 0 || 
-                name.IndexOf("jaw", System.StringComparison.OrdinalIgnoreCase) >= 0 || name.IndexOf("bone", System.StringComparison.OrdinalIgnoreCase) >= 0)
-            {
-                return true;
-            }
-
-            return false;
-        }
     }
 }
