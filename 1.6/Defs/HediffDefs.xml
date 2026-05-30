@@ -35,8 +35,8 @@
       <li Class="EmergencyExpanded.HediffCompProperties_Acidosis">
         <severityIncreasePerDay>2.0</severityIncreasePerDay>
         <severityDecreasePerDay>1.2</severityDecreasePerDay>
-        <bloodPumpingThreshold>0.80</bloodPumpingThreshold>
-        <breathingThreshold>0.80</breathingThreshold>
+        <bloodPumpingThreshold>0.50</bloodPumpingThreshold>
+        <breathingThreshold>0.50</breathingThreshold>
       </li>
     </comps>
     <stages>

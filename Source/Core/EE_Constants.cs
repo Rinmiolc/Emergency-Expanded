@@ -220,8 +220,8 @@ namespace EmergencyExpanded
         public const float FractureSharpOpenChance = 0.60f;
 
         // ================= 脑缺氧速度参数 (Cerebral Hypoxia Rates) =================
-        // 脑部缺氧每天增加的基础严重度百分比（放慢到原来的0.5倍，原为8.0f，现为4.0f）
-        public const float HypoxiaPerDay = 4.0f;
+        // 脑部缺氧每天增加的基础严重度百分比
+        public const float HypoxiaPerDay = 2.0f;
         // 脑部缺氧在供氧充足时每天自然消除的基础严重度百分比（保持原版3.0f不变）
         public const float HypoxiaRecoveryPerDay = 4.5f;
 
