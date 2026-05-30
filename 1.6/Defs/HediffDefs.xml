@@ -28,10 +28,6 @@
     <makesSickThought>true</makesSickThought>
     <tendable>false</tendable>
     <comps>
-      <li Class="HediffCompProperties_TendDuration">
-        <baseTendDurationHours>12</baseTendDurationHours>
-        <severityPerDayTended>-2.0</severityPerDayTended> 
-      </li>
       <li Class="EmergencyExpanded.HediffCompProperties_Acidosis">
         <severityIncreasePerDay>2.0</severityIncreasePerDay>
         <severityDecreasePerDay>1.2</severityDecreasePerDay>
@@ -108,10 +104,6 @@
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
         <severityPerDay>8.0</severityPerDay> 
-      </li>
-      <li Class="HediffCompProperties_TendDuration">
-        <baseTendDurationHours>1.5</baseTendDurationHours> 
-        <severityPerDayTended>-10.0</severityPerDayTended> 
       </li>
     </comps>
     <stages>

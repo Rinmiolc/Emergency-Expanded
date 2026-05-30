@@ -10,12 +10,6 @@
     <isBad>true</isBad>
     <tendable>false</tendable>
     <maxSeverity>1.0</maxSeverity>
-    <comps>
-      <li Class="HediffCompProperties_TendDuration">
-        <baseTendDurationHours>24</baseTendDurationHours>
-        <severityPerDayTended>-0.2</severityPerDayTended>
-      </li>
-    </comps>
     <stages>
       <li>
         <label>轻度</label>
