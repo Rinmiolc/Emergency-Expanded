@@ -219,7 +219,7 @@ namespace EmergencyExpanded
         // 脑部缺氧每天增加的基础严重度百分比（放慢到原来的0.5倍，原为8.0f，现为4.0f）
         public const float HypoxiaPerDay = 4.0f;
         // 脑部缺氧在供氧充足时每天自然消除的基础严重度百分比（保持原版3.0f不变）
-        public const float HypoxiaRecoveryPerDay = 3.0f;
+        public const float HypoxiaRecoveryPerDay = 4.5f;
 
         // ================= 心肺复苏与除颤仪 (CPR & Defibrillator) =================
         // CPR 时维持患者呼吸和血液循环能力的最低数值。

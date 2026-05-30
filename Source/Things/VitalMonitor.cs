@@ -290,6 +290,9 @@ namespace EmergencyExpanded
                             else if (shockDt < 0.15f) val = 2.5f - ((shockDt - 0.05f) / 0.1f) * 4.5f;
                             else if (shockDt < 0.35f) val = -2.0f + ((shockDt - 0.15f) / 0.2f) * 2.0f;
                             else val = Mathf.Sin((shockDt - 0.35f) * 15f) * 0.1f * (0.6f - shockDt);
+                            
+                            // 限制最大振幅，防止溢出 GUI 界面
+                            val = Mathf.Clamp(val, -1.15f, 1.15f);
                         }
                         else if (bpm < 0.1f)
                         {
