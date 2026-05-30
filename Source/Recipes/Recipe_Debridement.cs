@@ -41,7 +41,11 @@ namespace EmergencyExpanded
                 didAnything = true;
             }
 
-            // 2. 清除污染并造成微量切削伤害
+            // 2. 清除污染并造成切削伤害 (医术越差，伤害越高，甚至可能导致小器官截肢)
+            float medSkill = billDoer?.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
+            float damageAmount = UnityEngine.Mathf.Max(EE_Constants.DebridementDamageMin, EE_Constants.DebridementDamageBase - (medSkill * EE_Constants.DebridementDamageSkillReduction));
+            bool partDestroyed = false;
+
             List<Hediff> hediffs = pawn.health.hediffSet.hediffs.Where(h => h.Part == part && h is Hediff_Injury).ToList();
             foreach (var h in hediffs)
             {
@@ -49,17 +53,32 @@ namespace EmergencyExpanded
                 if (comp != null && comp.contamination > 0f)
                 {
                     comp.contamination = 0f;
-                    
-                    // 造成少许真实伤害以模拟清创切掉的肉
-                    DamageInfo dinfo = new DamageInfo(DamageDefOf.Cut, 2f, 0f, -1f, billDoer, part, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true);
-                    pawn.TakeDamage(dinfo);
                     didAnything = true;
+                }
+            }
+
+            if (didAnything)
+            {
+                float partHealthBefore = pawn.health.hediffSet.GetPartHealth(part);
+                DamageInfo dinfo = new DamageInfo(DamageDefOf.Cut, damageAmount, 0f, -1f, billDoer, part, null, DamageInfo.SourceCategory.ThingOrUnknown, null, true, true);
+                pawn.TakeDamage(dinfo);
+                
+                if (pawn.health.hediffSet.GetPartHealth(part) <= 0f && partHealthBefore > 0f)
+                {
+                    partDestroyed = true;
                 }
             }
 
             if (didAnything && pawn.Spawned)
             {
-                Messages.Message($"{billDoer?.LabelShort ?? "医生"}成功为{pawn.LabelShort}执行了清创术，去除了污染和坏死组织。", pawn, MessageTypeDefOf.PositiveEvent);
+                if (partDestroyed)
+                {
+                    Messages.Message($"由于{billDoer?.LabelShort ?? "医生"}的清创手法过于粗暴，不慎将{pawn.LabelShort}的{part.Label}完全切除！", pawn, MessageTypeDefOf.NegativeHealthEvent);
+                }
+                else
+                {
+                    Messages.Message($"{billDoer?.LabelShort ?? "医生"}成功为{pawn.LabelShort}执行了清创术，去除了污染和坏死组织。本次清创造成了 {damageAmount.ToString("F1")} 点切割伤害。", pawn, MessageTypeDefOf.PositiveEvent);
+                }
             }
         }
     }

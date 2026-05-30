@@ -154,6 +154,19 @@ namespace EmergencyExpanded
                     }
                 }
             }
+            
+            // 动态渗出：如果局部感染达到化脓期(>=0.66) 或 坏死期，概率性在地面生成污垢
+            if (Pawn.Spawned && Pawn.IsHashIntervalTick(600)) // 每10秒检查一次
+            {
+                Hediff localInf = Pawn.health.hediffSet.hediffs.Find(h => (h.def == EE_DefOf.EE_LocalizedInfection || h.def == EE_DefOf.EE_Necrosis) && h.Part == this.parent.Part);
+                if (localInf != null && localInf.Severity >= 0.66f)
+                {
+                    if (Rand.Chance(0.2f)) // 20% 概率生成化脓污垢
+                    {
+                        FilthMaker.TryMakeFilth(Pawn.Position, Pawn.Map, ThingDefOf.Filth_Blood, 1, FilthSourceFlags.None);
+                    }
+                }
+            }
 
             if (this.contamination >= EE_Constants.ContaminationSepsisThreshold)
             {

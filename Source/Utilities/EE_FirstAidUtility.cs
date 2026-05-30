@@ -13,7 +13,8 @@ namespace EmergencyExpanded
         Tourniquet,      // Tourniquet
         IngestibleDirect, // Ingestible items/drugs
         Splint,          // Primitive Splint [NEW]
-        Defibrillator    // 除颤仪 [NEW]
+        Defibrillator,   // 除颤仪 [NEW]
+        Irrigation       // 生理盐水冲洗 [NEW]
     }
 
     public static class EE_FirstAidUtility
@@ -28,6 +29,7 @@ namespace EmergencyExpanded
             if (def.defName == "EE_PrimitiveSplint") return EmergencyItemType.Splint;
             if (def.defName == "EE_HerbalFirstAidKit" || def.defName == "EE_FirstAidKit") return EmergencyItemType.FirstAidKit;
             if (def.defName == "EE_Defibrillator") return EmergencyItemType.Defibrillator;
+            if (def.defName == "EE_Saline") return EmergencyItemType.Irrigation;
 
             // 2. Vanilla & modded medicines
             if (def.IsMedicine) return EmergencyItemType.Medicine;
@@ -81,6 +83,18 @@ namespace EmergencyExpanded
                 case EmergencyItemType.Defibrillator:
                     // 除颤仪：目标必须具有心室颤动/心肌梗死状态，且未死亡
                     return EE_DefOf.VentricularFibrillation != null && patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation);
+                    
+                case EmergencyItemType.Irrigation:
+                    // 生理盐水冲洗：目标必须有包含污染度的开放伤口
+                    foreach (Hediff hediff in patient.health.hediffSet.hediffs)
+                    {
+                        if (hediff is Hediff_Injury injury)
+                        {
+                            var comp = injury.TryGetComp<HediffComp_Contamination>();
+                            if (comp != null && comp.contamination > 0f) return true;
+                        }
+                    }
+                    return false;
 
                 case EmergencyItemType.IngestibleDirect:
                     // Hemogen pack: reduce blood loss
@@ -147,6 +161,9 @@ namespace EmergencyExpanded
                     break;
                 case EmergencyItemType.Defibrillator:
                     consumeItem = ApplyDefibrillatorEffect(doctor, patient, item);
+                    break;
+                case EmergencyItemType.Irrigation:
+                    ApplyFieldIrrigation(doctor, patient);
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
@@ -264,6 +281,27 @@ namespace EmergencyExpanded
                         break;
                     }
                 }
+            }
+        }
+
+        private static void ApplyFieldIrrigation(Pawn doctor, Pawn patient)
+        {
+            bool didAnything = false;
+            foreach (Hediff hediff in patient.health.hediffSet.hediffs)
+            {
+                if (hediff is Hediff_Injury injury)
+                {
+                    var comp = injury.TryGetComp<HediffComp_Contamination>();
+                    if (comp != null && comp.contamination > 0f)
+                    {
+                        comp.contamination = UnityEngine.Mathf.Max(0f, comp.contamination - EE_Constants.SalineContaminationReduction);
+                        didAnything = true;
+                    }
+                }
+            }
+            if (didAnything)
+            {
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "已野战冲洗伤口", EE_Constants.FirstAidMoteDurationStandard);
             }
         }
 

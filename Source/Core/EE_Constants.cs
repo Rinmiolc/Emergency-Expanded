@@ -263,5 +263,21 @@ namespace EmergencyExpanded
         public const float EcgFlatlineThreshold = 0.1f;
         // 血氧饱和度低下报警阈值
         public const float EcgHypoxiaSpO2Threshold = 90f;
+        // ================= 伤口污染与清创系统 (Contamination & Debridement) =================
+        // 清创手术造成的切割伤害基础值（庸医造成的巨大伤害）
+        public const float DebridementDamageBase = 15f;
+        // 医生的每级医疗技能能够降低的清创伤害
+        public const float DebridementDamageSkillReduction = 1.0f;
+        // 顶级医生清创时的最小保底伤害
+        public const float DebridementDamageMin = 1f;
+        
+        // 野战生理盐水冲洗瞬间降低的污染度
+        public const float SalineContaminationReduction = 0.40f;
+        
+        // 抗生素期间，病菌严重度增长速度被压制的倍率 (例如 0.3f 表示只按原速度 30% 增长)
+        public const float AntibioticSeveritySlowdownMultiplier = 0.30f;
+        // 抗生素期间，免疫力生成速度的额外倍率加成 (例如 1.2f 表示 120% 速度)
+        public const float AntibioticImmunityBoostMultiplier = 1.25f;
+
     }
 }
