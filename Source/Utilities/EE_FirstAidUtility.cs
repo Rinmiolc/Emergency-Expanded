@@ -330,7 +330,7 @@ namespace EmergencyExpanded
             VitalTracker.TriggerDefibrillatorShock(patient);
 
             // 电击音效
-            Verse.SoundDef shockSound = DefDatabase<Verse.SoundDef>.GetNamed("EnergyShield_Broken", false);
+            Verse.SoundDef shockSound = DefDatabase<Verse.SoundDef>.GetNamed("EE_Defibrillator_Shock", false);
             if (shockSound != null)
             {
                 Verse.Sound.SoundStarter.PlayOneShot(shockSound, new TargetInfo(patient.Position, patient.Map));

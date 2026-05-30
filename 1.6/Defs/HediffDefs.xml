@@ -116,7 +116,7 @@
     </comps>
     <stages>
       <li>
-        <label>心室颤动</label>
+        <label>室颤</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>BloodPumping</capacity><setMax>0.10</setMax></li> 
