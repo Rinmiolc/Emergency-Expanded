@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
   <SoundDef>
-    <defName>EE_Defibrillator_Sound</defName>
+    <defName>EE_Defibrillator_Charge</defName>
     <context>MapOnly</context>
     <maxSimultaneous>1</maxSimultaneous>
     <subSounds>
       <li>
         <grains>
           <li Class="AudioGrain_Clip">
-            <clipPath>Defibrillator/EE_Defibrillator</clipPath>
+            <clipPath>Defibrillator/EE_Charge</clipPath>
           </li>
         </grains>
         <volumeRange>60~70</volumeRange>
+      </li>
+    </subSounds>
+  </SoundDef>
+
+  <SoundDef>
+    <defName>EE_Defibrillator_Shock</defName>
+    <context>MapOnly</context>
+    <maxSimultaneous>2</maxSimultaneous>
+    <subSounds>
+      <li>
+        <grains>
+          <li Class="AudioGrain_Clip">
+            <clipPath>Defibrillator/EE_Shock</clipPath>
+          </li>
+        </grains>
+        <volumeRange>70~80</volumeRange>
+        <pitchRange>0.95~1.05</pitchRange>
       </li>
     </subSounds>
   </SoundDef>

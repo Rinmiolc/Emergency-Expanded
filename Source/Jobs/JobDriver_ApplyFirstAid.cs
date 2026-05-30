@@ -138,7 +138,7 @@ namespace EmergencyExpanded
                 
                 if (medDef != null && EE_FirstAidUtility.GetEmergencyItemType(medDef) == EmergencyItemType.Defibrillator)
                 {
-                    Verse.SoundDef chargeSound = DefDatabase<Verse.SoundDef>.GetNamed("EE_Defibrillator_Sound", false);
+                    Verse.SoundDef chargeSound = DefDatabase<Verse.SoundDef>.GetNamed("EE_Defibrillator_Charge", false);
                     if (chargeSound != null)
                     {
                         Verse.Sound.SoundStarter.PlayOneShot(chargeSound, new TargetInfo(Patient.Position, Map));
