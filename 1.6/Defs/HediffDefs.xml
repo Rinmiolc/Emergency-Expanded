@@ -26,7 +26,7 @@
     <maxSeverity>1.0</maxSeverity> 
     <initialSeverity>0.1</initialSeverity>
     <makesSickThought>true</makesSickThought>
-    <tendable>true</tendable>
+    <tendable>false</tendable>
     <comps>
       <li Class="HediffCompProperties_TendDuration">
         <baseTendDurationHours>12</baseTendDurationHours>
@@ -104,7 +104,7 @@
     <hediffClass>EmergencyExpanded.Hediff_VentricularFibrillation</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <initialSeverity>0.01</initialSeverity>
-    <tendable>true</tendable> 
+    <tendable>false</tendable> 
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
         <severityPerDay>8.0</severityPerDay> 

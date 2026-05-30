@@ -8,7 +8,7 @@
     <hediffClass>EmergencyExpanded.Hediff_Pneumothorax</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <isBad>true</isBad>
-    <tendable>true</tendable>
+    <tendable>false</tendable>
     <maxSeverity>1.0</maxSeverity>
     <comps>
       <li Class="HediffCompProperties_TendDuration">

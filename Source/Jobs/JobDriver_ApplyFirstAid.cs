@@ -182,6 +182,7 @@ namespace EmergencyExpanded
                     if (currentMedDef != null && EE_FirstAidUtility.GetEmergencyItemType(currentMedDef) == EmergencyItemType.Defibrillator)
                     {
                         // Proceed to backswingToil naturally
+                        ReadyForNextToil();
                     }
                     else
                     {
