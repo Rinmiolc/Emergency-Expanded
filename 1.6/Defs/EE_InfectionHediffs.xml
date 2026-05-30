@@ -137,7 +137,7 @@
         <severityPerDay>-1.5</severityPerDay> <!-- 药效持续不到1天 -->
       </li>
       <li Class="EmergencyExpanded.HediffCompProperties_Antibiotics">
-        <severityReductionPerDay>1.2</severityReductionPerDay> <!-- 每天硬核减少 1.2 严重度，足以压制败血症的 0.7 -->
+        <toxicBuildupPerDay>0.15</toxicBuildupPerDay> <!-- 每天积累微量毒素副作用 -->
       </li>
     </comps>
     <stages>
