@@ -138,7 +138,7 @@ namespace EmergencyExpanded
                 
                 if (medDef != null && EE_FirstAidUtility.GetEmergencyItemType(medDef) == EmergencyItemType.Defibrillator)
                 {
-                    Verse.SoundDef chargeSound = DefDatabase<Verse.SoundDef>.GetNamed("EE_Defibrillator_Charge", false);
+                    Verse.SoundDef chargeSound = DefDatabase<Verse.SoundDef>.GetNamed("EE_Defibrillator_Sound", false);
                     if (chargeSound != null)
                     {
                         Verse.Sound.SoundStarter.PlayOneShot(chargeSound, new TargetInfo(Patient.Position, Map));
@@ -200,6 +200,11 @@ namespace EmergencyExpanded
             if (type == EmergencyItemType.IngestibleDirect)
             {
                 return EE_Constants.FirstAidTicksIngestible;
+            }
+
+            if (type == EmergencyItemType.Defibrillator)
+            {
+                return EE_Constants.FirstAidTicksDefibrillator;
             }
 
             int baseTicks = EE_Constants.FirstAidTicksMedicineBase;

@@ -173,6 +173,10 @@ namespace EmergencyExpanded
         public const int FirstAidTicksKit = 90;
         // 喂食药品/血包所需的 Tick 时长。
         public const int FirstAidTicksIngestible = 100;
+        
+        // 自动体外除颤仪使用时间 (3.4 秒 * 60 ticks)
+        public const int FirstAidTicksDefibrillator = 204;
+
         // 常规医疗包扎动作的基础 Tick 时长（240 ticks = 4秒）。
         public const int FirstAidTicksMedicineBase = 240;
         // 伤员未躺在床上（即地面野战急救）时，常规包扎动作的时间惩罚倍率。
