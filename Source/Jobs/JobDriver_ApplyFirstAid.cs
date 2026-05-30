@@ -135,9 +135,22 @@ namespace EmergencyExpanded
                 int duration = CalculateTreatmentTicks(medDef, Patient);
                 treatToil.defaultDuration = duration;
                 ticksLeftThisToil = duration;
+                
+                if (medDef != null && EE_FirstAidUtility.GetEmergencyItemType(medDef) == EmergencyItemType.Defibrillator)
+                {
+                    Verse.SoundDef chargeSound = DefDatabase<Verse.SoundDef>.GetNamed("EnergyShield_Reset", false);
+                    if (chargeSound != null)
+                    {
+                        Verse.Sound.SoundStarter.PlayOneShot(chargeSound, new TargetInfo(Patient.Position, Map));
+                    }
+                }
             };
 
-            treatToil.PlaySustainerOrSound(SoundDef.Named("Recipe_Anesthetize"));
+            ThingDef initialMedDef = job.GetTarget(MedicineIndex).Thing?.def;
+            if (initialMedDef == null || EE_FirstAidUtility.GetEmergencyItemType(initialMedDef) != EmergencyItemType.Defibrillator)
+            {
+                treatToil.PlaySustainerOrSound(Verse.SoundDef.Named("Recipe_Anesthetize"));
+            }
             
             treatToil.WithProgressBar(PatientIndex, () => {
                 int totalDuration = treatToil.defaultDuration;
