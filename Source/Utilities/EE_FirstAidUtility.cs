@@ -73,15 +73,15 @@ namespace EmergencyExpanded
 
                 case EmergencyItemType.FirstAidKit:
                 case EmergencyItemType.Medicine:
-                    // First Aid Kit / Medicine: Must have tendable wounds or conditions (EXCLUDING fractures and pneumothorax)
+                    // First Aid Kit / Medicine: Must have tendable wounds or conditions (EXCLUDING fractures)
                     foreach (Hediff hediff in patient.health.hediffSet.hediffs)
                     {
-                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax)
+                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture))
                         {
                             if (type == EmergencyItemType.FirstAidKit)
                             {
-                                // First Aid Kits only treat physical trauma and massive bleeding
-                                if (!(hediff is Hediff_Injury) && !(hediff is Hediff_MissingPart) && hediff.def != EE_DefOf.MassiveBleeding)
+                                // First Aid Kits only treat physical trauma, massive bleeding and pneumothorax
+                                if (!(hediff is Hediff_Injury) && !(hediff is Hediff_MissingPart) && hediff.def != EE_DefOf.MassiveBleeding && hediff.def != EE_DefOf.EE_Pneumothorax)
                                 {
                                     continue;
                                 }
@@ -329,11 +329,11 @@ namespace EmergencyExpanded
             List<Hediff> hediffsToTend = new List<Hediff>();
             foreach (Hediff hediff in patient.health.hediffSet.hediffs)
             {
-                if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax)
+                if (hediff.TendableNow() && !(hediff is Hediff_Fracture))
                 {
                     if (isFirstAidKit)
                     {
-                        if (!(hediff is Hediff_Injury) && !(hediff is Hediff_MissingPart) && hediff.def != EE_DefOf.MassiveBleeding)
+                        if (!(hediff is Hediff_Injury) && !(hediff is Hediff_MissingPart) && hediff.def != EE_DefOf.MassiveBleeding && hediff.def != EE_DefOf.EE_Pneumothorax)
                         {
                             continue;
                         }

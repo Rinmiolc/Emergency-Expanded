@@ -40,8 +40,20 @@ namespace EmergencyExpanded
             }
             else
             {
-                // 未减压：张力性气胸快速恶化，每天增加 1.5 严重度 (约16小时即致命)
-                this.Severity += 1.5f / 60000f; 
+                var tendComp = this.TryGetComp<HediffComp_TendDuration>();
+                if (tendComp != null && tendComp.IsTended)
+                {
+                    // 被急救包/医药临时处理：伤情缓解，每天降低 0.5 严重度，但不低于 0.2 (中度气胸)，无法根治
+                    if (this.Severity > 0.2f)
+                    {
+                        this.Severity -= 0.5f / 60000f; 
+                    }
+                }
+                else
+                {
+                    // 未减压且未临时包扎：张力性气胸快速恶化，每天增加 1.5 严重度 (约16小时即致命)
+                    this.Severity += 1.5f / 60000f; 
+                }
             }
         }
     }

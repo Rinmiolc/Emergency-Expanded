@@ -8,8 +8,13 @@
     <hediffClass>EmergencyExpanded.Hediff_Pneumothorax</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <isBad>true</isBad>
-    <tendable>false</tendable>
+    <tendable>true</tendable>
     <maxSeverity>1.0</maxSeverity>
+    <comps>
+      <li Class="HediffCompProperties_TendDuration">
+        <baseTendDurationHours>12</baseTendDurationHours>
+      </li>
+    </comps>
     <stages>
       <li>
         <label>轻度</label>

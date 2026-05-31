@@ -1,7 +1,0 @@
-﻿feat(first-aid): update fast first aid mechanics and balance tweaks
-
-- feat(first-aid): restrict kits to physical trauma and massive bleeding, ignoring internal conditions
-- fix(first-aid): interrupt current jobs and auto-undraft for instant response
-- feat(balance): reduce MODS core organ damage to one-fourth
-- style(ui): update fast first aid designation icon with 50% opacity
-- chore: update compiled assembly

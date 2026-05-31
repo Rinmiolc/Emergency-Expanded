@@ -60,12 +60,12 @@ namespace EmergencyExpanded
                         
                         if (existingPneumo != null)
                         {
-                            existingPneumo.Severity += originalDamage * EE_Constants.PneumothoraxSeverityFactor;
+                            existingPneumo.Severity += EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor;
                         }
                         else
                         {
                             Hediff pneumo = HediffMaker.MakeHediff(EE_DefOf.EE_Pneumothorax, ___pawn, part);
-                            pneumo.Severity = Mathf.Clamp01(originalDamage * EE_Constants.PneumothoraxSeverityFactor); 
+                            pneumo.Severity = Mathf.Clamp01(EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor); 
                             __instance.AddHediff(pneumo, part, dinfo, null);
                             
                             if (___pawn.Spawned && ___pawn.Map != null)

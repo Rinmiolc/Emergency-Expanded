@@ -6,7 +6,8 @@ namespace EmergencyExpanded
         // 初始化时相关致命健康状态（Hediff）赋予的初始严重程度。
         public const float InitialHediffSeverity = 0.05f;
         // 当角色的血液泵送能力（Pumping）或呼吸能力（Breathing）低于此百分比时，系统将触发缺氧与并发症的监测。
-        public const float HypoxiaMonitorThreshold = 0.55f;
+        public const float HypoxiaMonitorThreshold = 0.45f;
+
         
         // ================= 致命维生阈值 (Vitals Critical Care) =================
         // 当血液泵送或呼吸低于此极低阈值时，小人进入濒死/心脏骤停状态，情况会迅速恶化。
@@ -297,6 +298,8 @@ namespace EmergencyExpanded
         public const float PneumothoraxDamageCap = 25f;
         // 原初伤害转化为气胸严重度的比例
         public const float PneumothoraxSeverityFactor = 0.04f;
+        // 气胸的初始保底严重度
+        public const float PneumothoraxBaseSeverity = 0.35f;
 
         // ================= 骨折详细参数追加 (Fracture Extended) =================
         // 骨折剧痛造成的瞬间硬直Ticks (80 ticks = 1.33秒)

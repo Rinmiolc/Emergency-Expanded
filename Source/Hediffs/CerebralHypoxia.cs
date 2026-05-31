@@ -54,7 +54,7 @@ namespace EmergencyExpanded
             {
                 float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
                 float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-                if (pumping >= 0.55f && breathing >= 0.55f)
+                if (pumping > EE_Settings.HypoxiaMonitorThreshold && breathing > EE_Settings.HypoxiaMonitorThreshold)
                 {
                     base.Heal(0.08f); // 每天可恢复约 80 点缺氧程度，快速好转
                 }
@@ -66,8 +66,8 @@ namespace EmergencyExpanded
     {
         public float hypoxiaPerDay = EE_Constants.HypoxiaPerDay; 
         public float recoveryPerDay = EE_Constants.HypoxiaRecoveryPerDay; 
-        public float safePumpingThreshold = 0.55f;
-        public float safeBreathingThreshold = 0.55f;
+        public float safePumpingThreshold = EE_Constants.HypoxiaMonitorThreshold;
+        public float safeBreathingThreshold = EE_Constants.HypoxiaMonitorThreshold;
 
         public HediffCompProperties_CerebralHypoxia()
         {
