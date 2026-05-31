@@ -292,6 +292,32 @@ namespace EmergencyExpanded
         public const float AntibioticSeveritySlowdownMultiplier = 0.30f;
         // 抗生素期间，免疫力生成速度的额外倍率加成 (例如 1.2f 表示 120% 速度)
         public const float AntibioticImmunityBoostMultiplier = 1.25f;
+        // ================= 气胸判定参数 (Pneumothorax) =================
+        // 防止单次伤害直接摧毁肺部所允许的最大保留生命值伤害上限
+        public const float PneumothoraxDamageCap = 25f;
+        // 原初伤害转化为气胸严重度的比例
+        public const float PneumothoraxSeverityFactor = 0.04f;
 
+        // ================= 骨折详细参数追加 (Fracture Extended) =================
+        // 骨折剧痛造成的瞬间硬直Ticks (80 ticks = 1.33秒)
+        public const int FractureStunTicks = 80;
+        // 未固定骨折对移动/操作能力的惩罚
+        public const float FractureCapacityOffsetNone = -0.50f;
+        // 夹板固定骨折对移动/操作能力的惩罚
+        public const float FractureCapacityOffsetSplint = -0.20f;
+        // 石膏固定骨折对移动/操作能力的惩罚
+        public const float FractureCapacityOffsetCast = -0.10f;
+        // 正骨静卧对移动/操作能力的惩罚
+        public const float FractureCapacityOffsetBedrest = -0.30f;
+        // 骨折二次伤害（撕裂软组织）的固定伤害量
+        public const float FractureSecondaryDamageAmount = 2f;
+        // 正骨静卧期间若移动，导致正骨失效的基础概率 (每250 ticks判定)
+        public const float FractureStrictBedrestFailChance = 0.15f;
+        // 原初伤害转化为骨折严重度的基础比例
+        public const float FractureSeverityConversionFactor = 0.4f;
+        // 骨折的最小严重度
+        public const float FractureSeverityMin = 5f;
+        // 骨折的最大严重度
+        public const float FractureSeverityMax = 30f;
     }
 }

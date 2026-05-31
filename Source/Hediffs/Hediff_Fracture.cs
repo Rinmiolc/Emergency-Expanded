@@ -79,11 +79,11 @@ namespace EmergencyExpanded
                 PawnCapacityDef capacity = GetAffectedCapacity();
                 if (capacity != null)
                 {
-                    float offsetVal = -0.50f; // 未固定：减 50% 能力
-                    if (isInternallyFixed) offsetVal = 0.0f; // 内固定：完全解放
-                    else if (isCasted) offsetVal = -0.10f;     // 石膏：减 10%
-                    else if (isStrictBedrest) offsetVal = -0.30f; // 正骨静卧：减 30%
-                    else if (isSplinted) offsetVal = -0.20f;    // 夹板：减 20%
+                    float offsetVal = EE_Constants.FractureCapacityOffsetNone;
+                    if (isInternallyFixed) offsetVal = 0.0f;
+                    else if (isCasted) offsetVal = EE_Constants.FractureCapacityOffsetCast;
+                    else if (isStrictBedrest) offsetVal = EE_Constants.FractureCapacityOffsetBedrest;
+                    else if (isSplinted) offsetVal = EE_Constants.FractureCapacityOffsetSplint;
 
                     if (offsetVal < 0.0f)
                     {
@@ -136,7 +136,7 @@ namespace EmergencyExpanded
                 HediffComp_TendDuration tendComp = this.TryGetComp<HediffComp_TendDuration>();
                 if (tendComp != null && !tendComp.IsTended)
                 {
-                    tendComp.tendTicksLeft = 10000;
+                    tendComp.tendTicksLeft = int.MaxValue;
                     tendComp.tendQuality = 1.0f;
                     pawn.Drawer?.renderer?.SetAllGraphicsDirty();
                 }
@@ -162,7 +162,7 @@ namespace EmergencyExpanded
                         // 取骨骼的父级肢体（如大腿肌肉），使二次伤害更写实
                         if (damagePart.parent != null) damagePart = damagePart.parent;
 
-                        DamageInfo dinfo = new DamageInfo(DamageDefOf.Cut, 2f, 0f, -1f, pawn, damagePart);
+                        DamageInfo dinfo = new DamageInfo(DamageDefOf.Cut, EE_Constants.FractureSecondaryDamageAmount, 0f, -1f, pawn, damagePart);
                         pawn.TakeDamage(dinfo);
                     }
 
@@ -172,10 +172,10 @@ namespace EmergencyExpanded
                         MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, $"{pawn.LabelShort} 断骨移位剧痛!", Color.red);
                     }
 
-                    // 瞬间痛觉踉跄，使其停顿 80 ticks (约1.3秒)
+                    // 瞬间痛觉踉跄
                     if (pawn.stances != null && pawn.stances.stunner != null && !pawn.stances.stunner.Stunned)
                     {
-                        pawn.stances.stunner.StunFor(80, pawn, false, true);
+                        pawn.stances.stunner.StunFor(EE_Constants.FractureStunTicks, pawn, false, true);
                     }
                 }
             }
@@ -189,7 +189,7 @@ namespace EmergencyExpanded
             // 如果正骨后不老实躺着，而是下床跑动，则有几率导致对齐失败、正骨崩塌
             if (pawn.CurrentBed() == null && pawn.pather != null && pawn.pather.Moving)
             {
-                if (Rand.Chance(0.15f)) // 每 4 秒有 15% 几率失效
+                if (Rand.Chance(EE_Constants.FractureStrictBedrestFailChance))
                 {
                     isStrictBedrest = false;
                     alignmentQuality = 0f; // 复位质量清零，重新归于错位状态
@@ -227,6 +227,8 @@ namespace EmergencyExpanded
         // 愈合终期结算畸形愈合
         private void CheckMalunion()
         {
+            if (Part != null && pawn.health.hediffSet.PartIsMissing(Part)) return;
+            
             // 对齐质量过低时（例如没有正骨，仅靠硬夹板或自然愈合），极高概率发生畸形愈合
             if (alignmentQuality < 0.50f)
             {

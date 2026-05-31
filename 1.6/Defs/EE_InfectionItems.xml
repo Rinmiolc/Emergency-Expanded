@@ -7,7 +7,7 @@
     <label>伤口冲洗液</label>
     <description>用于在包扎前彻底冲洗伤口，冲走异物和脏污。配合普通包扎可以大幅度降低伤口的初始污染度，从而避免局部感染和坏死。由于不是正式药品，只能用于急救，不能用于手术。</description>
     <graphicData>
-      <texPath>Thing/SalineBag</texPath>
+      <texPath>Things/SalineBag</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
     </graphicData>
     <soundInteract>Standard_Drop</soundInteract>

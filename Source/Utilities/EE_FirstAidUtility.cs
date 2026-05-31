@@ -560,6 +560,7 @@ namespace EmergencyExpanded
 
                 if (burnPart != null)
                 {
+                    burnPart = EE_MedicalUtility.GetNearestNonMissingPart(patient, burnPart);
                     DamageInfo dinfo = new DamageInfo(DamageDefOf.Burn, EE_Constants.DefibFailureBurnDamage, 0f, -1f, doctor, burnPart);
                     patient.TakeDamage(dinfo);
                     MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤副作用：轻度皮肤灼伤", EE_Constants.FirstAidMoteDurationLong);

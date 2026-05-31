@@ -32,42 +32,40 @@ namespace EmergencyExpanded
 
             if (!isSharp) return true;
 
-            // Check if part is Lung
-            if (part.def.defName.IndexOf("lung", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            // Check if part is Lung or BreathingSource (Alien Race Compatibility)
+            bool isLung = (part.def.tags != null && part.def.tags.Contains(BodyPartTagDefOf.BreathingSource)) || 
+                          part.def.defName.IndexOf("lung", System.StringComparison.OrdinalIgnoreCase) >= 0;
+
+            if (isLung)
             {
-                Log.Message($"[EE] Lung hit by sharp injury: {hediff.def.defName}, Severity: {hediff.Severity}");
                 if (hediff is Hediff_Injury injury)
                 {
                     float originalDamage = injury.Severity;
                     float currentHealth = __instance.hediffSet.GetPartHealth(part);
-                    Log.Message($"[EE] Original Damage: {originalDamage}, Current Health: {currentHealth}");
 
                     // If this injury would destroy the lung (originalDamage >= currentHealth)
-                    // We save it from destruction if original damage is below 25
-                    if (originalDamage >= currentHealth && originalDamage <= 25f)
+                    if (originalDamage >= currentHealth && originalDamage <= EE_Constants.PneumothoraxDamageCap)
                     {
                         // Cap severity to leave 1 HP
                         float newSeverity = currentHealth - 1f;
                         if (newSeverity < 0f) newSeverity = 0.1f;
                         injury.Severity = newSeverity;
-                        Log.Message($"[EE] Capped severity to {newSeverity} to save the lung.");
                     }
 
                     // Generate pneumothorax based on original damage
                     if (EE_DefOf.EE_Pneumothorax != null)
                     {
-                        Log.Message($"[EE] Generating Pneumothorax...");
                         // Check if already has pneumothorax on this part
                         Hediff existingPneumo = __instance.hediffSet.hediffs.FirstOrDefault(h => h.def == EE_DefOf.EE_Pneumothorax && h.Part == part);
                         
                         if (existingPneumo != null)
                         {
-                            existingPneumo.Severity += originalDamage * 0.04f;
+                            existingPneumo.Severity += originalDamage * EE_Constants.PneumothoraxSeverityFactor;
                         }
                         else
                         {
                             Hediff pneumo = HediffMaker.MakeHediff(EE_DefOf.EE_Pneumothorax, ___pawn, part);
-                            pneumo.Severity = Mathf.Clamp01(originalDamage * 0.04f); 
+                            pneumo.Severity = Mathf.Clamp01(originalDamage * EE_Constants.PneumothoraxSeverityFactor); 
                             __instance.AddHediff(pneumo, part, dinfo, null);
                             
                             if (___pawn.Spawned && ___pawn.Map != null)
