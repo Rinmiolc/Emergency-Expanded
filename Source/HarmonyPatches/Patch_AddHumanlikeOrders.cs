@@ -38,8 +38,33 @@ namespace EmergencyExpanded
             if (!pawn.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) || 
                 !pawn.health.capacities.CapableOf(PawnCapacityDefOf.Moving)) return;
 
-            // 2. 确定右键点击的目标 Pawn
+            // 1.5. 检查地上的自定义物品并生成“拾取到背包”选项
             IntVec3 clickCell = IntVec3.FromVector3(clickPos);
+            List<Thing> thingList = clickCell.GetThingList(pawn.Map);
+            if (thingList != null)
+            {
+                foreach (Thing t in thingList)
+                {
+                    if (t != null && t.def != null && t.def.category == ThingCategory.Item && t.def.defName.StartsWith("EE_"))
+                    {
+                        string optionLabel = $"拾取 {t.LabelShort} 到背包";
+                        Action action = () =>
+                        {
+                            Job job = JobMaker.MakeJob(JobDefOf.TakeInventory, t);
+                            job.count = t.stackCount;
+                            pawn.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                        };
+                        FloatMenuOption option = FloatMenuUtility.DecoratePrioritizedTask(
+                            new FloatMenuOption(optionLabel, action, MenuOptionPriority.Default, null, t), 
+                            pawn, 
+                            t
+                        );
+                        __result.Add(option);
+                    }
+                }
+            }
+
+            // 2. 确定右键点击的目标 Pawn
             Pawn targetPawn = clickCell.GetFirstPawn(pawn.Map);
             if (targetPawn == null || targetPawn == pawn) return; // 无法对自己通过右键实施野外急救
             if (!targetPawn.RaceProps.IsFlesh || targetPawn.RaceProps.BloodDef == null) return; // 必须是血肉生物且具有血液
