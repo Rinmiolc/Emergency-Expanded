@@ -97,9 +97,9 @@ namespace EmergencyExpanded
         // MODS 造成核心脏器坏死的基础概率（基础概率 * 严重度）。
         public const float ModsCoreDamageChanceBase = 3.0f;
         // MODS 单次对核心器造成的急性坏死量。
-        public const float ModsCoreDamageAmount = 2.0f;
+        public const float ModsCoreDamageAmount = 0.5f;
         // MODS 单次对大脑造成的脑损伤伤害。
-        public const float ModsBrainDamageAmount = 0.05f;
+        public const float ModsBrainDamageAmount = 0.0125f;
 
         // ================= 急救物品与医疗机制 (First Aid Items & Medical) =================
         // 草药急救包的包扎质量倍率。

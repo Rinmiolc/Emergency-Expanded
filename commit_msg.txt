@@ -1,7 +1,7 @@
-feat(core): dynamic ECG waveform and balance SIRS progression
+﻿feat(first-aid): update fast first aid mechanics and balance tweaks
 
-- feat(ui): implement dynamic ECG waveform based on real-time HR, maintaining P-QRS-T physical width
-- refactor(ui): remove purple ECG state, unifying all critical warnings under yellow
-- style(ui): stretch ECG wave render rect to flawlessly join the right-side digital panel
-- fix(sirs): reduce tended injury severity contribution from 20% to 5% to realistically halt inflammation progression post-treatment
-- chore: rebuild assembly for 1.6
+- feat(first-aid): restrict kits to physical trauma and massive bleeding, ignoring internal conditions
+- fix(first-aid): interrupt current jobs and auto-undraft for instant response
+- feat(balance): reduce MODS core organ damage to one-fourth
+- style(ui): update fast first aid designation icon with 50% opacity
+- chore: update compiled assembly

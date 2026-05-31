@@ -131,8 +131,14 @@ namespace EmergencyExpanded
                 
                 medic.jobs.jobQueue.EnqueueLast(job);
                 
-                // If the pawn is idle or doing something interruptible, we could force start the queue.
-                if (medic.CurJob == null || medic.CurJob.def == JobDefOf.Wait || medic.CurJob.def == JobDefOf.GotoWander)
+                // Undraft the medic automatically
+                if (medic.Drafted)
+                {
+                    medic.drafter.Drafted = false;
+                }
+                
+                // Interrupt current job if it's not already a first aid job
+                if (medic.CurJob != null && medic.CurJob.def != EE_DefOf.EE_ApplyFirstAid)
                 {
                     medic.jobs.EndCurrentJob(JobCondition.InterruptForced);
                 }

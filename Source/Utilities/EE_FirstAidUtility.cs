@@ -76,7 +76,18 @@ namespace EmergencyExpanded
                     // First Aid Kit / Medicine: Must have tendable wounds or conditions (EXCLUDING fractures and pneumothorax)
                     foreach (Hediff hediff in patient.health.hediffSet.hediffs)
                     {
-                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax) return true;
+                        if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax)
+                        {
+                            if (type == EmergencyItemType.FirstAidKit)
+                            {
+                                // First Aid Kits only treat physical trauma and massive bleeding
+                                if (!(hediff is Hediff_Injury) && !(hediff is Hediff_MissingPart) && hediff.def != EE_DefOf.MassiveBleeding)
+                                {
+                                    continue;
+                                }
+                            }
+                            return true;
+                        }
                     }
                     return false;
 
@@ -167,7 +178,7 @@ namespace EmergencyExpanded
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
-                    consumeItem = ApplyFieldTend(doctor, patient, item, kitQuality, allowConsecutive: true);
+                    consumeItem = ApplyFieldTend(doctor, patient, item, kitQuality, allowConsecutive: true, isFirstAidKit: true);
                     break;
                 case EmergencyItemType.Medicine:
                     float medMultiplier = item.def == ThingDefOf.MedicineHerbal ? EE_Constants.MedicineHerbalMultiplier :
@@ -178,7 +189,7 @@ namespace EmergencyExpanded
                     bool allowConsecutive = item.def == ThingDefOf.MedicineHerbal || 
                                             item.def == ThingDefOf.MedicineIndustrial || 
                                             item.def == ThingDefOf.MedicineUltratech;
-                    consumeItem = ApplyFieldTend(doctor, patient, item, finalMedQuality, allowConsecutive);
+                    consumeItem = ApplyFieldTend(doctor, patient, item, finalMedQuality, allowConsecutive, isFirstAidKit: false);
                     break;
                 case EmergencyItemType.IngestibleDirect:
                     if (item.def.defName == "HemogenPack")
@@ -313,13 +324,20 @@ namespace EmergencyExpanded
             return EE_Constants.MassiveBleedingTendMaxAttempts;
         }
 
-        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, Thing item, float tendQuality, bool allowConsecutive)
+        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, Thing item, float tendQuality, bool allowConsecutive, bool isFirstAidKit = false)
         {
             List<Hediff> hediffsToTend = new List<Hediff>();
             foreach (Hediff hediff in patient.health.hediffSet.hediffs)
             {
                 if (hediff.TendableNow() && !(hediff is Hediff_Fracture) && hediff.def != EE_DefOf.EE_Pneumothorax)
                 {
+                    if (isFirstAidKit)
+                    {
+                        if (!(hediff is Hediff_Injury) && !(hediff is Hediff_MissingPart) && hediff.def != EE_DefOf.MassiveBleeding)
+                        {
+                            continue;
+                        }
+                    }
                     hediffsToTend.Add(hediff);
                 }
             }

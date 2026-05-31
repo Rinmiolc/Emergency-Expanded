@@ -4,7 +4,7 @@
         <defName>EE_FastFirstAid</defName>
         <label>fast first aid</label>
         <description>Designates a pawn to receive fast first aid.</description>
-        <texturePath>UI/Designators/Haul</texturePath>
+        <texturePath>UI/Designations/FastFirstAid</texturePath>
         <designateCancelable>true</designateCancelable>
         <targetType>Thing</targetType>
     </DesignationDef>
