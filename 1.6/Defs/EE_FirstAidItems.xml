@@ -76,7 +76,7 @@
     <label>简易硬夹板</label>
     <description>由木条和粗质绷带制成的简易正骨夹板。可由医疗兵在野外直接施用以紧急固定受损骨骼，彻底免除移动造成的二次刺刺伤害，但无法保证完美的骨骼复位质量，依然有畸形愈合的风险。</description>
     <graphicData>
-      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <texPath>Things/PrimitiveSplint</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
     </graphicData>
     <soundInteract>Standard_Drop</soundInteract>
@@ -99,7 +99,7 @@
     <label>石膏绷带</label>
     <description>加入石膏粉的医用绷带。浸水后卷在患肢上可快速硬化，提供完美的刚性保守固定。只能在干净的病床上由医生通过“石膏固定术”施加，完全免除二次伤害并消除畸形愈合风险。</description>
     <graphicData>
-      <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
+      <texPath>Things/PlasterBandage</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
     </graphicData>
     <soundInteract>Standard_Drop</soundInteract>
