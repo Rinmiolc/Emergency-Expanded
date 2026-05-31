@@ -126,21 +126,22 @@ namespace EmergencyExpanded
             // 3. Queue the job
             if (EE_DefOf.EE_ApplyFirstAid != null)
             {
-                Job job = JobMaker.MakeJob(EE_DefOf.EE_ApplyFirstAid, patient, firstThing);
-                job.count = 1;
-                
-                medic.jobs.jobQueue.EnqueueLast(job);
-                
-                // Undraft the medic automatically
+                // Undraft the medic automatically FIRST to prevent JobQueue clearing
                 if (medic.Drafted)
                 {
                     medic.drafter.Drafted = false;
                 }
                 
-                // Interrupt current job if it's not already a first aid job
-                if (medic.CurJob != null && medic.CurJob.def != EE_DefOf.EE_ApplyFirstAid)
+                Job job = JobMaker.MakeJob(EE_DefOf.EE_ApplyFirstAid, patient, firstThing);
+                job.count = 1;
+                
+                if (medic.CurJob != null && medic.CurJob.def == EE_DefOf.EE_ApplyFirstAid)
                 {
-                    medic.jobs.EndCurrentJob(JobCondition.InterruptForced);
+                    medic.jobs.jobQueue.EnqueueLast(job);
+                }
+                else
+                {
+                    medic.jobs.TryTakeOrderedJob(job, JobTag.Misc);
                 }
             }
 
