@@ -39,7 +39,7 @@
           </capMods>
           <hediffGivers>
             <li Class="HediffGiver_Random">
-              <hediff>VentricularFibrillation</hediff>
+              <hediff>EE_MyocardialInfarction</hediff>
               <mtbDays>0.05</mtbDays> 
               <partsToAffect>
                 <li>Heart</li>
@@ -58,7 +58,7 @@
           </capMods>
           <hediffGivers>
             <li Class="HediffGiver_Random">
-              <hediff>VentricularFibrillation</hediff>
+              <hediff>EE_MyocardialInfarction</hediff>
               <mtbDays>0.01</mtbDays> 
               <partsToAffect>
                 <li>Heart</li>

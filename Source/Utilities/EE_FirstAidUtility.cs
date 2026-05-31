@@ -9,7 +9,7 @@ namespace EmergencyExpanded
     {
         None,
         Medicine,        // Medicine (Herbal, Industrial, Ultratech)
-        FirstAidKit,     // First Aid Kit (EE_HerbalFirstAidKit, EE_FirstAidKit)
+        FirstAidKit,     // First Aid Kit (EE_FirstAidKit, EE_FirstAidBox)
         Tourniquet,      // Tourniquet
         IngestibleDirect, // Ingestible items/drugs
         Splint,          // Primitive Splint [NEW]
@@ -26,8 +26,8 @@ namespace EmergencyExpanded
 
             // 1. Custom emergency items
             if (def.defName == "EE_Tourniquet") return EmergencyItemType.Tourniquet;
-            if (def.defName == "EE_PrimitiveSplint") return EmergencyItemType.Splint;
-            if (def.defName == "EE_HerbalFirstAidKit" || def.defName == "EE_FirstAidKit") return EmergencyItemType.FirstAidKit;
+            if (def.defName == "EE_FractureRing") return EmergencyItemType.Splint;
+            if (def.defName == "EE_FirstAidKit" || def.defName == "EE_FirstAidBox") return EmergencyItemType.FirstAidKit;
             if (def.defName == "EE_Defibrillator") return EmergencyItemType.Defibrillator;
             if (def.defName == "EE_Saline") return EmergencyItemType.Irrigation;
 
@@ -93,7 +93,7 @@ namespace EmergencyExpanded
 
                 case EmergencyItemType.Defibrillator:
                     // 除颤仪：目标必须具有心室颤动 (VF) 或原版心脏病发作 (HeartAttack) 状态，且未死亡
-                    return (EE_DefOf.VentricularFibrillation != null && patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation)) ||
+                    return (EE_DefOf.EE_MyocardialInfarction != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction)) ||
                            patient.health.hediffSet.HasHediff(HediffDef.Named("HeartAttack"));
                     
                 case EmergencyItemType.Irrigation:
@@ -178,7 +178,7 @@ namespace EmergencyExpanded
                     ApplyFieldIrrigation(doctor, patient);
                     break;
                 case EmergencyItemType.FirstAidKit:
-                    float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
+                    float kitQuality = item.def.defName == "EE_FirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
                     consumeItem = ApplyFieldTend(doctor, patient, item, kitQuality, allowConsecutive: true, isFirstAidKit: true);
                     break;
                 case EmergencyItemType.Medicine:
@@ -320,8 +320,8 @@ namespace EmergencyExpanded
         private static int GetMaxMassiveBleedingTendAttempts(Thing item)
         {
             if (item == null || item.def == null) return EE_Constants.MassiveBleedingTendMaxAttempts;
-            if (item.def.defName == "EE_HerbalFirstAidKit") return 5;
-            if (item.def.defName == "EE_FirstAidKit") return 10;
+            if (item.def.defName == "EE_FirstAidKit") return 5;
+            if (item.def.defName == "EE_FirstAidBox") return 10;
             return EE_Constants.MassiveBleedingTendMaxAttempts;
         }
 
@@ -469,8 +469,8 @@ namespace EmergencyExpanded
             }
 
             // 1. 读取当前可电击的病情状态 (室颤 或 原版心脏病发作)
-            Hediff vf = (EE_DefOf.VentricularFibrillation != null) 
-                ? patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation) 
+            Hediff vf = (EE_DefOf.EE_MyocardialInfarction != null) 
+                ? patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction) 
                 : null;
             Hediff heartAttack = patient.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("HeartAttack"));
 

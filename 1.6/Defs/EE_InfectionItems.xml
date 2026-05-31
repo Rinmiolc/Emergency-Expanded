@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-  <!-- 伤口冲洗液 (Saline/Antiseptic Irrigation) -->
+  <!-- 生理盐水 (Saline/Antiseptic Irrigation) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_Saline</defName>
-    <label>伤口冲洗液</label>
+    <label>生理盐水</label>
     <description>用于在包扎前彻底冲洗伤口，冲走异物和脏污。配合普通包扎可以大幅度降低伤口的初始污染度，从而避免局部感染和坏死。由于不是正式药品，只能用于急救，不能用于手术。</description>
     <graphicData>
       <texPath>Things/SalineBag</texPath>
@@ -24,10 +24,10 @@
     </thingCategories>
   </ThingDef>
 
-  <!-- 广谱静脉抗生素 (IV Broad-Spectrum Antibiotics) -->
+  <!-- 广谱抗生素 (IV Broad-Spectrum Antibiotics) -->
   <ThingDef ParentName="ResourceBase">
-    <defName>EE_IVAntibiotics</defName>
-    <label>广谱静脉抗生素</label>
+    <defName>EE_BroadAntibiotics</defName>
+    <label>广谱抗生素</label>
     <description>强效的静脉注射级广谱抗生素。专门用于对抗已经爆发的严重化脓、败血症以及其他致命感染。不可用于预防，只在治疗发作期感染时有奇效。</description>
     <graphicData>
       <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
@@ -57,7 +57,7 @@
       <ingestReportString>正在注射 {0}。</ingestReportString>
       <outcomeDoers>
         <li Class="IngestionOutcomeDoer_GiveHediff">
-          <hediffDef>EE_AntibioticsHigh</hediffDef>
+          <hediffDef>EE_BroadAntibioticsHigh</hediffDef>
           <severity>1.0</severity>
         </li>
       </outcomeDoers>
@@ -66,9 +66,9 @@
 
   <RecipeDef>
     <defName>Make_EE_Saline</defName>
-    <label>制作伤口冲洗液</label>
+    <label>制作生理盐水</label>
     <description>使用清水和少许草药提取物制作简单的冲洗液。</description>
-    <jobString>制作伤口冲洗液中。</jobString>
+    <jobString>制作生理盐水中。</jobString>
     <workAmount>300</workAmount>
     <ingredients>
       <li>
@@ -95,8 +95,8 @@
   </RecipeDef>
 
   <RecipeDef>
-    <defName>Make_EE_IVAntibiotics</defName>
-    <label>制作静脉抗生素</label>
+    <defName>Make_EE_BroadAntibiotics</defName>
+    <label>制作广谱抗生素</label>
     <description>通过工业级的制药台提纯中性胺合成强效广谱抗生素。</description>
     <jobString>制作静脉抗生素中。</jobString>
     <workAmount>1200</workAmount>
@@ -125,7 +125,7 @@
       </thingDefs>
     </fixedIngredientFilter>
     <products>
-      <EE_IVAntibiotics>1</EE_IVAntibiotics>
+      <EE_BroadAntibiotics>1</EE_BroadAntibiotics>
     </products>
     <recipeUsers>
       <li>DrugLab</li>

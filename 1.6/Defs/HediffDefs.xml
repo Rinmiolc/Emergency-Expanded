@@ -64,7 +64,7 @@
         </capMods>
         <hediffGivers>
           <li Class="HediffGiver_Random">
-            <hediff>VentricularFibrillation</hediff>
+            <hediff>EE_MyocardialInfarction</hediff>
             <mtbDays>0.03</mtbDays> 
             <partsToAffect>
               <li>Heart</li>
@@ -83,7 +83,7 @@
         </capMods>
         <hediffGivers>
           <li Class="HediffGiver_Random">
-            <hediff>VentricularFibrillation</hediff>
+            <hediff>EE_MyocardialInfarction</hediff>
             <mtbDays>0.1</mtbDays> 
             <partsToAffect>
               <li>Heart</li>
@@ -95,10 +95,10 @@
   </HediffDef>
 
   <HediffDef>
-    <defName>VentricularFibrillation</defName>
+    <defName>EE_MyocardialInfarction</defName>
     <label>心肌梗死</label>
     <description>由于冠状动脉急性阻塞导致心肌大面积缺血缺氧坏死。会引发毁灭性的泵血与循环功能衰竭，如不及时除颤与抢救，将导致全身多脏器缺氧衰竭而死亡。</description>
-    <hediffClass>EmergencyExpanded.Hediff_VentricularFibrillation</hediffClass>
+    <hediffClass>EmergencyExpanded.Hediff_MyocardialInfarction</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <initialSeverity>0.01</initialSeverity>
     <tendable>false</tendable> 

@@ -3,7 +3,7 @@ using RimWorld;
 
 namespace EmergencyExpanded
 {
-    public class Hediff_VentricularFibrillation : HediffWithComps
+    public class Hediff_MyocardialInfarction : HediffWithComps
     {
         public override string SeverityLabel => (this.Severity * 100f).ToString("F0") + "%";
 

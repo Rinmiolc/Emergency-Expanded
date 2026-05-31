@@ -46,7 +46,7 @@ namespace EmergencyExpanded
 
             // 3. 心脏状态检测
             // 优先检查心肌梗死状态（O(1) 复杂度），如果满级直接返回 true，无需遍历器官
-            Hediff vf = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
+            Hediff vf = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction);
             if (vf != null && vf.Severity >= 1.0f)
             {
                 return true;

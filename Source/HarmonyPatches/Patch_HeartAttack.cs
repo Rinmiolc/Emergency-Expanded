@@ -34,10 +34,10 @@ namespace EmergencyExpanded
 
             if (shouldConvert)
             {
-                if (EE_DefOf.VentricularFibrillation != null && !__instance.pawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation))
+                if (EE_DefOf.EE_MyocardialInfarction != null && !__instance.pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction))
                 {
                     // 添加室颤
-                    Hediff vf = HediffMaker.MakeHediff(EE_DefOf.VentricularFibrillation, __instance.pawn, __instance.Part);
+                    Hediff vf = HediffMaker.MakeHediff(EE_DefOf.EE_MyocardialInfarction, __instance.pawn, __instance.Part);
                     vf.Severity = 0.5f; // 给一个基础严重度，确保能触发后续机制
                     __instance.pawn.health.AddHediff(vf);
                     

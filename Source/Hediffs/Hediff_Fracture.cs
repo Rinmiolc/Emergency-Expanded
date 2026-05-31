@@ -33,7 +33,7 @@ namespace EmergencyExpanded
                 if (isInternallyFixed) return baseLabel + " [钢板内固定]";
                 if (isCasted) return baseLabel + " [石膏固定]";
                 if (isStrictBedrest) return baseLabel + " [正骨静卧]";
-                if (isSplinted) return baseLabel + " [硬夹板固定]";
+                if (isSplinted) return baseLabel + " [骨折环固定]";
                 return baseLabel + " [未固定]";
             }
         }

@@ -29,8 +29,8 @@
         <li>Medicine</li>
       </categories>
       <disallowedThingDefs>
-        <li>EE_HerbalFirstAidKit</li>
         <li>EE_FirstAidKit</li>
+        <li>EE_FirstAidBox</li>
       </disallowedThingDefs>
     </fixedIngredientFilter>
     <skillRequirements>

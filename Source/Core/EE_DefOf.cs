@@ -12,7 +12,7 @@ namespace EmergencyExpanded
         public static HediffDef HypoxicBrainDamage;
         public static HediffDef VegetativeState;
         public static HediffDef MassiveBleeding;
-        public static HediffDef VentricularFibrillation;
+        public static HediffDef EE_MyocardialInfarction;
         public static HediffDef AdrenalineBoost;
         public static HediffDef AdrenalineCrash;
         
@@ -46,7 +46,7 @@ namespace EmergencyExpanded
         public static HediffDef EE_Necrosis;
         public static HediffDef EE_Sepsis;
 
-        public static ThingDef EE_PrimitiveSplint;
+        public static ThingDef EE_FractureRing;
         public static ThingDef EE_PlasterBandage;
 
         public static RecipeDef EE_Recipe_TraditionalBoneSetting;

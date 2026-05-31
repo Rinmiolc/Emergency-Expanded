@@ -3,7 +3,7 @@
 
   <!-- 急救包 (First Aid Kit) -->
   <ThingDef ParentName="ResourceBase">
-    <defName>EE_HerbalFirstAidKit</defName>
+    <defName>EE_FirstAidKit</defName>
     <label>急救包</label>
     <description>内含粗制草药提取液、简易压迫绷带和固定板。专为战地就地抢救设计，包扎速度极快且完全不受野外无医疗床的工作量惩罚，但由于药品条件简陋，处理伤口的品质（Tend Quality）较低。不能用于常规的外科手术。对于大出血，一个急救包最多可尝试包扎 5 次。</description>
     <graphicData>
@@ -26,7 +26,7 @@
 
   <!-- 急救箱 (First Aid Box) -->
   <ThingDef ParentName="ResourceBase">
-    <defName>EE_FirstAidKit</defName>
+    <defName>EE_FirstAidBox</defName>
     <label>急救箱</label>
     <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干大出血的核心耗材。不能用于基地的常规手术。对于大出血，一个急救箱最多可尝试包扎 10 次。</description>
     <graphicData>
@@ -47,13 +47,13 @@
     </thingCategories>
   </ThingDef>
 
-  <!-- 战术止血带 (Tourniquet) -->
+  <!-- 四肢止血带 (Tourniquet) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_Tourniquet</defName>
-    <label>战术止血带</label>
+    <label>四肢止血带</label>
     <description>高强度单手便携式弹力止血带。只能在四肢受伤时绑扎。施用速度快至毫秒级别，使用后能瞬间将目标四肢上的所有大出血伤口包扎止血，作为战场续命的强力工具，无需耗费漫长的常规包扎读条。</description>
     <graphicData>
-      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <texPath>Things/Tourniquet/tourniquet</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
     </graphicData>
     <soundInteract>Standard_Drop</soundInteract>
@@ -70,10 +70,10 @@
     </thingCategories>
   </ThingDef>
 
-  <!-- 简易硬夹板 (Primitive Splint) -->
+  <!-- 骨折环 (Primitive Splint) -->
   <ThingDef ParentName="ResourceBase">
-    <defName>EE_PrimitiveSplint</defName>
-    <label>简易硬夹板</label>
+    <defName>EE_FractureRing</defName>
+    <label>骨折环</label>
     <description>由木条和粗质绷带制成的简易正骨夹板。可由医疗兵在野外直接施用以紧急固定受损骨骼，彻底免除移动造成的二次刺刺伤害，但无法保证完美的骨骼复位质量，依然有畸形愈合的风险。</description>
     <graphicData>
       <texPath>Things/PrimitiveSplint</texPath>
@@ -142,41 +142,28 @@
   <!-- ================= 制作配方 ================= -->
 
   <RecipeDef>
-    <defName>Make_EE_PrimitiveSplint</defName>
-    <label>制作简易硬夹板</label>
+    <defName>Make_EE_FractureRing</defName>
+    <label>制作骨折环</label>
     <description>使用木材和少量皮革或布料制作简易的正骨固定板。</description>
-    <jobString>制作简易硬夹板中。</jobString>
+    <jobString>制作骨折环中。</jobString>
     <workAmount>600</workAmount>
     <ingredients>
       <li>
         <filter>
           <thingDefs>
-            <li>WoodLog</li>
+            <li>Steel</li>
           </thingDefs>
         </filter>
-        <count>5</count>
-      </li>
-      <li>
-        <filter>
-          <categories>
-            <li>Leathers</li>
-            <li>Textiles</li>
-          </categories>
-        </filter>
-        <count>8</count>
+        <count>2</count>
       </li>
     </ingredients>
     <fixedIngredientFilter>
       <thingDefs>
-        <li>WoodLog</li>
+        <li>Steel</li>
       </thingDefs>
-      <categories>
-        <li>Leathers</li>
-        <li>Textiles</li>
-      </categories>
     </fixedIngredientFilter>
     <products>
-      <EE_PrimitiveSplint>1</EE_PrimitiveSplint>
+      <EE_FractureRing>1</EE_FractureRing>
     </products>
     <recipeUsers>
       <li>CraftingSpot</li>

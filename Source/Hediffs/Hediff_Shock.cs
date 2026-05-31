@@ -59,7 +59,7 @@ namespace EmergencyExpanded
 
             // 5. 心源性休克 (一旦心脏骤停，循环立刻崩溃，休克压力激增)
             Hediff heartAttack = pawn.health.hediffSet.hediffs.Find(h => h.def.defName == "HeartAttack");
-            Hediff vf = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
+            Hediff vf = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction);
             if (heartAttack != null || vf != null)
             {
                 totalPressure += 5.0f; // 绝对致死压力

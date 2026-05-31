@@ -23,7 +23,7 @@ namespace EmergencyExpanded
             this.FailOnDespawnedOrNull(PatientIndex);
             this.FailOn(() => Patient.Dead);
             // 只有患者处于心梗/心室颤动状态时，才可以继续实施 CPR
-            this.FailOn(() => EE_DefOf.VentricularFibrillation == null || !Patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation));
+            this.FailOn(() => EE_DefOf.EE_MyocardialInfarction == null || !Patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction));
 
             // 走近患者
             yield return Toils_Goto.GotoThing(PatientIndex, PathEndMode.Touch);

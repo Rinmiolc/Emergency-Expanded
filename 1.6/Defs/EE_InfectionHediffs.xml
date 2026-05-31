@@ -83,7 +83,7 @@
   </HediffDef>
   <!-- 抗生素药效 (Antibiotics Effect) -->
   <HediffDef>
-    <defName>EE_AntibioticsHigh</defName>
+    <defName>EE_BroadAntibioticsHigh</defName>
     <label>广谱抗生素</label>
     <description>血液中含有高浓度的强效广谱抗生素成分。正在主动强力杀灭体内的有害细菌，能显著抑制和治愈发作期感染，同时大幅增强肾脏的血液过滤效率。</description>
     <hediffClass>HediffWithComps</hediffClass>

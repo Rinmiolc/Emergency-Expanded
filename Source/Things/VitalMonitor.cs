@@ -27,7 +27,7 @@ namespace EmergencyExpanded
         // 缓存的病理状态，每 120 ticks 更新一次
         public bool hasCerebralHypoxia = false;
         public bool hasMetabolicAcidosis = false;
-        public bool hasVentricularFibrillation = false;
+        public bool hasMyocardialInfarction = false;
     }
 
     // ================= 2. 动态生理心搏计算管理器 =================
@@ -97,7 +97,7 @@ namespace EmergencyExpanded
             }
 
             // 5. 心律失常与骤停状态判定
-            Hediff vFib = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
+            Hediff vFib = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction);
             if (vFib != null)
             {
                 if (vFib.Severity < 0.60f)
@@ -127,7 +127,7 @@ namespace EmergencyExpanded
                 // 更新病理状态缓存，避免每帧在 UI 渲染中遍历 Hediff 列表
                 vitals.hasCerebralHypoxia = pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia);
                 vitals.hasMetabolicAcidosis = pawn.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis);
-                vitals.hasVentricularFibrillation = pawn.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation);
+                vitals.hasMyocardialInfarction = pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction);
                 
                 if (vitals.heartRate > EE_Constants.EcgFlatlineThreshold)
                 {
@@ -298,7 +298,7 @@ namespace EmergencyExpanded
                         {
                             val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
                         }
-                        else if (vitals.hasVentricularFibrillation && bpm > 180f)
+                        else if (vitals.hasMyocardialInfarction && bpm > 180f)
                         {
                             float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f;
                             float baseWave = Mathf.Sin(timeAtPixel * 37f) * 0.32f + 
