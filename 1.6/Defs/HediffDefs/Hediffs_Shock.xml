@@ -32,15 +32,15 @@
         <capMods>
           <li>
             <capacity>Consciousness</capacity>
-            <offset>-0.25</offset>
+            <setMax>0.50</setMax>
           </li>
           <li>
             <capacity>BloodPumping</capacity>
-            <offset>-0.30</offset>
+            <setMax>0.60</setMax>
           </li>
           <li>
             <capacity>Breathing</capacity>
-            <offset>-0.15</offset>
+            <setMax>0.80</setMax>
           </li>
         </capMods>
       </li>
@@ -51,15 +51,15 @@
         <capMods>
           <li>
             <capacity>Consciousness</capacity>
-            <offset>-0.45</offset>
+            <setMax>0.10</setMax>
           </li>
           <li>
             <capacity>BloodPumping</capacity>
-            <offset>-0.50</offset>
+            <setMax>0.20</setMax>
           </li>
           <li>
             <capacity>Breathing</capacity>
-            <offset>-0.30</offset>
+            <setMax>0.40</setMax>
           </li>
         </capMods>
       </li>
