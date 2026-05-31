@@ -348,5 +348,40 @@ namespace EmergencyExpanded
         // ================= 声音效果与提示 (Sound & Effects) =================
         // 骨折音效的 DefName 标识符符文
         public const string SoundBoneCrunch = "EE_BoneCrunch";
+
+        // ================= 烧伤与感染联动分级机制 (Burn & Infection Interaction) =================
+        // II度烧伤的判定阈值 (累计伤害量)
+        public const float BurnDegree2Threshold = 8f;
+        // III度烧伤的判定阈值 (累计伤害量)
+        public const float BurnDegree3Threshold = 15f;
+        
+        // 各级烧伤的环境污染增加乘数 (环境污染增加量 * 此倍率)
+        public const float BurnEnvMultiplierDegree1 = 1.0f;
+        public const float BurnEnvMultiplierDegree2 = 3.0f;
+        public const float BurnEnvMultiplierDegree3 = 5.0f;
+        
+        // 烧伤引发感染后，感染恶化速度的额外加成乘数
+        public const float BurnInfectionFactorDegree2 = 1.2f;
+        public const float BurnInfectionFactorDegree3 = 1.8f;
+        
+        // III度烧伤时，触发全身败血症 (Sepsis) 的污染度门槛 (普通为0.85)
+        public const float BurnSepsisThresholdDegree3 = 0.70f;
+
+        // ================= 泛化休克机制 (Shock Mechanism) =================
+        // 各类病理因素向休克转化的基础压力乘数
+        public const float ShockPressureFromBloodLoss = 1.0f; // 调低，因为原版失血自己已经有惩罚
+        public const float ShockPressureFromSIRS = 1.0f; // 调低
+        public const float ShockPressureFromBurnDegree2 = 0.05f; 
+        public const float ShockPressureFromBurnDegree3 = 0.15f; 
+        public const float ShockPressureFromPneumothorax = 0.8f;
+        
+        // 休克压力转化为严重度的系数 (每天增加的最大上限)
+        public const float ShockSeverityIncreasePerDay = 1.5f; // 从 4.0 降到 1.5，减缓爆发速度
+        // 每天休克严重度自然下降量（无压力/代偿时）
+        public const float ShockRecoveryPerDay = 2.0f; // 从 1.5 升到 2.0，加快自然恢复
+        
+        // 触发失代偿期和不可逆期的严重度阈值
+        public const float ShockDecompensatedThreshold = 0.4f;
+        public const float ShockIrreversibleThreshold = 0.7f;
     }
 }

@@ -38,8 +38,13 @@ namespace EmergencyExpanded
 
             if (dinfo.Def != null)
             {
+                // 烧伤：高温灭菌，初始几乎无污染
+                if (dinfo.Def == DamageDefOf.Burn || dinfo.Def == DamageDefOf.Flame || (dinfo.Def.armorCategory != null && dinfo.Def.armorCategory.defName == "Heat"))
+                {
+                    baseContamination = 0.0f; 
+                }
                 // 枪伤/破片伤：初始污染高 (兼容 CE 远程弹药与破片)
-                if (dinfo.Def.isRanged || dinfo.Def.defName.Contains("Fragment"))
+                else if (dinfo.Def.isRanged || dinfo.Def.defName.Contains("Fragment"))
                 {
                     baseContamination += EE_Constants.ContaminationRangedAdded;
                 }
@@ -130,6 +135,16 @@ namespace EmergencyExpanded
                 environmentFactor += EE_Constants.ContaminationUntendedFactor; // 降低自然恶化速度
             }
 
+            // 针对烧伤的特殊环境污染乘数（皮肤屏障丧失）
+            HediffComp_Burn burnComp = this.parent.TryGetComp<HediffComp_Burn>();
+            if (burnComp != null)
+            {
+                int degree = burnComp.BurnDegree;
+                if (degree == 3) environmentFactor *= EE_Constants.BurnEnvMultiplierDegree3;
+                else if (degree == 2) environmentFactor *= EE_Constants.BurnEnvMultiplierDegree2;
+                else if (degree == 1) environmentFactor *= EE_Constants.BurnEnvMultiplierDegree1;
+            }
+
             if (environmentFactor > 0f)
             {
                 this.contamination = Mathf.Clamp01(this.contamination + environmentFactor);
@@ -161,6 +176,15 @@ namespace EmergencyExpanded
             if (localInf != null && this.contamination > 0f)
             {
                 float extraSeverity = this.contamination * EE_Constants.InfectionDynamicSeverityBase;
+                
+                // 烧伤的坏死组织加速感染
+                HediffComp_Burn localBurnComp = this.parent.TryGetComp<HediffComp_Burn>();
+                if (localBurnComp != null)
+                {
+                    if (localBurnComp.BurnDegree == 3) extraSeverity *= EE_Constants.BurnInfectionFactorDegree3;
+                    else if (localBurnComp.BurnDegree == 2) extraSeverity *= EE_Constants.BurnInfectionFactorDegree2;
+                }
+
                 localInf.Severity += extraSeverity;
                 
                 // 动态渗出：如果局部感染达到化脓期(>=0.66) 或 坏死期，概率性在地面生成污垢
@@ -175,11 +199,20 @@ namespace EmergencyExpanded
 
             // 触发全身败血症：极度污染 (>= 0.95) 或 局部感染严重且高污染
             bool triggerSepsis = false;
+            float sepsisThreshold = EE_Constants.ContaminationSepsisThreshold;
+            
+            // III度烧伤降低败血症门槛
+            HediffComp_Burn sepsisBurnComp = this.parent.TryGetComp<HediffComp_Burn>();
+            if (sepsisBurnComp != null && sepsisBurnComp.BurnDegree == 3)
+            {
+                sepsisThreshold = EE_Constants.BurnSepsisThresholdDegree3;
+            }
+
             if (this.contamination >= 0.95f) 
             {
                 triggerSepsis = true;
             }
-            else if (this.contamination >= EE_Constants.ContaminationSepsisThreshold && localInf != null && localInf.Severity >= 0.66f)
+            else if (this.contamination >= sepsisThreshold && localInf != null && localInf.Severity >= 0.66f)
             {
                 triggerSepsis = true;
             }

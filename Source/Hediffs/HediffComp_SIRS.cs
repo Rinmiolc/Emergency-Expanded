@@ -61,6 +61,13 @@ namespace EmergencyExpanded
             {
                 severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
             }
+            
+            // 将分布性压力传导给休克机制。如果休克不存在，则主动挂载
+            if (this.parent.Severity > 0.2f && !Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Shock))
+            {
+                Hediff shock = HediffMaker.MakeHediff(EE_DefOf.EE_Shock, Pawn, null);
+                Pawn.health.AddHediff(shock, null, null, null);
+            }
         }
     }
 }

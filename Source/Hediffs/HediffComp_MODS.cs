@@ -34,13 +34,13 @@ namespace EmergencyExpanded
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
             if (!Pawn.IsHashIntervalTick(60)) return;
 
-            float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-            float sirsSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.SIRS)?.Severity ?? 0f;
+            float shockSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Shock)?.Severity ?? 0f;
             float acidosisSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis)?.Severity ?? 0f;
 
-            if ((pumping <= 0.40f && sirsSev > 0.4f) || acidosisSev > 0.5f)
+            // 当休克进入不可逆期 (>0.7) 或极重度酸中毒时，高频触发多器官衰竭
+            if (shockSev >= EE_Constants.ShockIrreversibleThreshold || acidosisSev > 0.6f)
             {
-                float factor = 0.2f + (0.40f - pumping) * 2f + sirsSev + acidosisSev;
+                float factor = 1.0f + (shockSev - EE_Constants.ShockIrreversibleThreshold) * 3f + acidosisSev;
                 severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);
             }
             else

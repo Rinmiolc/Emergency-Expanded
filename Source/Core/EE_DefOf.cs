@@ -21,6 +21,7 @@ namespace EmergencyExpanded
         public static HediffDef SIRS;
         public static HediffDef MultipleOrganFailure;
         public static HediffDef EE_Pneumothorax;
+        public static HediffDef EE_Shock;
         
         // 骨折机制新增 Def
         public static HediffDef EE_ClosedFracture;

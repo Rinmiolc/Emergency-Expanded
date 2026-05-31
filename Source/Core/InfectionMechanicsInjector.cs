@@ -24,6 +24,22 @@ namespace EmergencyExpanded
                     {
                         def.comps.Add(new HediffCompProperties_Contamination());
                     }
+                    
+                    // 为烧伤专门挂载分级组件
+                    if (def.defName == "Burn" && !def.comps.Any(c => c is HediffCompProperties_Burn))
+                    {
+                        def.comps.Add(new HediffCompProperties_Burn());
+                    }
+                }
+                
+                // 为原版失血挂载休克触发器
+                if (def == HediffDefOf.BloodLoss || def.defName == "BloodLoss")
+                {
+                    if (def.comps == null) def.comps = new List<HediffCompProperties>();
+                    if (!def.comps.Any(c => c is HediffCompProperties_ShockTrigger))
+                    {
+                        def.comps.Add(new HediffCompProperties_ShockTrigger());
+                    }
                 }
             }
         }
