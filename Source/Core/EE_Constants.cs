@@ -136,6 +136,11 @@ namespace EmergencyExpanded
         public const float FirstAidMoteDurationCritical = 4.0f;
 
         // ================= 伤口污染机制 (Wound Contamination) =================
+        // 污染度检测间隔（Tick），600 ticks = 10秒
+        public const int ContaminationCheckInterval = 600;
+        // 每次检测时，局部感染基于当前污染度额外增加的严重程度（污染越重恶化越快）
+        public const float InfectionDynamicSeverityBase = 0.005f;
+
         // 所有开放性伤口的默认基础污染度。
         public const float ContaminationBase = 0.05f;
         // 枪伤、破片等投射物造成的额外初始污染度。
@@ -147,14 +152,14 @@ namespace EmergencyExpanded
         // 钝器击打造成的额外初始污染度。
         public const float ContaminationBluntAdded = 0.05f;
         
-        // 小人倒在泥地、沼泽、浅水等肮脏地形上时，每秒（60 ticks）增加的污染度。
-        public const float ContaminationMudFactor = 0.0005f;
-        // 地板清洁度为负数时，每单位肮脏度造成的每秒污染度增加。
-        public const float ContaminationCleanlinessFactor = 0.0002f;
-        // 伤口接触到血迹、呕吐物等污垢时，每秒增加的污染度。
-        public const float ContaminationFilthFactor = 0.0003f;
-        // 伤口在未包扎暴露状态下，每秒自然增加的微量污染度。
-        public const float ContaminationUntendedFactor = 0.0001f;
+        // 小人倒在泥地、沼泽、浅水等肮脏地形上时，每 10 秒（600 ticks）增加的污染度。
+        public const float ContaminationMudFactor = 0.005f;
+        // 地板清洁度为负数时，每单位肮脏度造成的每 10 秒污染度增加。
+        public const float ContaminationCleanlinessFactor = 0.002f;
+        // 伤口接触到血迹、呕吐物等污垢时，每 10 秒增加的污染度。
+        public const float ContaminationFilthFactor = 0.003f;
+        // 伤口在未包扎暴露状态下，每 10 秒自然增加的微量污染度（细菌增殖）。
+        public const float ContaminationUntendedFactor = 0.001f;
         
         // 清创包扎动作降低污染度的基础值。
         public const float ContaminationTendReductionBase = 0.05f;

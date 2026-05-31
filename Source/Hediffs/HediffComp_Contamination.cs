@@ -69,8 +69,8 @@ namespace EmergencyExpanded
 
             if (Pawn == null || Pawn.Dead) return;
 
-            // 每 60 tick (1秒) 检查一次环境，频率适中，不会漏掉短暂的倒地
-            if (Pawn.IsHashIntervalTick(60))
+            // 每 EE_Constants.ContaminationCheckInterval tick 检查一次环境，大幅降低性能消耗
+            if (Pawn.IsHashIntervalTick(EE_Constants.ContaminationCheckInterval))
             {
                 UpdateContaminationFromEnvironment();
                 CheckInfectionProgression();
@@ -138,37 +138,53 @@ namespace EmergencyExpanded
 
         private void CheckInfectionProgression()
         {
+            Hediff localInf = Pawn.health.hediffSet.hediffs.Find(h => (h.def == EE_DefOf.EE_LocalizedInfection || h.def == EE_DefOf.EE_Necrosis) && h.Part == this.parent.Part);
+
             if (this.contamination >= EE_Constants.ContaminationLocalInfectionThreshold)
             {
-                // 判断应该引发哪种局部感染
-                bool isBlunt = this.parent.def.defName.Contains("Bruise") || this.parent.def.defName.Contains("Crush") || this.parent.def.defName.Contains("Blunt");
-                HediffDef targetLocalInfection = isBlunt ? EE_DefOf.EE_Necrosis : EE_DefOf.EE_LocalizedInfection;
-
-                // 检查该部位是否已经有该感染
-                if (!Pawn.health.hediffSet.HasHediff(targetLocalInfection, this.parent.Part))
+                if (localInf == null)
                 {
+                    // 判断应该引发哪种局部感染
+                    bool isBlunt = this.parent.def.defName.Contains("Bruise") || this.parent.def.defName.Contains("Crush") || this.parent.def.defName.Contains("Blunt");
+                    HediffDef targetLocalInfection = isBlunt ? EE_DefOf.EE_Necrosis : EE_DefOf.EE_LocalizedInfection;
+
                     Pawn.health.AddHediff(targetLocalInfection, this.parent.Part);
+                    localInf = Pawn.health.hediffSet.hediffs.Find(h => h.def == targetLocalInfection && h.Part == this.parent.Part);
                     if (Pawn.Spawned)
                     {
                         Messages.Message($"{Pawn.LabelShort}的伤口由于污染过度，引发了{targetLocalInfection.label}！", Pawn, MessageTypeDefOf.NegativeHealthEvent);
                     }
                 }
             }
-            
-            // 动态渗出：如果局部感染达到化脓期(>=0.66) 或 坏死期，概率性在地面生成污垢
-            if (Pawn.Spawned && Pawn.IsHashIntervalTick(600)) // 每10秒检查一次
+
+            // 如果已经有局部感染，基于污染度动态增加严重度
+            if (localInf != null && this.contamination > 0f)
             {
-                Hediff localInf = Pawn.health.hediffSet.hediffs.Find(h => (h.def == EE_DefOf.EE_LocalizedInfection || h.def == EE_DefOf.EE_Necrosis) && h.Part == this.parent.Part);
-                if (localInf != null && localInf.Severity >= 0.66f)
+                float extraSeverity = this.contamination * EE_Constants.InfectionDynamicSeverityBase;
+                localInf.Severity += extraSeverity;
+                
+                // 动态渗出：如果局部感染达到化脓期(>=0.66) 或 坏死期，概率性在地面生成污垢
+                if (localInf.Severity >= 0.66f && Pawn.Spawned)
                 {
-                    if (Rand.Chance(0.2f)) // 20% 概率生成化脓污垢
+                    if (Rand.Chance(0.2f)) // 每次检查有 20% 概率生成化脓污垢
                     {
                         FilthMaker.TryMakeFilth(Pawn.Position, Pawn.Map, ThingDefOf.Filth_Blood, 1, FilthSourceFlags.None);
                     }
                 }
             }
 
-            if (this.contamination >= EE_Constants.ContaminationSepsisThreshold)
+            // 触发全身败血症：极度污染 (>= 0.95) 或 局部感染严重且高污染
+            bool triggerSepsis = false;
+            if (this.contamination >= 0.95f) 
+            {
+                triggerSepsis = true;
+            }
+            else if (this.contamination >= EE_Constants.ContaminationSepsisThreshold && localInf != null && localInf.Severity >= 0.66f)
+            {
+                triggerSepsis = true;
+            }
+
+            if (triggerSepsis)
             {
                 // 触发全身败血症
                 if (!Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Sepsis))
