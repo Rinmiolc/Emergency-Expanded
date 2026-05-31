@@ -5,10 +5,10 @@ using EmergencyExpanded;
 
 namespace EmergencyExpanded
 {
-    [HarmonyPatch(typeof(HediffWithComps), "Tick")]
+    [HarmonyPatch(typeof(Hediff), "Tick")]
     public static class Patch_HeartAttack_Tick
     {
-        public static void Postfix(HediffWithComps __instance)
+        public static void Postfix(Hediff __instance)
         {
             if (!(__instance is Hediff_HeartAttack)) return;
             if (__instance.pawn == null || __instance.pawn.Dead || !__instance.pawn.IsHashIntervalTick(60)) return;
