@@ -34,6 +34,21 @@ namespace EmergencyExpanded
                     }
                 }
             }
+
+            // ================= 防暴毙底层保底 (Death Prevention Clamp) =================
+            // 拦截原版“关键属性跌破0直接斩杀”的底层逻辑
+            // 如果计算结果 <= 0，且该属性归零会导致直接死亡 (如意识、泵血、呼吸)
+            bool isFatalCapacity = capacity == PawnCapacityDefOf.Consciousness || 
+                                   capacity == PawnCapacityDefOf.BloodPumping || 
+                                   capacity == PawnCapacityDefOf.Breathing || 
+                                   capacity == PawnCapacityDefOf.BloodFiltration;
+
+            if (__result <= 0.001f && isFatalCapacity)
+            {
+                // 我们强行将结果保底锁定在 1% (0.01f)，阻止系统立刻执行死亡代码。
+                // 这允许我们大量使用安全的 offset 扣除属性，而死神将被交还给 MODS (多器官衰竭) 或缺氧机制。
+                __result = 0.01f;
+            }
         }
     }
 }
