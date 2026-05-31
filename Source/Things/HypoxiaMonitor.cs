@@ -24,8 +24,9 @@ namespace EmergencyExpanded
             if (lethalSeverity <= 0f) lethalSeverity = 1f;
             float bloodLossRatio = bloodLossSeverity / lethalSeverity; // 相对失血率 (0.0~1.0)
 
-            // 1. 脑缺氧判定门槛
-            if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold)
+            // 1. 脑缺氧判定门槛 (呼吸/循环低于安全门槛，或者药物过量过重导致中枢性窒息)
+            float overdoseSev = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.DrugOverdose)?.Severity ?? 0f;
+            if (pumping < EE_Settings.HypoxiaMonitorThreshold || breathing < EE_Settings.HypoxiaMonitorThreshold || overdoseSev > 0.75f)
             {
                 HediffDef vegStateDef = EE_DefOf.VegetativeState;
                 bool isVegetative = vegStateDef != null && __instance.hediffSet.HasHediff(vegStateDef);

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -92,8 +92,9 @@ namespace EmergencyExpanded
                     return false;
 
                 case EmergencyItemType.Defibrillator:
-                    // 除颤仪：目标必须具有心室颤动/心肌梗死状态，且未死亡
-                    return EE_DefOf.VentricularFibrillation != null && patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation);
+                    // 除颤仪：目标必须具有心室颤动 (VF) 或原版心脏病发作 (HeartAttack) 状态，且未死亡
+                    return (EE_DefOf.VentricularFibrillation != null && patient.health.hediffSet.HasHediff(EE_DefOf.VentricularFibrillation)) ||
+                           patient.health.hediffSet.HasHediff(HediffDef.Named("HeartAttack"));
                     
                 case EmergencyItemType.Irrigation:
                     // 生理盐水冲洗：目标必须有包含污染度的开放伤口
@@ -457,8 +458,6 @@ namespace EmergencyExpanded
 
         private static bool ApplyDefibrillatorEffect(Pawn doctor, Pawn patient, Thing item)
         {
-            if (EE_DefOf.VentricularFibrillation == null) return false;
-
             // 触发心电图电击波峰
             VitalTracker.TriggerDefibrillatorShock(patient);
 
@@ -469,19 +468,35 @@ namespace EmergencyExpanded
                 Verse.Sound.SoundStarter.PlayOneShot(shockSound, new TargetInfo(patient.Position, patient.Map));
             }
 
-            Hediff vf = patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation);
-            if (vf == null) return false;
+            // 1. 读取当前可电击的病情状态 (室颤 或 原版心脏病发作)
+            Hediff vf = (EE_DefOf.VentricularFibrillation != null) 
+                ? patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.VentricularFibrillation) 
+                : null;
+            Hediff heartAttack = patient.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("HeartAttack"));
 
-            // 确定当前病情状态成功率
-            float baseChance = vf.Severity < 0.60f 
-                ? EE_Constants.DefibSuccessRateVF 
-                : EE_Constants.DefibSuccessRateCardiacArrestBase;
+            if (vf == null && heartAttack == null) return false;
 
-            // CPR 灌注加成
-            bool hasCpr = EE_DefOf.EE_CPR_Receiving != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_CPR_Receiving);
-            if (hasCpr && vf.Severity >= 0.60f)
+            bool isHeartAttack = heartAttack != null;
+            float baseChance = 0f;
+
+            if (isHeartAttack)
             {
-                baseChance += EE_Constants.DefibSuccessRateCprBoost;
+                // 对原版心脏病实施电击复律 (Cardioversion)
+                baseChance = EE_Constants.DefibCardioversionSuccessBase;
+            }
+            else
+            {
+                // 确定室颤阶段除颤的当前病情状态成功率
+                baseChance = vf.Severity < 0.60f 
+                    ? EE_Constants.DefibSuccessRateVF 
+                    : EE_Constants.DefibSuccessRateCardiacArrestBase;
+
+                // CPR 灌注加成
+                bool hasCpr = EE_DefOf.EE_CPR_Receiving != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_CPR_Receiving);
+                if (hasCpr && vf.Severity >= 0.60f)
+                {
+                    baseChance += EE_Constants.DefibSuccessRateCprBoost;
+                }
             }
 
             // 医生医疗技能加成 (每级 +1.5%)
@@ -512,7 +527,9 @@ namespace EmergencyExpanded
             }
 
             // 4. 缺氧时间惩罚：脑缺氧和心肌缺血越严重，复苏希望越渺茫
-            Hediff hypoxia = patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia);
+            Hediff hypoxia = (EE_DefOf.CerebralHypoxia != null) 
+                ? patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia) 
+                : null;
             if (hypoxia != null)
             {
                 baseChance -= hypoxia.Severity * EE_Constants.DefibHypoxiaMaxPenalty;
@@ -524,22 +541,37 @@ namespace EmergencyExpanded
             // 摇点判定
             if (Rand.Value <= baseChance)
             {
-                // 除颤成功
-                patient.health.RemoveHediff(vf);
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤成功！恢复窦性心律", EE_Constants.FirstAidMoteDurationCritical);
-                
-                // 如果伴有脑缺氧，飘字提醒
-                if (patient.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia))
+                // 电击复苏成功
+                if (isHeartAttack)
                 {
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "自主循环已恢复", EE_Constants.FirstAidMoteDurationLong);
+                    patient.health.RemoveHediff(heartAttack);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "电复律成功！已恢复窦性心律", EE_Constants.FirstAidMoteDurationCritical);
+                }
+                else
+                {
+                    patient.health.RemoveHediff(vf);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤成功！恢复窦性心律", EE_Constants.FirstAidMoteDurationCritical);
+                    
+                    // 如果伴有脑缺氧，飘字提醒
+                    if (patient.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia))
+                    {
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "自主循环已恢复", EE_Constants.FirstAidMoteDurationLong);
+                    }
                 }
                 
                 return true; // 成功直接消耗
             }
             else
             {
-                // 除颤失败
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤未成功！", EE_Constants.FirstAidMoteDurationCritical);
+                // 电击复苏失败
+                if (isHeartAttack)
+                {
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "电复律失败！", EE_Constants.FirstAidMoteDurationCritical);
+                }
+                else
+                {
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤未成功！", EE_Constants.FirstAidMoteDurationCritical);
+                }
 
                 // 物理副作用：对 Torso（或防守后退部位）造成电击微量灼伤
                 BodyPartRecord burnPart = null;

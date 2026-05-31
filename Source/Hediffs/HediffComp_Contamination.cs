@@ -138,15 +138,15 @@ namespace EmergencyExpanded
 
         private void CheckInfectionProgression()
         {
-            Hediff localInf = Pawn.health.hediffSet.hediffs.Find(h => (h.def == EE_DefOf.EE_LocalizedInfection || h.def == EE_DefOf.EE_Necrosis) && h.Part == this.parent.Part);
+            Hediff localInf = Pawn.health.hediffSet.hediffs.Find(h => (h.def == HediffDef.Named("Infection") || h.def == EE_DefOf.EE_Necrosis) && h.Part == this.parent.Part);
 
             if (this.contamination >= EE_Constants.ContaminationLocalInfectionThreshold)
             {
                 if (localInf == null)
                 {
-                    // 判断应该引发哪种局部感染
+                    // 判断应该引发哪种局部感染（钝性挫伤引发坏死，其余开放伤引发原版感染）
                     bool isBlunt = this.parent.def.defName.Contains("Bruise") || this.parent.def.defName.Contains("Crush") || this.parent.def.defName.Contains("Blunt");
-                    HediffDef targetLocalInfection = isBlunt ? EE_DefOf.EE_Necrosis : EE_DefOf.EE_LocalizedInfection;
+                    HediffDef targetLocalInfection = isBlunt ? EE_DefOf.EE_Necrosis : HediffDef.Named("Infection");
 
                     Pawn.health.AddHediff(targetLocalInfection, this.parent.Part);
                     localInf = Pawn.health.hediffSet.hediffs.Find(h => h.def == targetLocalInfection && h.Part == this.parent.Part);

@@ -86,9 +86,10 @@ namespace EmergencyExpanded
 
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+            float overdoseSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.DrugOverdose)?.Severity ?? 0f;
 
-            // 1. 结算缺氧进度
-            if (pumping < Props.safePumpingThreshold || breathing < Props.safeBreathingThreshold)
+            // 1. 结算缺氧进度（在泵血、呼吸能力低，或者重度药物过量时触发）
+            if (pumping < Props.safePumpingThreshold || breathing < Props.safeBreathingThreshold || overdoseSev > 0.75f)
             {
                 float severityFactor = 1f;
                 if (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
@@ -97,6 +98,18 @@ namespace EmergencyExpanded
                 if (parent.Severity >= EE_Settings.ComaSeverityThreshold)
                 {
                     severityFactor *= EE_Settings.ComaSeverityFactor; 
+                }
+
+                // 麻醉脑保护机制：麻醉状态下脑耗氧量减半 (乘以 0.5f)
+                if (Pawn.health.hediffSet.HasHediff(HediffDefOf.Anesthetic))
+                {
+                    severityFactor *= EE_Constants.AnestheticHypoxiaProtectionFactor;
+                }
+
+                // 药物过量中枢抑制加成：重度药物过量导致中枢性窒息，额外增加缺氧增长速度
+                if (overdoseSev > 0.75f)
+                {
+                    severityFactor += (overdoseSev - 0.75f) * EE_Constants.DrugOverdoseHypoxiaSeverityIncrease;
                 }
 
                 severityAdjustment += (Props.hypoxiaPerDay * severityFactor) / 1000f;

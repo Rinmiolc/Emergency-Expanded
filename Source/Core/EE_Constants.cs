@@ -60,8 +60,10 @@ namespace EmergencyExpanded
         public const float AcidosisCoreDamageMultiplier = 2.0f;
 
         // ================= 凝血病 (Coagulopathy) =================
-        public const float CoagulopathyAcidosisThreshold = 0.2f;
-        public const float CoagulopathyBloodLossThreshold = 0.30f;
+        public static float CoagulopathyAcidosisThreshold = 0.2f;
+        public static float CoagulopathyBloodLossThreshold = 0.30f;
+        // 凝血障碍对物理流血速度的最大加成倍数 (例如严重度 1.0 时增加 1.5倍流血速度)
+        public const float CoagulopathyBleedMultiplier = 1.5f;
 
         // ================= 物理流血 (Blood Loss) =================
         // 全局流血速度乘数，用来调整普通伤和大出血的流血速度
@@ -237,18 +239,28 @@ namespace EmergencyExpanded
         // ================= 脑缺氧速度参数 (Cerebral Hypoxia Rates) =================
         // 脑部缺氧每天增加的基础严重度百分比
         public const float HypoxiaPerDay = 2.0f;
-        // 脑部缺氧在供氧充足时每天自然消除的基础严重度百分比（保持原版3.0f不变）
+        // 脑部缺氧在供氧充足时每天自然消除的基础严重度百分比
         public const float HypoxiaRecoveryPerDay = 4.5f;
+        // 麻醉状态下的脑缺氧严重度增加速度乘数（脑保护机制，降低耗氧量）
+        public const float AnestheticHypoxiaProtectionFactor = 0.5f;
+        // 药物过量导致呼吸抑制时，脑缺氧每天额外增加的严重度
+        public const float DrugOverdoseHypoxiaSeverityIncrease = 2.5f;
 
         // ================= 心肺复苏与除颤仪 (CPR & Defibrillator) =================
+        // CPR 成功判定基础概率 (原版由于极难复苏，这个可以稍微高点)
+        public const float CprSuccessBaseChance = 0.05f;
         // CPR 时维持患者呼吸和血液循环能力的最低数值。
         public const float CprMinCapacityLevel = 0.60f;
-        // 除颤仪对心室颤动（VF，严重度 < 60%）阶段的除颤基础成功率。
-        public const float DefibSuccessRateVF = 0.80f;
-        // 除颤仪对完全心跳骤停（Cardiac Arrest，严重度 >= 60%）阶段的除颤基础成功率。
+        
+        // ================= 除颤仪参数 (Defibrillator) =================
+        // 除颤仪对室颤 (VF) 的基础成功率
+        public const float DefibSuccessRateVF = 0.55f;
+        // 除颤仪对心脏停搏 (Cardiac Arrest) 的基础成功率
         public const float DefibSuccessRateCardiacArrestBase = 0.15f;
-        // 接受 CPR 状态（EE_CPR_Receiving）对心跳骤停阶段除颤成功率的额外加成。
-        public const float DefibSuccessRateCprBoost = 0.35f;
+        // 除颤仪对原版心脏病 (Heart Attack) 电复律的基础成功率
+        public const float DefibCardioversionSuccessBase = 0.75f;
+        // 在CPR维持灌注下除颤的额外成功率加成
+        public const float DefibSuccessRateCprBoost = 0.15f;
         // 医生的医疗技能（Medicine）对除颤成功率的加成系数（每级增加的概率）。
         public const float DefibSuccessRateSkillFactor = 0.015f;
         public const float DefibFailureBurnDamage = 4f;
@@ -300,6 +312,16 @@ namespace EmergencyExpanded
         public const float PneumothoraxSeverityFactor = 0.04f;
         // 气胸的初始保底严重度
         public const float PneumothoraxBaseSeverity = 0.35f;
+        
+        // ================= 原版疾病与状态兼容联动参数 (Vanilla Integrations) =================
+        // 原版心脏病转化为室颤的临界严重度阈值
+        public const float HeartAttackVFConversionThreshold = 0.85f;
+        // 突发重度代谢性酸中毒导致心脏病转化为室颤的酸中毒严重度阈值
+        public const float HeartAttackAcidosisConversionThreshold = 0.85f;
+        // 原版哮喘发作时，触发气胸的概率乘数
+        public const float AsthmaPneumothoraxChanceMultiplier = 1.8f;
+        // 原版哮喘发作时，触发气胸的额外严重度惩罚
+        public const float AsthmaPneumothoraxSeverityBonus = 0.2f;
 
         // ================= 骨折详细参数追加 (Fracture Extended) =================
         // 骨折剧痛造成的瞬间硬直Ticks (80 ticks = 1.33秒)

@@ -55,22 +55,32 @@ namespace EmergencyExpanded
                     // Generate pneumothorax based on original damage
                     if (EE_DefOf.EE_Pneumothorax != null)
                     {
+                        float severityIncrease = EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor;
+                        
+                        // 哮喘急性联动：如果拥有原版哮喘，气胸严重度和易感性显著增加
+                        bool hasAsthma = ___pawn.health.hediffSet.HasHediff(HediffDef.Named("Asthma"));
+                        if (hasAsthma)
+                        {
+                            severityIncrease = (severityIncrease * EE_Constants.AsthmaPneumothoraxChanceMultiplier) + EE_Constants.AsthmaPneumothoraxSeverityBonus;
+                        }
+
                         // Check if already has pneumothorax on this part
                         Hediff existingPneumo = __instance.hediffSet.hediffs.FirstOrDefault(h => h.def == EE_DefOf.EE_Pneumothorax && h.Part == part);
                         
                         if (existingPneumo != null)
                         {
-                            existingPneumo.Severity += EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor;
+                            existingPneumo.Severity += severityIncrease;
                         }
                         else
                         {
                             Hediff pneumo = HediffMaker.MakeHediff(EE_DefOf.EE_Pneumothorax, ___pawn, part);
-                            pneumo.Severity = Mathf.Clamp01(EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor); 
+                            pneumo.Severity = Mathf.Clamp01(severityIncrease); 
                             __instance.AddHediff(pneumo, part, dinfo, null);
                             
                             if (___pawn.Spawned && ___pawn.Map != null)
                             {
-                                MoteMaker.ThrowText(___pawn.DrawPos, ___pawn.Map, "气胸!", Color.red);
+                                string moteText = hasAsthma ? "气胸 (合并哮喘)!" : "气胸!";
+                                MoteMaker.ThrowText(___pawn.DrawPos, ___pawn.Map, moteText, Color.red);
                             }
                         }
                     }

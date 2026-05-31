@@ -29,7 +29,8 @@ namespace EmergencyExpanded
 
             if (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold && bloodLossSev > EE_Settings.CoagulopathyBloodLossThreshold)
             {
-                float factor = acidosisSev * 2f + hypothermiaSev * 2f + bloodLossSev;
+                float hypothermiaFactor = hypothermiaSev > 0.20f ? (hypothermiaSev * 4.0f) : (hypothermiaSev * 2.0f);
+                float factor = acidosisSev * 2f + hypothermiaFactor + bloodLossSev;
                 severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);
             }
             else
