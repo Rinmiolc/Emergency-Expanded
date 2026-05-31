@@ -322,5 +322,9 @@ namespace EmergencyExpanded
         public const float FractureSeverityMin = 5f;
         // 骨折的最大严重度
         public const float FractureSeverityMax = 30f;
+
+        // ================= 声音效果与提示 (Sound & Effects) =================
+        // 骨折音效的 DefName 标识符符文
+        public const string SoundBoneCrunch = "EE_BoneCrunch";
     }
 }

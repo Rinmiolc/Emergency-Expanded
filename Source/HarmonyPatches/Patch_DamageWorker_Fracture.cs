@@ -132,10 +132,16 @@ namespace EmergencyExpanded
                             }
                         }
 
-                        // 飘字警示
+                        // 飘字警示与播放骨折音效
                         if (pawn.Spawned && pawn.Map != null)
                         {
                             MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, isOpen ? "开放性骨折!" : "闭合性骨折!", Color.red);
+
+                            Verse.SoundDef crunchSound = DefDatabase<Verse.SoundDef>.GetNamed(EE_Constants.SoundBoneCrunch, false);
+                            if (crunchSound != null)
+                            {
+                                Verse.Sound.SoundStarter.PlayOneShot(crunchSound, new TargetInfo(pawn.Position, pawn.Map));
+                            }
                         }
                     }
                 }
