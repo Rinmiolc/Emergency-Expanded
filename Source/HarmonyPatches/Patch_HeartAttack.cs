@@ -5,11 +5,12 @@ using EmergencyExpanded;
 
 namespace EmergencyExpanded
 {
-    [HarmonyPatch(typeof(Hediff_HeartAttack), "Tick")]
+    [HarmonyPatch(typeof(HediffWithComps), "Tick")]
     public static class Patch_HeartAttack_Tick
     {
-        public static void Postfix(Hediff_HeartAttack __instance)
+        public static void Postfix(HediffWithComps __instance)
         {
+            if (!(__instance is Hediff_HeartAttack)) return;
             if (__instance.pawn == null || __instance.pawn.Dead || !__instance.pawn.IsHashIntervalTick(60)) return;
 
             // 原版心脏病转化为室颤的判定
