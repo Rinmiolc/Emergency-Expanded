@@ -41,7 +41,7 @@
     <label>败血症</label>
     <description>病原体侵入血液循环系统引起的全身性严重感染。会极大地破坏免疫系统，并直接诱发全身炎症反应综合征(SIRS)，从而导致多器官衰竭甚至死亡。</description>
     <makesSickThought>true</makesSickThought>
-    <lethalSeverity>1.0</lethalSeverity>
+    <maxSeverity>1.0</maxSeverity>
     <tendable>false</tendable>
     <comps>
       <li Class="HediffCompProperties_Immunizable">
