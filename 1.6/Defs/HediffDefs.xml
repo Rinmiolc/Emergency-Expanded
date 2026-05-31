@@ -250,7 +250,11 @@
     <labelNoun>大出血的伤口</labelNoun>
     <description>由于主要血管或动脉破损引发的灾难性大出血。如果不立即就地施加压迫包扎或止血带结扎，伤员将在极短时间内死于失血性休克。</description>
     <hediffClass>Hediff_Injury</hediffClass>
-    <defaultLabelColor>(1.0, 0.2, 0.2)</defaultLabelColor> <injuryProps>
+    <defaultLabelColor>(1.0, 0.2, 0.2)</defaultLabelColor> 
+    <comps>
+      <li Class="EmergencyExpanded.HediffCompProperties_MassiveBleeding" />
+    </comps>
+    <injuryProps>
       <painPerSeverity>0.02</painPerSeverity>
       <bleedRate>3.0</bleedRate> 
       <canMerge>false</canMerge>

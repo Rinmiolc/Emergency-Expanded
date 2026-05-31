@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 
-  <!-- 草药急救包 (Herbal First Aid Kit) -->
+  <!-- 急救包 (First Aid Kit) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_HerbalFirstAidKit</defName>
-    <label>草药急救包</label>
-    <description>内含粗制草药提取液、简易压迫绷带和固定板。专为战地就地抢救设计，包扎速度极快且完全不受野外无医疗床的工作量惩罚，但由于药品条件简陋，处理伤口的品质（Tend Quality）较低。不能用于常规的外科手术。</description>
+    <label>急救包</label>
+    <description>内含粗制草药提取液、简易压迫绷带和固定板。专为战地就地抢救设计，包扎速度极快且完全不受野外无医疗床的工作量惩罚，但由于药品条件简陋，处理伤口的品质（Tend Quality）较低。不能用于常规的外科手术。对于大出血，一个急救包最多可尝试包扎 5 次。</description>
     <graphicData>
-      <texPath>Things/Item/Resource/Medicine/MedicineHerbal</texPath>
+      <texPath>Things/Item/FirstAid/FirstAidKit</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
     </graphicData>
     <soundInteract>Standard_Drop</soundInteract>
@@ -24,13 +24,13 @@
     </thingCategories>
   </ThingDef>
 
-  <!-- 工业级急救包 (First Aid Kit) -->
+  <!-- 急救箱 (First Aid Box) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_FirstAidKit</defName>
-    <label>战地急救箱</label>
-    <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干大出血的核心耗材。不能用于基地的常规手术。</description>
+    <label>急救箱</label>
+    <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干大出血的核心耗材。不能用于基地的常规手术。对于大出血，一个急救箱最多可尝试包扎 10 次。</description>
     <graphicData>
-      <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
+      <texPath>Things/Item/FirstAid/FirstAidBox</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
     </graphicData>
     <soundInteract>Standard_Drop</soundInteract>

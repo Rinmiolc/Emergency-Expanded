@@ -167,7 +167,7 @@ namespace EmergencyExpanded
                     break;
                 case EmergencyItemType.FirstAidKit:
                     float kitQuality = item.def.defName == "EE_HerbalFirstAidKit" ? EE_Constants.FirstAidKitHerbalQuality : EE_Constants.FirstAidKitStandardQuality;
-                    consumeItem = ApplyFieldTend(doctor, patient, kitQuality, allowConsecutive: true);
+                    consumeItem = ApplyFieldTend(doctor, patient, item, kitQuality, allowConsecutive: true);
                     break;
                 case EmergencyItemType.Medicine:
                     float medMultiplier = item.def == ThingDefOf.MedicineHerbal ? EE_Constants.MedicineHerbalMultiplier :
@@ -178,7 +178,7 @@ namespace EmergencyExpanded
                     bool allowConsecutive = item.def == ThingDefOf.MedicineHerbal || 
                                             item.def == ThingDefOf.MedicineIndustrial || 
                                             item.def == ThingDefOf.MedicineUltratech;
-                    consumeItem = ApplyFieldTend(doctor, patient, finalMedQuality, allowConsecutive);
+                    consumeItem = ApplyFieldTend(doctor, patient, item, finalMedQuality, allowConsecutive);
                     break;
                 case EmergencyItemType.IngestibleDirect:
                     if (item.def.defName == "HemogenPack")
@@ -305,7 +305,15 @@ namespace EmergencyExpanded
             }
         }
 
-        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, float tendQuality, bool allowConsecutive)
+        private static int GetMaxMassiveBleedingTendAttempts(Thing item)
+        {
+            if (item == null || item.def == null) return EE_Constants.MassiveBleedingTendMaxAttempts;
+            if (item.def.defName == "EE_HerbalFirstAidKit") return 5;
+            if (item.def.defName == "EE_FirstAidKit") return 10;
+            return EE_Constants.MassiveBleedingTendMaxAttempts;
+        }
+
+        private static bool ApplyFieldTend(Pawn doctor, Pawn patient, Thing item, float tendQuality, bool allowConsecutive)
         {
             List<Hediff> hediffsToTend = new List<Hediff>();
             foreach (Hediff hediff in patient.health.hediffSet.hediffs)
@@ -334,22 +342,92 @@ namespace EmergencyExpanded
             Hediff primaryWound = hediffsToTend[0];
             if (primaryWound.def == EE_DefOf.MassiveBleeding)
             {
-                float reduction = UnityEngine.Mathf.Clamp(EE_Constants.MassiveBleedingTendReductionBase + tendQuality * EE_Constants.MassiveBleedingTendReductionFactor, EE_Constants.MassiveBleedingTendReductionBase, EE_Constants.MassiveBleedingTendReductionMax);
-                primaryWound.Severity -= reduction;
-                
-                primaryWound.Tended(tendQuality, 1.0f);
-
-                if (primaryWound.Severity <= 0.001f)
+                var comp = primaryWound.TryGetComp<HediffComp_MassiveBleeding>();
+                if (comp != null)
                 {
-                    patient.health.RemoveHediff(primaryWound);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已闭合！", EE_Constants.FirstAidMoteDurationCritical);
-                    return true;
+                    comp.tendAttempts++;
+                }
+                int currentAttempts = comp?.tendAttempts ?? 1;
+
+                bool tendSuccess = false;
+                float finalChance = 0f;
+
+                if (currentAttempts <= EE_Constants.MassiveBleedingTendFailAttempts)
+                {
+                    // 前几次必定失败
+                    tendSuccess = false;
+                    finalChance = 0f;
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"止血失败 (0%)", EE_Constants.FirstAidMoteDurationLong);
                 }
                 else
                 {
-                    int remainTimes = (int)System.Math.Ceiling(primaryWound.Severity / reduction);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"正在缝合 (还需 {remainTimes} 次)", EE_Constants.FirstAidMoteDurationLong);
-                    return !allowConsecutive;
+                    // 超过强制失败次数后，动态计算成功率。随着次数增加成功率递增。
+                    // tendQuality 综合了医生技能、急救包类型和基础质量
+                    float baseChance = tendQuality; 
+                    int extraAttempts = currentAttempts - EE_Constants.MassiveBleedingTendFailAttempts;
+                    finalChance = baseChance + (extraAttempts * 0.15f);
+                    
+                    // 限制在合理范围内
+                    finalChance = UnityEngine.Mathf.Clamp(finalChance, 0.05f, 0.95f);
+
+                    if (Rand.Value <= finalChance)
+                    {
+                        tendSuccess = true;
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"止血成功", EE_Constants.FirstAidMoteDurationLong);
+                    }
+                    else
+                    {
+                        tendSuccess = false;
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"止血失败 ({(finalChance * 100f):F0}%)", EE_Constants.FirstAidMoteDurationLong);
+                    }
+                }
+
+                if (tendSuccess)
+                {
+                    // 平均3次成功才能完全包扎一个大出血 (初始严重度是 1.0)
+                    // 每次成功的降低量大约在 0.25 - 0.45 之间（受包扎质量影响）
+                    float reduction = 0.25f + (tendQuality * 0.20f); 
+                    primaryWound.Severity -= reduction;
+                    primaryWound.Tended(tendQuality, 1.0f);
+
+                    if (primaryWound.Severity <= 0.001f)
+                    {
+                        patient.health.RemoveHediff(primaryWound);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已完全闭合！", EE_Constants.FirstAidMoteDurationCritical);
+                        return true; // 完全闭合，消耗掉这次使用的物资
+                    }
+                    else
+                    {
+                        return !allowConsecutive; // 尚未完全闭合，允许继续用这个包持续治疗
+                    }
+                }
+                else
+                {
+                    // 失败了，处理道具损耗
+                    int maxAttempts = GetMaxMassiveBleedingTendAttempts(item);
+
+                    if (item.def.useHitPoints)
+                    {
+                        // 带有耐久度的急救包
+                        int damageAmount = item.MaxHitPoints / maxAttempts;
+                        item.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, damageAmount));
+                        if (item.Destroyed || item.HitPoints <= 0)
+                        {
+                            MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "急救包已损坏", EE_Constants.FirstAidMoteDurationStandard);
+                            return true; // 触发销毁逻辑
+                        }
+                    }
+                    else
+                    {
+                        // 普通医药等无耐久物品，每失败N次强制消耗一个
+                        if (currentAttempts % maxAttempts == 0)
+                        {
+                            MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, $"{item.LabelCap}已消耗", EE_Constants.FirstAidMoteDurationStandard);
+                            return true; // 强制消耗一个
+                        }
+                    }
+                    
+                    return !allowConsecutive; // 尚未完全闭合或消耗完，允许继续尝试
                 }
             }
             else

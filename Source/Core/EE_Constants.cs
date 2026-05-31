@@ -77,6 +77,10 @@ namespace EmergencyExpanded
         public const float MassiveBleedingChanceTorsoBase = 0.35f;
         // 当角色四肢核心部位受到创伤判定时，触发致命“大出血”事件的基础概率。
         public const float MassiveBleedingChanceLimbBase = 0.35f;
+        
+        // 动态大出血概率的最小与最大限制
+        public const float MassiveBleedingChanceMin = 0.10f;
+        public const float MassiveBleedingChanceMax = 0.90f;
 
         // ================= 骨折机制 (Bone Fracture) =================
         // 游戏中所有钝器或锐器伤害导致骨折判定的全局基础乘数。
@@ -124,6 +128,11 @@ namespace EmergencyExpanded
         public const float MassiveBleedingTendReductionFactor = 0.15f;
         // 单次大出血缝合削减量的最大上限。
         public const float MassiveBleedingTendReductionMax = 0.25f;
+        
+        // 大出血单个急救包（或单次持续缝合）的最大尝试次数上限
+        public const int MassiveBleedingTendMaxAttempts = 8;
+        // 大出血缝合前几次必定失败的次数阈值
+        public const int MassiveBleedingTendFailAttempts = 3;
 
         // 血包（HemogenPack）直接使用时削减失血严重程度的比例（占致死量的百分比）。
         public const float HemogenPackSeverityReductionFactor = 0.12f;
