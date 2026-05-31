@@ -1,0 +1,7 @@
+feat(core): dynamic ECG waveform and balance SIRS progression
+
+- feat(ui): implement dynamic ECG waveform based on real-time HR, maintaining P-QRS-T physical width
+- refactor(ui): remove purple ECG state, unifying all critical warnings under yellow
+- style(ui): stretch ECG wave render rect to flawlessly join the right-side digital panel
+- fix(sirs): reduce tended injury severity contribution from 20% to 5% to realistically halt inflammation progression post-treatment
+- chore: rebuild assembly for 1.6

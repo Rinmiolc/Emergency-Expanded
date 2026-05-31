@@ -205,17 +205,11 @@ namespace EmergencyExpanded
                 coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);
                 glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);
             }
-            else if (bpm > EE_Constants.EcgTachycardiaThreshold)
+            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < EE_Constants.EcgBradycardiaThreshold || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
             {
                 gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);
                 coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);
                 glowColor = new Color(1.0f, 0.5f, 0.0f, 0.4f);
-            }
-            else if (bpm < EE_Constants.EcgBradycardiaThreshold || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
-            {
-                gridColor = new Color(0.3f, 0.1f, 0.4f, 0.15f);
-                coreColor = new Color(0.8f, 0.3f, 1.0f, 1.0f);
-                glowColor = new Color(0.6f, 0.0f, 0.8f, 0.4f);
             }
             else
             {
@@ -250,7 +244,7 @@ namespace EmergencyExpanded
             }
             GUI.color = Color.white;
 
-            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 20f, innerScreen.width - 48f - 6f, 46f);
+            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 20f, innerScreen.width - 48f, 46f);
             float centerY = waveRect.y + waveRect.height / 2f;
             float waveWidth = waveRect.width;
 
@@ -316,14 +310,19 @@ namespace EmergencyExpanded
                         else
                         {
                             bool isHypoxic = vitals.hasCerebralHypoxia || bpm > EE_Constants.EcgTachycardiaThreshold;
-                            val = GetBaseECGValue(p, isHypoxic);
+                            val = GetBaseECGValue(p, isHypoxic, bpm);
                             
                             // 反走样峰值捕捉：如果在这两帧相位之间跨越了波峰或波谷，强制该像素显示极限值
                             float pPrev = (vitals.phase + phaseDelta * (step - 1f) / stepPixels) % 1f;
                             if (pPrev < p)
                             {
-                                if (pPrev < 0.23f && p >= 0.23f) val = 1.20f;
-                                else if (pPrev < 0.26f && p >= 0.26f) val = -0.35f;
+                                float beatDuration_AA = (bpm > 0.1f) ? (60f / bpm) : 1f;
+                                float activeFraction_AA = Mathf.Clamp(0.45f / beatDuration_AA, 0.1f, 0.95f);
+                                float pPeakR = (0.23f / 0.55f) * activeFraction_AA;
+                                float pPeakS = (0.26f / 0.55f) * activeFraction_AA;
+
+                                if (pPrev < pPeakR && p >= pPeakR) val = 1.20f;
+                                else if (pPrev < pPeakS && p >= pPeakS) val = -0.35f;
                             }
                         }
                         if (x >= 0 && x < vitals.waveBuffer.Length)
@@ -426,37 +425,47 @@ namespace EmergencyExpanded
         // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
         // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
         // 包含心肌缺血/缺氧时的 ST段压低 与 T波倒置 拟真病理改变
-        private float GetBaseECGValue(float p, bool isHypoxic)
+        private float GetBaseECGValue(float p, bool isHypoxic, float bpm)
         {
-            if (p < 0.05f) return 0f;
+            float beatDuration = (bpm > 0.1f) ? (60f / bpm) : 1f;
+            float activeDuration = 0.45f;
+            // 限制活跃部分比例，确保波形不会在极高心率下互相重叠超过界限
+            float activeFraction = Mathf.Clamp(activeDuration / beatDuration, 0.1f, 0.95f);
+            
+            if (p > activeFraction) return 0f; // TP段基线
+            
+            // 将 p 映射到标准的 0~0.55 区间，保证 P-QRS-T 波形在物理时间（屏幕宽度）上的一致性
+            float origP = (p / activeFraction) * 0.55f;
+            
+            if (origP < 0.05f) return 0f;
             // P波 (心房除极)
-            if (p < 0.13f) 
-                return Mathf.Sin(((p - 0.05f) / 0.08f) * Mathf.PI) * 0.12f;
+            if (origP < 0.13f) 
+                return Mathf.Sin(((origP - 0.05f) / 0.08f) * Mathf.PI) * 0.12f;
             // PR段
-            if (p < 0.18f) 
+            if (origP < 0.18f) 
                 return 0f;
             // Q波 (室间隔除极)
-            if (p < 0.20f) 
-                return -((p - 0.18f) / 0.02f) * 0.15f;
+            if (origP < 0.20f) 
+                return -((origP - 0.18f) / 0.02f) * 0.15f;
             // R波 (心室主除极 - 极速上升)
-            if (p < 0.23f) 
-                return -0.15f + ((p - 0.20f) / 0.03f) * 1.35f; // R波顶峰 1.20
+            if (origP < 0.23f) 
+                return -0.15f + ((origP - 0.20f) / 0.03f) * 1.35f; // R波顶峰 1.20
             // S波 (心室基底除极 - 极速下降)
-            if (p < 0.26f) 
-                return 1.20f - ((p - 0.23f) / 0.03f) * 1.55f; // S波谷底 -0.35
+            if (origP < 0.26f) 
+                return 1.20f - ((origP - 0.23f) / 0.03f) * 1.55f; // S波谷底 -0.35
             
             // ST段 (缓慢回基线)
-            if (p < 0.32f) 
+            if (origP < 0.32f) 
             {
-                float stBase = -0.35f + ((p - 0.26f) / 0.06f) * 0.35f;
+                float stBase = -0.35f + ((origP - 0.26f) / 0.06f) * 0.35f;
                 // 脑部窒息缺氧或重度低血容量休克时：发生 ST段压低 (ST Depression) 0.08 像素单位
                 return isHypoxic ? (stBase - 0.08f) : stBase;
             }
             
             // T波 (心室复极 - 不对称宽波)
-            if (p < 0.55f) 
+            if (origP < 0.55f) 
             {
-                float tPhase = (p - 0.32f) / 0.23f;
+                float tPhase = (origP - 0.32f) / 0.23f;
                 float tWave = Mathf.Pow(Mathf.Sin(tPhase * Mathf.PI), 1.5f) * 0.28f;
                 if (isHypoxic)
                 {
@@ -465,7 +474,7 @@ namespace EmergencyExpanded
                 }
                 return tWave;
             }
-            return 0f; // TP段基线
+            return 0f;
         }
     }
 

@@ -16,7 +16,7 @@ namespace EmergencyExpanded
         public static DifficultyPreset Difficulty => EE_Mod.Settings?.difficulty ?? DifficultyPreset.Hardcore;
 
         // ================= 难度乘数 (Difficulty Multipliers) =================
-        private static float BleedingMultiplier => Difficulty == DifficultyPreset.Easy ? 0.8f : (Difficulty == DifficultyPreset.Realistic ? 2.0f : 1.0f);
+        private static float BleedingMultiplier => Difficulty == DifficultyPreset.Easy ? 0.6f : (Difficulty == DifficultyPreset.Realistic ? 2.0f : 1.0f);
         private static float FractureMultiplier => Difficulty == DifficultyPreset.Easy ? 0.8f : (Difficulty == DifficultyPreset.Realistic ? 1.5f : 1.0f);
         private static float GoldenTimeMultiplier => Difficulty == DifficultyPreset.Easy ? 0.5f : (Difficulty == DifficultyPreset.Realistic ? 1.2f : 1.0f);
 

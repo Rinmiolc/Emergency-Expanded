@@ -64,7 +64,7 @@ namespace EmergencyExpanded
 
         // ================= 物理流血 (Blood Loss) =================
         // 全局流血速度乘数，用来调整普通伤和大出血的流血速度
-        public const float GlobalBleedingFactor = 0.5f;
+        public const float GlobalBleedingFactor = 0.8f;
         // 当心脏停跳后，因残余血压和重力导致的被动流血速度下限（占正常流血速度的百分比）。
         public const float MinBleedMultiplier = 0.1f;
         

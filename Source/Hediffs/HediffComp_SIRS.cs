@@ -28,7 +28,9 @@ namespace EmergencyExpanded
             {
                 if (hediff is Hediff_Injury injury)
                 {
-                    traumaLoad += injury.Severity * (injury.IsTended() ? 0.2f : 1.0f);
+                    // 现实中，伤口清创包扎能大幅切断炎性因子(DAMPs)的持续释放。
+                    // 降低已包扎伤口的权重至 5% (原为 20%)，使及时治疗能有效逆转 SIRS。
+                    traumaLoad += injury.Severity * (injury.IsTended() ? 0.05f : 1.0f);
                 }
                 else if (hediff.def == EE_DefOf.TissueHypoxia)
                 {
