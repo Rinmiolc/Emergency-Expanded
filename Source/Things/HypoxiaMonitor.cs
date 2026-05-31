@@ -106,8 +106,8 @@ namespace EmergencyExpanded
             }
 
             // 5. 多器官功能衰竭 (MODS)
-            float sirsSev = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.SIRS)?.Severity ?? 0f;
-            if ((pumping <= 0.40f && sirsSev > 0.4f) || acidosisSev > 0.5f)
+            float shockSev = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Shock)?.Severity ?? 0f;
+            if (shockSev >= EE_Constants.ShockIrreversibleThreshold || acidosisSev > 0.6f)
             {
                 if (EE_DefOf.MultipleOrganFailure != null && !__instance.hediffSet.HasHediff(EE_DefOf.MultipleOrganFailure))
                 {
