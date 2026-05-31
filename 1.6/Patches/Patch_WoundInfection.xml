@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+
+  <!-- 替换原版 WoundInfection 的描述 -->
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/HediffDef[defName="WoundInfection"]/description</xpath>
+    <value>
+      <description>伤口处细菌增殖引发的局部炎症与化脓。会导致该部位剧烈疼痛和功能下降。如果不及时用抗生素控制，可能会恶化为坏死或诱发全身性败血症。</description>
+    </value>
+  </Operation>
+
+  <!-- 替换原版 WoundInfection 的免疫属性 (修改免疫速度与严重度增加速度) -->
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/HediffDef[defName="WoundInfection"]/comps/li[@Class="HediffCompProperties_Immunizable"]</xpath>
+    <value>
+      <li Class="HediffCompProperties_Immunizable">
+        <severityPerDayNotImmune>0.5</severityPerDayNotImmune>
+        <immunityPerDaySick>0.4</immunityPerDaySick>
+        <severityPerDayImmune>-0.6</severityPerDayImmune>
+        <immunityPerDayNotSick>-0.1</immunityPerDayNotSick>
+      </li>
+    </value>
+  </Operation>
+
+  <!-- 替换原版 WoundInfection 的阶段 (Stages) -->
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/HediffDef[defName="WoundInfection"]/stages</xpath>
+    <value>
+      <stages>
+        <li>
+          <label>轻度</label>
+          <partEfficiencyOffset>-0.1</partEfficiencyOffset>
+          <painOffset>0.1</painOffset>
+        </li>
+        <li>
+          <label>中度</label>
+          <minSeverity>0.33</minSeverity>
+          <partEfficiencyOffset>-0.2</partEfficiencyOffset>
+          <painOffset>0.25</painOffset>
+        </li>
+        <li>
+          <label>严重(化脓)</label>
+          <minSeverity>0.66</minSeverity>
+          <partEfficiencyOffset>-0.4</partEfficiencyOffset>
+          <painOffset>0.4</painOffset>
+        </li>
+        <li>
+          <label>极限</label>
+          <minSeverity>0.85</minSeverity>
+          <lifeThreatening>true</lifeThreatening>
+          <partEfficiencyOffset>-0.8</partEfficiencyOffset>
+          <painOffset>0.6</painOffset>
+        </li>
+      </stages>
+    </value>
+  </Operation>
+
+</Patch>

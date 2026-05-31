@@ -31,7 +31,7 @@ namespace EmergencyExpanded
             // 2. 拟真药效：减缓感染扩散，并加速免疫生成
             foreach (var hediff in Pawn.health.hediffSet.hediffs)
             {
-                if (hediff.def == EE_DefOf.EE_LocalizedInfection || hediff.def == EE_DefOf.EE_Sepsis || hediff.def.defName.Contains("Infection") || hediff.def.defName.Contains("Sepsis"))
+                if (hediff.def == EE_DefOf.EE_Sepsis || hediff.def.defName.Contains("Infection") || hediff.def.defName.Contains("Sepsis"))
                 {
                     var immunizableComp = hediff.TryGetComp<HediffComp_Immunizable>();
                     if (immunizableComp != null && immunizableComp.Props is HediffCompProperties_Immunizable immProps)

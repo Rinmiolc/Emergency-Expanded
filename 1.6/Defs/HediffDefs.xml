@@ -8,6 +8,7 @@
     <description>由于严重缺氧和代谢性酸中毒导致的局部组织损伤。像冻伤一样，它会持续破坏组织扣减血量，如果不及早恢复血液循环，会导致部位永久脱落。</description>
     <hediffClass>EmergencyExpanded.Hediff_TissueHypoxia</hediffClass>
     <initialSeverity>3.0</initialSeverity> 
+    <tendable>false</tendable>
     <injuryProps>
       <painPerSeverity>0.015</painPerSeverity>
       <averagePainPerSeverityPermanent>0.005</averagePainPerSeverityPermanent>

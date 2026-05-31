@@ -17,7 +17,19 @@ namespace EmergencyExpanded
 
             // 1. 基础过滤：仅针对新增的外伤 (Injury)
             if (hediff == null || !(hediff is Hediff_Injury)) return;
-            if (!dinfo.HasValue) return;
+            
+            // 如果 dinfo 为空 (如使用开发者工具 Add Hediff)，我们依然可以尝试根据伤口类型和严重度来推算
+            float amt = dinfo.HasValue ? dinfo.Value.Amount : hediff.Severity;
+            DamageDef def = dinfo.HasValue ? dinfo.Value.Def : null;
+
+            if (def == null)
+            {
+                if (hediff.def.defName.Contains("Crush") || hediff.def.defName.Contains("Blunt") || hediff.def.defName.Contains("Bruise")) def = DamageDefOf.Blunt;
+                else if (hediff.def.defName.Contains("Cut") || hediff.def.defName.Contains("Scratch") || hediff.def.defName.Contains("Stab") || hediff.def.defName.Contains("Bite")) def = DamageDefOf.Cut;
+                else if (hediff.def.defName.Contains("Gunshot") || hediff.def.defName.Contains("Arrow")) def = DamageDefOf.Bullet;
+                else if (hediff.def.defName.Contains("Bomb") || hediff.def.defName.Contains("Explosion")) def = DamageDefOf.Bomb;
+                else def = DamageDefOf.Blunt; // Fallback for debugging
+            }
 
             Pawn pawn = ___pawn;
             if (pawn == null || pawn.Dead) return;
@@ -27,6 +39,8 @@ namespace EmergencyExpanded
             if (pawn.RaceProps.BloodDef == null) return;
             if (pawn.IsShambler) return;
 
+            // RimWorld 的 DamageWorker_AddInjury 通常会将 part 作为 null 传入，而把它直接赋给 hediff.Part
+            part = part ?? hediff.Part;
             if (part == null) return;
 
             // 3. 核心修复：如果这个部位已经被这次伤害彻底摧毁（生命值为0）或已经缺失，就不应该再添加骨折状态。
@@ -44,13 +58,10 @@ namespace EmergencyExpanded
                     return;
                 }
 
-                float amt = dinfo.Value.Amount;
                 float maxHP = part.def.GetMaxHealth(pawn);
 
                 float fractureChance = 0f;
                 float openChance = 0f;
-
-                DamageDef def = dinfo.Value.Def;
 
                 // 4. 根据不同伤害类型套用平衡性数学模型
                 if (def == DamageDefOf.Blunt || def == DamageDefOf.Crush || (def.armorCategory != null && def.armorCategory.defName == "Blunt"))
