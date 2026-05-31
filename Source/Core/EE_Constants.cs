@@ -97,12 +97,22 @@ namespace EmergencyExpanded
         // 单次外周缺血造成的组织坏死量。
         public const float PeripheralHypoxiaAmount = 1.0f;
         
-        // MODS 造成核心脏器坏死的基础概率（基础概率 * 严重度）。
-        public const float ModsCoreDamageChanceBase = 3.0f;
-        // MODS 单次对核心器造成的急性坏死量。
-        public const float ModsCoreDamageAmount = 0.5f;
+        // MODS 各器官急性损伤每天积累的严重度上限（基于极危休克压力）
+        public const float ModsKidneyDamageRate = 2.5f; 
+        public const float ModsLiverDamageRate = 1.5f;  
+        public const float ModsLungDamageRate = 1.0f;   
+        public const float ModsHeartDamageRate = 0.5f;  
+        // 恢复正常灌注后，器官急性损伤每天自然消除的严重度
+        public const float ModsOrganRecoveryRate = 3.0f;
+        
         // MODS 单次对大脑造成的脑损伤伤害。
         public const float ModsBrainDamageAmount = 0.0125f;
+        
+        // MODS 联动阈值与概率
+        public const float ModsHeartAttackThreshold = 0.6f;
+        public const float ModsHeartAttackChancePerHour = 0.015f; // 每小时 1.5% 的概率
+        public const float ModsPneumothoraxThreshold = 0.5f;
+        public const float ModsPneumothoraxChancePerDay = 0.05f;  // 每天 5% 的概率
 
         // ================= 急救物品与医疗机制 (First Aid Items & Medical) =================
         // 草药急救包的包扎质量倍率。

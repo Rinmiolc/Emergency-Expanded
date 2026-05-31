@@ -84,6 +84,13 @@ namespace EmergencyExpanded
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
             if (!Pawn.IsHashIntervalTick(60)) return;
 
+            // 如果已经脑死亡，直接移除脑缺氧状态
+            if (Pawn.health.hediffSet.HasHediff(EE_DefOf.VegetativeState, Pawn.health.hediffSet.GetBrain()))
+            {
+                Pawn.health.RemoveHediff(parent);
+                return;
+            }
+
             float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
             float overdoseSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.DrugOverdose)?.Severity ?? 0f;
@@ -156,6 +163,8 @@ namespace EmergencyExpanded
         {
             BodyPartRecord brain = Pawn.health.hediffSet.GetBrain();
             if (brain == null) return;
+            
+            if (Pawn.health.hediffSet.HasHediff(EE_DefOf.VegetativeState, brain)) return;
 
             HediffDef damageDef = EE_DefOf.HypoxicBrainDamage;
             if (damageDef == null) return;

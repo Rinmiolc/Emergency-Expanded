@@ -62,6 +62,17 @@ namespace EmergencyExpanded
                 {
                     severityFactor += hypothermia.Severity * 2.0f;
                 }
+                
+                // MODS 联动：急性肾损伤及肾衰竭大幅加速酸中毒（肾脏无法排酸）
+                if (Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_KidneyFailure))
+                {
+                    severityFactor += 3.0f; // 极大幅度加速
+                }
+                else
+                {
+                    Hediff aki = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_AcuteKidneyInjury);
+                    if (aki != null) severityFactor += aki.Severity * 1.5f;
+                }
 
                 if (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
                 {

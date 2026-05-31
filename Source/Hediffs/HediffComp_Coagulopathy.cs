@@ -26,11 +26,21 @@ namespace EmergencyExpanded
             float acidosisSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis)?.Severity ?? 0f;
             float hypothermiaSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia)?.Severity ?? 0f;
             float bloodLossSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
+            
+            bool liverFailed = Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_LiverFailure);
+            float liverInjurySev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_AcuteLiverInjury)?.Severity ?? 0f;
 
-            if (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold && bloodLossSev > EE_Settings.CoagulopathyBloodLossThreshold)
+            if (liverFailed || liverInjurySev > 0.4f || (acidosisSev > EE_Settings.CoagulopathyAcidosisThreshold && bloodLossSev > EE_Settings.CoagulopathyBloodLossThreshold))
             {
                 float hypothermiaFactor = hypothermiaSev > 0.20f ? (hypothermiaSev * 4.0f) : (hypothermiaSev * 2.0f);
                 float factor = acidosisSev * 2f + hypothermiaFactor + bloodLossSev;
+                
+                // MODS 联动：肝功能障碍直接破坏凝血因子合成，导致极难止血
+                if (liverFailed) factor += 4.0f;
+                else if (liverInjurySev > 0f) factor += liverInjurySev * 2.0f;
+                
+                if (factor < 0.5f) factor = 1.0f;
+
                 severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);
             }
             else

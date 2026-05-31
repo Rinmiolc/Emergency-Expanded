@@ -20,8 +20,22 @@ namespace EmergencyExpanded
         public static HediffDef Coagulopathy;
         public static HediffDef SIRS;
         public static HediffDef MultipleOrganFailure;
+        
+        public static HediffDef EE_BiologicalDeathTimer;
+        public static HediffDef EE_BiologicalDeath;
+        public static HediffDef EE_DeclaredDead;
         public static HediffDef EE_Pneumothorax;
         public static HediffDef EE_Shock;
+        
+        // MODS 细化器官损伤与衰竭 Def
+        public static HediffDef EE_MyocardialIschemia;
+        public static HediffDef EE_HeartFailure;
+        public static HediffDef EE_AcuteRespiratoryDistress;
+        public static HediffDef EE_RespiratoryFailure;
+        public static HediffDef EE_AcuteLiverInjury;
+        public static HediffDef EE_LiverFailure;
+        public static HediffDef EE_AcuteKidneyInjury;
+        public static HediffDef EE_KidneyFailure;
         
         // 骨折机制新增 Def
         public static HediffDef EE_ClosedFracture;
