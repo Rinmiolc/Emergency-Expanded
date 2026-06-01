@@ -105,5 +105,54 @@ namespace EmergencyExpanded
 
             return isVessel;
         }
+
+        private static Dictionary<string, Dictionary<BodyPartDef, bool>> organCache = new Dictionary<string, Dictionary<BodyPartDef, bool>>();
+
+        public static bool IsOrganType(BodyPartDef def, BodyPartTagDef tag, string fallbackKeyword)
+        {
+            if (def == null) return false;
+            
+            if (!organCache.TryGetValue(fallbackKeyword, out var specificCache))
+            {
+                specificCache = new Dictionary<BodyPartDef, bool>();
+                organCache[fallbackKeyword] = specificCache;
+            }
+
+            if (specificCache.TryGetValue(def, out bool result))
+            {
+                return result;
+            }
+
+            bool match = false;
+            if (tag != null && def.tags != null && def.tags.Contains(tag)) match = true;
+            if (!match && !string.IsNullOrEmpty(fallbackKeyword) && def.defName.IndexOf(fallbackKeyword, System.StringComparison.OrdinalIgnoreCase) >= 0) match = true;
+            
+            specificCache[def] = match;
+            return match;
+        }
+
+        private static Dictionary<BodyDef, List<BodyPartRecord>> bloodPumpingSourcesCache = new Dictionary<BodyDef, List<BodyPartRecord>>();
+
+        public static List<BodyPartRecord> GetBloodPumpingSources(Pawn pawn)
+        {
+            if (pawn?.RaceProps?.body == null) return null;
+            BodyDef body = pawn.RaceProps.body;
+            
+            if (bloodPumpingSourcesCache.TryGetValue(body, out List<BodyPartRecord> parts))
+            {
+                return parts;
+            }
+            
+            parts = new List<BodyPartRecord>();
+            foreach (BodyPartRecord part in body.AllParts)
+            {
+                if (part.def.tags != null && part.def.tags.Contains(BodyPartTagDefOf.BloodPumpingSource))
+                {
+                    parts.Add(part);
+                }
+            }
+            bloodPumpingSourcesCache[body] = parts;
+            return parts;
+        }
     }
 }

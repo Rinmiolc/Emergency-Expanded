@@ -393,5 +393,20 @@ namespace EmergencyExpanded
         // 触发失代偿期和不可逆期的严重度阈值
         public const float ShockDecompensatedThreshold = 0.4f;
         public const float ShockIrreversibleThreshold = 0.7f;
+
+        // ================= 额外去硬编码常量 (De-hardcoded Constants) =================
+        // 药物过量导致中枢神经抑制而引发脑缺氧加速的严重度阈值
+        public const float DrugOverdoseHypoxiaThreshold = 0.75f;
+        // 生命体征极低判定（用于快速跳过判定），例如心跳或呼吸低于10%
+        public const float VitalFlatlineThreshold = 0.1f;
+        
+        // MODS进入实质性坏死阶段的严重度阈值
+        public const float ModsProgressionThreshold = 0.4f;
+        // MODS引发严重器官坏死的基础乘数
+        public const float ModsDamageMultiplier = 2.0f;
+        
+        // MODS触发脑部器质性损害的随机基础分子与分母
+        public const float ModsBrainDamageChanceBase = 3.0f;
+        public const float ModsBrainDamageChanceDivisor = 5.0f;
     }
 }

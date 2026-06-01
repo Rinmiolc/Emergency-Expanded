@@ -31,10 +31,10 @@ namespace EmergencyExpanded
         {
             // 1. 优先短路：极低成本的能力值检测
             float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-            if (pumping > 0.1f) return false;
+            if (pumping > EE_Constants.VitalFlatlineThreshold) return false;
             
             float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-            if (breathing > 0.1f) return false;
+            if (breathing > EE_Constants.VitalFlatlineThreshold) return false;
 
             // 2. 脑部状态检测
             BodyPartRecord brain = pawn.health.hediffSet.GetBrain();
@@ -53,15 +53,15 @@ namespace EmergencyExpanded
             }
 
             // 4. 如果没找到满级的心肌梗死，遍历检查心脏是否物理缺失
-            foreach (BodyPartRecord part in pawn.RaceProps.body.AllParts)
+            var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
+            if (pumpingSources != null)
             {
-                if (part.def.tags != null && part.def.tags.Contains(BodyPartTagDefOf.BloodPumpingSource))
+                foreach (BodyPartRecord part in pumpingSources)
                 {
                     if (pawn.health.hediffSet.PartIsMissing(part))
                     {
                         return true;
                     }
-                    break;
                 }
             }
 

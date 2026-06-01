@@ -96,7 +96,7 @@ namespace EmergencyExpanded
             float overdoseSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.DrugOverdose)?.Severity ?? 0f;
 
             // 1. 结算缺氧进度（在泵血、呼吸能力低，或者重度药物过量时触发）
-            if (pumping < Props.safePumpingThreshold || breathing < Props.safeBreathingThreshold || overdoseSev > 0.75f)
+            if (pumping < Props.safePumpingThreshold || breathing < Props.safeBreathingThreshold || overdoseSev > EE_Constants.DrugOverdoseHypoxiaThreshold)
             {
                 float severityFactor = 1f;
                 if (pumping <= EE_Settings.VitalCriticalThreshold || breathing <= EE_Settings.VitalCriticalThreshold) 
@@ -114,9 +114,9 @@ namespace EmergencyExpanded
                 }
 
                 // 药物过量中枢抑制加成：重度药物过量导致中枢性窒息，额外增加缺氧增长速度
-                if (overdoseSev > 0.75f)
+                if (overdoseSev > EE_Constants.DrugOverdoseHypoxiaThreshold)
                 {
-                    severityFactor += (overdoseSev - 0.75f) * EE_Constants.DrugOverdoseHypoxiaSeverityIncrease;
+                    severityFactor += (overdoseSev - EE_Constants.DrugOverdoseHypoxiaThreshold) * EE_Constants.DrugOverdoseHypoxiaSeverityIncrease;
                 }
 
                 severityAdjustment += (Props.hypoxiaPerDay * severityFactor) / 1000f;

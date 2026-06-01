@@ -38,6 +38,7 @@ namespace EmergencyExpanded
             if (!pawn.RaceProps.IsFlesh) return;
             if (pawn.RaceProps.BloodDef == null) return;
             if (pawn.IsShambler) return;
+            if (ModsConfig.AnomalyActive && pawn.IsMutant) return;
 
             // RimWorld 的 DamageWorker_AddInjury 通常会将 part 作为 null 传入，而把它直接赋给 hediff.Part
             part = part ?? hediff.Part;
@@ -77,16 +78,7 @@ namespace EmergencyExpanded
                         openChance = EE_Constants.FractureBluntOpenChance;
                     }
                 }
-                else if (def == DamageDefOf.Bullet || def.isRanged || def.defName.Contains("Arrow"))
-                {
-                    // 远程射击/箭矢：大幅度平衡下调，主要引发闭合骨折
-                    if (amt >= EE_Constants.FractureRangedDamageThreshold)
-                    {
-                        fractureChance = EE_Constants.FractureRangedChance;
-                        openChance = EE_Constants.FractureRangedOpenChance;
-                    }
-                }
-                else if (def == DamageDefOf.Bomb || def.isExplosive || def.defName.Contains("Explosion"))
+                else if (def.isExplosive || def == DamageDefOf.Bomb)
                 {
                     // 爆炸伤害：平衡性下调至 30% 几率
                     if (amt >= EE_Constants.FractureExplosionDamageThreshold)
@@ -95,7 +87,16 @@ namespace EmergencyExpanded
                         openChance = EE_Constants.FractureExplosionOpenChance;
                     }
                 }
-                else if (def.armorCategory == DamageArmorCategoryDefOf.Sharp)
+                else if (def.isRanged || def == DamageDefOf.Bullet)
+                {
+                    // 远程射击/箭矢：大幅度平衡下调，主要引发闭合骨折
+                    if (amt >= EE_Constants.FractureRangedDamageThreshold)
+                    {
+                        fractureChance = EE_Constants.FractureRangedChance;
+                        openChance = EE_Constants.FractureRangedOpenChance;
+                    }
+                }
+                else if (def.armorCategory == DamageArmorCategoryDefOf.Sharp || def == DamageDefOf.Cut || def == DamageDefOf.Stab)
                 {
                     // 近战锐器斩击：致残几率适中
                     if (amt >= EE_Constants.FractureSharpDamageThreshold)

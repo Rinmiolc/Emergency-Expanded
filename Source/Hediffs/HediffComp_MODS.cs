@@ -36,7 +36,7 @@ namespace EmergencyExpanded
             float acidosisSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis)?.Severity ?? 0f;
 
             // 当休克进入不可逆期 (>0.7) 或极重度酸中毒时，高频触发多器官衰竭
-            if (shockSev >= EE_Constants.ShockIrreversibleThreshold || acidosisSev > 0.6f)
+            if (shockSev >= EE_Constants.ShockIrreversibleThreshold || acidosisSev >= EE_Constants.AcidosisMidThreshold)
             {
                 float factor = 1.0f + (shockSev - EE_Constants.ShockIrreversibleThreshold) * 3f + acidosisSev;
                 severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);
@@ -47,7 +47,7 @@ namespace EmergencyExpanded
             }
 
             // MODS 进展期及以后 (Severity > 0.4)，开始造成实质性的核心脏器缺血坏死积累
-            if (parent.Severity > 0.4f)
+            if (parent.Severity >= EE_Constants.ModsProgressionThreshold)
             {
                 ApplySpecificOrganDamage(parent.Severity);
                 HandleSynergies();
@@ -59,7 +59,7 @@ namespace EmergencyExpanded
             }
             
             // 脑部仍然按老方式单独高频随机微量累加（如果需要），或者可以整合，这里保留脑缺氧机制触发植物人
-            if (parent.Severity > 0.4f && Rand.Chance(3.0f * parent.Severity / 5f))
+            if (parent.Severity >= EE_Constants.ModsProgressionThreshold && Rand.Chance(EE_Constants.ModsBrainDamageChanceBase * parent.Severity / EE_Constants.ModsBrainDamageChanceDivisor))
             {
                  ApplyBrainDamage();
             }
@@ -68,7 +68,7 @@ namespace EmergencyExpanded
         private void ApplySpecificOrganDamage(float modsSeverity)
         {
             // 基础倍率：根据 MODS 本身严重度加速，越到后期器官坏死越快
-            float multiplier = modsSeverity * 2.0f; 
+            float multiplier = modsSeverity * EE_Constants.ModsDamageMultiplier; 
 
             // 处理各核心器官
             ProcessOrgan(BodyPartTagDefOf.BloodFiltrationSource, "Kidney", EE_DefOf.EE_AcuteKidneyInjury, EE_DefOf.EE_KidneyFailure, EE_Constants.ModsKidneyDamageRate * multiplier);
@@ -108,12 +108,8 @@ namespace EmergencyExpanded
             foreach (BodyPartRecord part in Pawn.health.hediffSet.GetNotMissingParts())
             {
                 if (part.def == null) continue;
-                bool match = false;
                 
-                if (part.def.tags != null && part.def.tags.Contains(tag)) match = true;
-                if (!match && part.def.defName.ToLower().Contains(fallbackKeyword.ToLower())) match = true;
-                
-                if (match)
+                if (EE_BodyPartCache.IsOrganType(part.def, tag, fallbackKeyword))
                 {
                     // 如果已经发生不可逆衰竭，则跳过
                     if (Pawn.health.hediffSet.HasHediff(failureDef, part)) continue;
