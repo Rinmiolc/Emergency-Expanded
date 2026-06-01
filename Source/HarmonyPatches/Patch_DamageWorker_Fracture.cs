@@ -149,10 +149,9 @@ namespace EmergencyExpanded
                         {
                             MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, isOpen ? "开放性骨折!" : "闭合性骨折!", Color.red);
 
-                            Verse.SoundDef crunchSound = DefDatabase<Verse.SoundDef>.GetNamed(EE_Constants.SoundBoneCrunch, false);
-                            if (crunchSound != null)
+                            if (EE_DefOf.EE_BoneCrunch != null)
                             {
-                                Verse.Sound.SoundStarter.PlayOneShot(crunchSound, new TargetInfo(pawn.Position, pawn.Map));
+                                Verse.Sound.SoundStarter.PlayOneShot(EE_DefOf.EE_BoneCrunch, new TargetInfo(pawn.Position, pawn.Map));
                             }
                         }
                     }

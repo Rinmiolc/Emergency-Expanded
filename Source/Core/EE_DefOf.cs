@@ -64,6 +64,9 @@ namespace EmergencyExpanded
         public static ThingDef EE_Defibrillator;
         
         public static BodyPartDef Brain;
+        
+        // 音效新增 Def
+        public static SoundDef EE_BoneCrunch;
 
         static EE_DefOf()
         {

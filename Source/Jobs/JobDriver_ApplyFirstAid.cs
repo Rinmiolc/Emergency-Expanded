@@ -179,10 +179,24 @@ namespace EmergencyExpanded
                     EE_FirstAidUtility.ApplyFirstAidEffect(pawn, Patient, job.GetTarget(MedicineIndex).Thing);
                     
                     ThingDef currentMedDef = job.GetTarget(MedicineIndex).Thing?.def;
-                    if (currentMedDef != null && EE_FirstAidUtility.GetEmergencyItemType(currentMedDef) == EmergencyItemType.Defibrillator)
+                    if (currentMedDef != null)
                     {
-                        // Proceed to backswingToil naturally
-                        ReadyForNextToil();
+                        EmergencyItemType type = EE_FirstAidUtility.GetEmergencyItemType(currentMedDef);
+                        if (type == EmergencyItemType.Defibrillator)
+                        {
+                            // Proceed to backswingToil naturally
+                            ReadyForNextToil();
+                        }
+                        else if (type == EmergencyItemType.IngestibleDirect)
+                        {
+                            // 治本修复：所有的喂药、喂饭（IngestibleDirect）行为，
+                            // 在完成一次施加后必须立即结束当前 Job，绝对不能进入循环！
+                            this.EndJobWith(JobCondition.Succeeded);
+                        }
+                        else
+                        {
+                            this.JumpToToil(checkCondition);
+                        }
                     }
                     else
                     {

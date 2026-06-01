@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -114,8 +114,46 @@ namespace EmergencyExpanded
                     {
                         return patient.health.hediffSet.HasHediff(HediffDefOf.BloodLoss);
                     }
+                    // 检查针剂通用基类及其专属冷却状态
+                    if (itemDef.ingestible != null && itemDef.ingestible.outcomeDoers != null)
+                    {
+                        foreach (var doer in itemDef.ingestible.outcomeDoers)
+                        {
+                            if (doer is IngestionOutcomeDoer_SyringeBase syringeDoer && syringeDoer.cooldownHediff != null)
+                            {
+                                if (patient.health.hediffSet.HasHediff(syringeDoer.cooldownHediff))
+                                {
+                                    return false; // 如果有该针剂的不应期，禁止施加
+                                }
+                                // 如果是当前处理的注射器且尚未处于冷却，那我们就应该允许施加（无视倒地限制）
+                                return true;
+                            }
+                        }
+                    }
                     // Drugs/Food: Allowed if downed or hungry
-                    if (itemDef.IsDrug && patient.Downed) return true;
+                    if (itemDef.IsDrug && patient.Downed)
+                    {
+                        if (itemDef.ingestible != null && itemDef.ingestible.outcomeDoers != null)
+                        {
+                            foreach (var doer in itemDef.ingestible.outcomeDoers)
+                            {
+                                if (doer is RimWorld.IngestionOutcomeDoer_GiveHediff giveHediff && giveHediff.hediffDef != null)
+                                {
+                                    Verse.HediffDef hDef = giveHediff.hediffDef;
+                                    // 忽略成瘾和耐受性状态
+                                    if (hDef.isBad || hDef.defName.Contains("Tolerance") || hDef.defName.Contains("Addiction")) continue;
+                                    
+                                    Verse.Hediff existing = patient.health.hediffSet.GetFirstHediffOfDef(hDef);
+                                    if (existing != null)
+                                    {
+                                        // 如果已经存在该药物带来的正面效果，为了防止无限喂药，拒绝再次施加
+                                        return false; 
+                                    }
+                                }
+                            }
+                        }
+                        return true;
+                    }
                     if (itemDef.ingestible != null && itemDef.ingestible.CachedNutrition > 0f && patient.needs?.food != null && patient.needs.food.CurLevelPercentage < 0.9f) return true;
                     return false;
             }

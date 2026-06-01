@@ -79,8 +79,77 @@ namespace EmergencyExpanded
 
             // 5. 首次受创，点燃应激极限，施加肾上腺素
             Hediff boost = HediffMaker.MakeHediff(boostDef, pawn);
-            boost.Severity = 1.0f; // 初始爆发为巅峰 (100% 严重度)
+            boost.Severity = EE_Constants.AdrenalineNaturalMaxSeverity; // 初始爆发为应激阶段 (默认 0.49 严重度)
             pawn.health.AddHediff(boost, null, null, null);
+        }
+    }
+
+    // ================= 通用针剂隐藏冷却状态 =================
+    public class Hediff_HiddenCooldown : Verse.HediffWithComps
+    {
+        public override bool Visible => false; // 隐藏状态，避免面板杂乱
+    }
+
+    // ================= 通用针剂使用基类 =================
+    public abstract class IngestionOutcomeDoer_SyringeBase : RimWorld.IngestionOutcomeDoer
+    {
+        public Verse.HediffDef cooldownHediff; // XML 中配置的冷却状态
+        public float cooldownSeverity = 1.0f;  // 冷却状态初始严重度
+
+        protected override void DoIngestionOutcomeSpecial(Pawn pawn, Verse.Thing ingested, int ingestedCount)
+        {
+            if (pawn.Dead) return;
+
+            // 检查是否处于对应的针剂冷却期
+            if (cooldownHediff != null && pawn.health.hediffSet.HasHediff(cooldownHediff))
+            {
+                Verse.Messages.Message($"{pawn.LabelShort} 正处于针剂不应期，无法吸收药效！", pawn, RimWorld.MessageTypeDefOf.RejectInput, false);
+                return;
+            }
+
+            // 执行特定的针剂效果
+            ApplySyringeEffect(pawn, ingested, ingestedCount);
+
+            // 施加独立的冷却状态
+            if (cooldownHediff != null)
+            {
+                Verse.Hediff cooldown = Verse.HediffMaker.MakeHediff(cooldownHediff, pawn);
+                cooldown.Severity = cooldownSeverity;
+                pawn.health.AddHediff(cooldown, null, null, null);
+            }
+        }
+
+        protected abstract void ApplySyringeEffect(Pawn pawn, Verse.Thing ingested, int ingestedCount);
+    }
+
+    // ================= 肾上腺素注射器特定逻辑 =================
+    public class IngestionOutcomeDoer_AdrenalineSyringe : IngestionOutcomeDoer_SyringeBase
+    {
+        protected override void ApplySyringeEffect(Pawn pawn, Verse.Thing ingested, int ingestedCount)
+        {
+            // 如果当前处于后遗症状态，则直接移除它（选项C：仅重置状态，无额外惩罚）
+            Verse.HediffDef crashDef = EE_DefOf.AdrenalineCrash;
+            if (crashDef != null)
+            {
+                Verse.Hediff crash = pawn.health.hediffSet.GetFirstHediffOfDef(crashDef);
+                if (crash != null)
+                {
+                    pawn.health.RemoveHediff(crash);
+                }
+            }
+
+            // 施加/增强肾上腺素
+            Verse.HediffDef boostDef = EE_DefOf.AdrenalineBoost;
+            if (boostDef != null)
+            {
+                Verse.Hediff boost = pawn.health.hediffSet.GetFirstHediffOfDef(boostDef);
+                if (boost == null)
+                {
+                    boost = Verse.HediffMaker.MakeHediff(boostDef, pawn);
+                    pawn.health.AddHediff(boost, null, null, null);
+                }
+                boost.Severity = EE_Constants.AdrenalineSyringeSeverity;
+            }
         }
     }
 }

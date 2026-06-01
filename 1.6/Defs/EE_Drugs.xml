@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <!-- 肾上腺素注射器 (Adrenaline Syringe) -->
+  <ThingDef ParentName="MakeableDrugBase">
+    <defName>EE_AdrenalineSyringe</defName>
+    <label>肾上腺素注射器</label>
+    <description>一支装有高浓度肾上腺素的战地用自动注射器。使用速度极快，注射后能瞬间赋予使用者“极限突破”级别的体能爆发、强心以及痛觉屏蔽效果。它还能强行驱散先前的肾上腺素后遗症状态。由于属于强效应激激素，效果消退后也会迎来强烈的虚弱与疲劳期。</description>
+    <descriptionHyperlinks>
+      <HediffDef>AdrenalineBoost</HediffDef>
+    </descriptionHyperlinks>
+    <graphicData>
+      <texPath>Things/AdrenalineSyringe/adrenaline</texPath>
+      <graphicClass>Graphic_Single</graphicClass>
+    </graphicData>
+    <rotatable>false</rotatable>
+    <statBases>
+      <WorkToMake>600</WorkToMake>
+      <MarketValue>35</MarketValue>
+      <Mass>0.05</Mass>
+      <Flammability>0.7</Flammability>
+    </statBases>
+    <techLevel>Industrial</techLevel>
+    <ingestible>
+      <foodType>Processed</foodType>
+      <drugCategory>Medical</drugCategory>
+      <baseIngestTicks>60</baseIngestTicks>
+      <chairSearchRadius>0</chairSearchRadius>
+      <ingestSound>Ingest_Pill</ingestSound>
+      <ingestHoldUsesTable>false</ingestHoldUsesTable>
+      <ingestCommandString>注射 {0}</ingestCommandString>
+      <ingestReportString>正在注射 {0}。</ingestReportString>
+      <outcomeDoers>
+        <li Class="EmergencyExpanded.IngestionOutcomeDoer_AdrenalineSyringe">
+          <cooldownHediff>EE_AdrenalineSyringeCooldown</cooldownHediff>
+          <cooldownSeverity>1.0</cooldownSeverity>
+        </li>
+      </outcomeDoers>
+    </ingestible>
+    <recipeMaker>
+      <researchPrerequisite>MedicineProduction</researchPrerequisite>
+      <recipeUsers>
+        <li>DrugLab</li>
+      </recipeUsers>
+      <skillRequirements>
+        <Medicine>4</Medicine>
+        <Crafting>4</Crafting>
+      </skillRequirements>
+    </recipeMaker>
+    <costList>
+      <PsychoidLeaves>5</PsychoidLeaves>
+      <Neutroamine>5</Neutroamine>
+      <ComponentIndustrial>1</ComponentIndustrial>
+    </costList>
+    <comps>
+      <li Class="CompProperties_Drug">
+        <listOrder>1010</listOrder>
+        <overdoseSeverityOffset>0.05~0.10</overdoseSeverityOffset>
+      </li>
+    </comps>
+  </ThingDef>
+</Defs>

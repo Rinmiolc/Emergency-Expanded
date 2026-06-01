@@ -288,13 +288,15 @@
         </capMods>
       </li>
       <li>
-        <minSeverity>0.3</minSeverity>
-        <label>全身爆发</label>
+        <minSeverity>0.25</minSeverity>
+        <label>应激爆发</label>
         <painFactor>0.85</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.07</offset></li>
           <li><capacity>Moving</capacity><offset>0.10</offset></li>
           <li><capacity>Manipulation</capacity><offset>0.07</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>0.10</offset></li>
+          <li><capacity>Breathing</capacity><offset>0.10</offset></li>
         </capMods>
         <statOffsets>
           <MeleeDodgeChance>2.0</MeleeDodgeChance>
@@ -303,13 +305,32 @@
         </statOffsets>
       </li>
       <li>
-        <minSeverity>0.7</minSeverity>
-        <label>极限应激</label>
-        <painFactor>0.80</painFactor>
+        <minSeverity>0.50</minSeverity>
+        <label>强心激发</label>
+        <painFactor>0.75</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.10</offset></li>
           <li><capacity>Moving</capacity><offset>0.15</offset></li>
           <li><capacity>Manipulation</capacity><offset>0.10</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>0.20</offset></li>
+          <li><capacity>Breathing</capacity><offset>0.20</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeDodgeChance>3.5</MeleeDodgeChance>
+          <MeleeHitChance>1.5</MeleeHitChance>
+          <ShootingAccuracyPawn>1.5</ShootingAccuracyPawn>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>0.75</minSeverity>
+        <label>极限突破</label>
+        <painFactor>0.50</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>0.15</offset></li>
+          <li><capacity>Moving</capacity><offset>0.20</offset></li>
+          <li><capacity>Manipulation</capacity><offset>0.15</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>0.30</offset></li>
+          <li><capacity>Breathing</capacity><offset>0.30</offset></li>
         </capMods>
         <statOffsets>
           <MeleeDodgeChance>5.0</MeleeDodgeChance>
@@ -540,4 +561,26 @@
       </li>
     </comps>
   </HediffDef>
+
+  <!-- ======================== 肾上腺素针剂专属不应期（隐藏） ======================== -->
+  <HediffDef>
+    <defName>EE_AdrenalineSyringeCooldown</defName>
+    <label>针剂不应期：肾上腺素</label>
+    <description>短时间内注射过高浓度针剂造成的受体脱敏。在此期间再次注射相同类型的针剂将无法产生效果。该状态是隐藏的。</description>
+    <hediffClass>EmergencyExpanded.Hediff_HiddenCooldown</hediffClass>
+    <isBad>false</isBad>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-3.0</severityPerDay> <!-- 1.0 / 3.0 = 0.333天 = 8小时 -->
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <minSeverity>0</minSeverity>
+        <becomeVisible>false</becomeVisible>
+      </li>
+    </stages>
+  </HediffDef>
+
 </Defs>
