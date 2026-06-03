@@ -27,6 +27,20 @@ namespace EmergencyExpanded
         // 血氧饱和度低下报警阈值
         public const float EcgHypoxiaSpO2Threshold = 90f;
 
+        // ================= 心律状态 Hediff 参数 (Cardiovascular State Hediffs) =================
+        // 心动过速触发阈值 (BPM)
+        public const float TachycardiaMinBpm = 140f;
+        // 心动过缓触发阈值 (BPM)
+        public const float BradycardiaMaxBpm = 45f;
+        // 心律不齐触发的酸中毒严重度阈值
+        public const float ArrhythmiaAcidosisThreshold = 0.50f;
+        // 心律不齐触发的肾上腺素严重度阈值
+        public const float ArrhythmiaAdrenalineThreshold = 1.0f;
+        // 心律不齐触发的吗啡严重度阈值
+        public const float ArrhythmiaMorphineThreshold = 1.0f;
+        // 心律不齐触发的脑缺氧严重度阈值
+        public const float ArrhythmiaHypoxiaThreshold = 0.30f;
+
         // ================= 额外去硬编码常量 (De-hardcoded Constants) =================
         // 药物过量导致中枢神经抑制而引发脑缺氧加速的严重度阈值
         public const float DrugOverdoseHypoxiaThreshold = 0.75f;

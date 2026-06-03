@@ -16,6 +16,11 @@ namespace EmergencyExpanded
         public static HediffDef AdrenalineBoost;
         public static HediffDef AdrenalineCrash;
         
+        // 动态心率状态指示 Hediffs
+        public static HediffDef EE_Tachycardia;
+        public static HediffDef EE_Bradycardia;
+        public static HediffDef EE_Arrhythmia;
+        
         // 并发症新增 Def
         public static HediffDef Coagulopathy;
         public static HediffDef SIRS;

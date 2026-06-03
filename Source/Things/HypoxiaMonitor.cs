@@ -162,6 +162,153 @@ namespace EmergencyExpanded
                     }
                 }
             }
+
+            // 7. 动态心率状态 Hediff 更新 (Tachycardia, Bradycardia, Arrhythmia)
+            bool isMI = __instance.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction);
+            bool isDeathTimer = __instance.hediffSet.HasHediff(EE_DefOf.EE_BiologicalDeathTimer) || 
+                                __instance.hediffSet.HasHediff(EE_DefOf.EE_DeclaredDead) || 
+                                __instance.hediffSet.HasHediff(EE_DefOf.EE_BiologicalDeath);
+            
+            bool isHeartMissing = false;
+            var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
+            if (pumpingSources != null)
+            {
+                foreach (BodyPartRecord part in pumpingSources)
+                {
+                    if (__instance.hediffSet.PartIsMissing(part))
+                    {
+                        isHeartMissing = true;
+                        break;
+                    }
+                }
+            }
+
+            bool maskHeartRateHediffs = isMI || isDeathTimer || isHeartMissing;
+
+            if (maskHeartRateHediffs)
+            {
+                if (EE_DefOf.EE_Tachycardia != null)
+                {
+                    Hediff existingTachy = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Tachycardia);
+                    if (existingTachy != null) __instance.RemoveHediff(existingTachy);
+                }
+                if (EE_DefOf.EE_Bradycardia != null)
+                {
+                    Hediff existingBrady = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Bradycardia);
+                    if (existingBrady != null) __instance.RemoveHediff(existingBrady);
+                }
+                if (EE_DefOf.EE_Arrhythmia != null)
+                {
+                    Hediff existingArr = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Arrhythmia);
+                    if (existingArr != null) __instance.RemoveHediff(existingArr);
+                }
+            }
+            else
+            {
+                BodyPartRecord heart = null;
+                List<BodyPartRecord> sources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
+                if (sources != null && sources.Count > 0)
+                {
+                    heart = sources[0];
+                }
+                if (heart == null)
+                {
+                    foreach (BodyPartRecord part in pawn.health.hediffSet.GetNotMissingParts())
+                    {
+                        if (part.def == BodyPartDefOf.Heart)
+                        {
+                            heart = part;
+                            break;
+                        }
+                    }
+                }
+                if (heart == null)
+                {
+                    foreach (BodyPartRecord part in pawn.health.hediffSet.GetNotMissingParts())
+                    {
+                        if (part.def != null && part.def.defName.IndexOf("heart", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            heart = part;
+                            break;
+                        }
+                    }
+                }
+
+                float bpm = VitalTracker.CalculateDynamicHeartRate(pawn);
+
+                // 心动过速
+                if (EE_DefOf.EE_Tachycardia != null)
+                {
+                    if (bpm >= EE_Constants.TachycardiaMinBpm)
+                    {
+                        if (!__instance.hediffSet.HasHediff(EE_DefOf.EE_Tachycardia))
+                        {
+                            Hediff tachycardia = HediffMaker.MakeHediff(EE_DefOf.EE_Tachycardia, pawn, heart);
+                            tachycardia.Severity = 0.5f;
+                            __instance.AddHediff(tachycardia, heart, null, null);
+                        }
+                        if (EE_DefOf.EE_Bradycardia != null)
+                        {
+                            Hediff existingBrady = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Bradycardia);
+                            if (existingBrady != null) __instance.RemoveHediff(existingBrady);
+                        }
+                    }
+                    else
+                    {
+                        Hediff existingTachy = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Tachycardia);
+                        if (existingTachy != null) __instance.RemoveHediff(existingTachy);
+                    }
+                }
+
+                // 心动过缓
+                if (EE_DefOf.EE_Bradycardia != null)
+                {
+                    if (bpm <= EE_Constants.BradycardiaMaxBpm && bpm > EE_Constants.EcgFlatlineThreshold)
+                    {
+                        if (!__instance.hediffSet.HasHediff(EE_DefOf.EE_Bradycardia))
+                        {
+                            Hediff bradycardia = HediffMaker.MakeHediff(EE_DefOf.EE_Bradycardia, pawn, heart);
+                            bradycardia.Severity = 0.5f;
+                            __instance.AddHediff(bradycardia, heart, null, null);
+                        }
+                        if (EE_DefOf.EE_Tachycardia != null)
+                        {
+                            Hediff existingTachy = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Tachycardia);
+                            if (existingTachy != null) __instance.RemoveHediff(existingTachy);
+                        }
+                    }
+                    else
+                    {
+                        Hediff existingBrady = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Bradycardia);
+                        if (existingBrady != null) __instance.RemoveHediff(existingBrady);
+                    }
+                }
+
+                // 心律不齐
+                if (EE_DefOf.EE_Arrhythmia != null)
+                {
+                    bool hasArrhythmiaTrigger = false;
+                    if (acidosisSev >= EE_Constants.ArrhythmiaAcidosisThreshold) hasArrhythmiaTrigger = true;
+                    else if (overdoseSev >= EE_Constants.ArrhythmiaMorphineThreshold && __instance.hediffSet.HasHediff(EE_DefOf.EE_MorphineActive)) hasArrhythmiaTrigger = true;
+                    else if (__instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost)?.Severity >= EE_Constants.ArrhythmiaAdrenalineThreshold) hasArrhythmiaTrigger = true;
+                    else if (__instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia)?.Severity >= EE_Constants.ArrhythmiaHypoxiaThreshold) hasArrhythmiaTrigger = true;
+
+                    if (hasArrhythmiaTrigger && bpm > EE_Constants.EcgFlatlineThreshold)
+                    {
+                        if (!__instance.hediffSet.HasHediff(EE_DefOf.EE_Arrhythmia))
+                        {
+                            Hediff arrhythmia = HediffMaker.MakeHediff(EE_DefOf.EE_Arrhythmia, pawn, heart);
+                            arrhythmia.Severity = 0.5f;
+                            __instance.AddHediff(arrhythmia, heart, null, null);
+                        }
+                    }
+                    else
+                    {
+                        Hediff existingArr = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Arrhythmia);
+                        if (existingArr != null) __instance.RemoveHediff(existingArr);
+                    }
+                }
+            }
         }
     }
 }

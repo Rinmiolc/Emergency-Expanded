@@ -28,6 +28,7 @@ namespace EmergencyExpanded
         public bool hasCerebralHypoxia = false;
         public bool hasMetabolicAcidosis = false;
         public bool hasMyocardialInfarction = false;
+        public bool hasArrhythmia = false;
     }
 
     // ================= 2. 动态生理心搏计算管理器 =================
@@ -165,6 +166,7 @@ namespace EmergencyExpanded
                 vitals.hasCerebralHypoxia = pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia);
                 vitals.hasMetabolicAcidosis = pawn.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis);
                 vitals.hasMyocardialInfarction = pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction);
+                vitals.hasArrhythmia = pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Arrhythmia);
                 
                 if (vitals.heartRate > EE_Constants.EcgFlatlineThreshold)
                 {
@@ -295,6 +297,10 @@ namespace EmergencyExpanded
                 if (dt > 0.1f) dt = 0.1f;
 
                 float beatDuration = (bpm > EE_Constants.EcgFlatlineThreshold) ? (60f / bpm) : 1f;
+                if (vitals.hasArrhythmia)
+                {
+                    beatDuration += Mathf.Sin(t * 3f) * (beatDuration * 0.25f);
+                }
                 float sweepSpeed = waveWidth / 2.4f;
                 
                 int oldX = Mathf.FloorToInt(vitals.sweepX);
@@ -347,7 +353,7 @@ namespace EmergencyExpanded
                         else
                         {
                             bool isHypoxic = vitals.hasCerebralHypoxia || bpm > EE_Constants.EcgTachycardiaThreshold;
-                            val = GetBaseECGValue(p, isHypoxic, bpm);
+                            val = GetBaseECGValue(p, isHypoxic, vitals.hasMyocardialInfarction, bpm);
                             
                             // 反走样峰值捕捉：如果在这两帧相位之间跨越了波峰或波谷，强制该像素显示极限值
                             float pPrev = (vitals.phase + phaseDelta * (step - 1f) / stepPixels) % 1f;
@@ -462,7 +468,7 @@ namespace EmergencyExpanded
         // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
         // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
         // 包含心肌缺血/缺氧时的 ST段压低 与 T波倒置 拟真病理改变
-        private float GetBaseECGValue(float p, bool isHypoxic, float bpm)
+        private float GetBaseECGValue(float p, bool isHypoxic, bool isMI, float bpm)
         {
             float beatDuration = (bpm > 0.1f) ? (60f / bpm) : 1f;
             float activeDuration = 0.45f;
@@ -495,6 +501,11 @@ namespace EmergencyExpanded
             if (origP < 0.32f) 
             {
                 float stBase = -0.35f + ((origP - 0.26f) / 0.06f) * 0.35f;
+                if (isMI)
+                {
+                    // 临床室性心肌梗死：ST段抬高 (ST Elevation) 并形成典型的单相曲线
+                    return stBase + 0.22f;
+                }
                 // 脑部窒息缺氧或重度低血容量休克时：发生 ST段压低 (ST Depression) 0.08 像素单位
                 return isHypoxic ? (stBase - 0.08f) : stBase;
             }
@@ -504,6 +515,11 @@ namespace EmergencyExpanded
             {
                 float tPhase = (origP - 0.32f) / 0.23f;
                 float tWave = Mathf.Pow(Mathf.Sin(tPhase * Mathf.PI), 1.5f) * 0.28f;
+                if (isMI)
+                {
+                    // 心梗超急性期：高耸 T 波，且随 ST 抬高连贯过渡
+                    return tWave * 1.5f + 0.15f;
+                }
                 if (isHypoxic)
                 {
                     // 缺氧病理：T波对称性倒置 (T Wave Inversion)
