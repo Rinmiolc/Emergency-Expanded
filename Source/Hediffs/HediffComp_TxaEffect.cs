@@ -62,15 +62,29 @@ namespace EmergencyExpanded
                     if (isFatal && Rand.Chance(0.4f))
                     {
                         HediffDef miDef = EE_DefOf.EE_MyocardialInfarction;
-                        if (miDef != null && !Pawn.health.hediffSet.HasHediff(miDef))
+                        if (miDef != null)
                         {
-                            Hediff mi = HediffMaker.MakeHediff(miDef, Pawn);
-                            mi.Severity = 0.05f; // 室颤起步
-                            Pawn.health.AddHediff(mi, null, null, null);
-
-                            if (Pawn.Spawned && Pawn.Map != null)
+                            BodyPartRecord heart = EE_BodyPartCache.GetBloodPumpingSources(Pawn)?.FirstOrDefault();
+                            if (heart == null)
                             {
-                                MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "高凝冠状动脉栓塞 - 心梗!", UnityEngine.Color.red);
+                                heart = Pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(p => p.def == BodyPartDefOf.Heart);
+                            }
+                            if (heart == null)
+                            {
+                                heart = Pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(p => p.def.defName.IndexOf("heart", System.StringComparison.OrdinalIgnoreCase) >= 0);
+                            }
+
+                            if (!Pawn.health.hediffSet.HasHediff(miDef, heart))
+                            {
+                                // 诱发心梗到心脏部位
+                                Hediff mi = HediffMaker.MakeHediff(miDef, Pawn, heart);
+                                mi.Severity = 0.05f; // 室颤起步
+                                Pawn.health.AddHediff(mi, heart, null, null);
+
+                                if (Pawn.Spawned && Pawn.Map != null)
+                                {
+                                    MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "高凝冠状动脉栓塞 - 心梗!", UnityEngine.Color.red);
+                                }
                             }
                         }
                     }
