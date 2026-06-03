@@ -432,11 +432,63 @@ namespace EmergencyExpanded
         public const int DefibBackswingTicks = 60;
         #endregion
 
-        #region 8. 肾上腺素机制 (Adrenaline Mechanics)
+        #region 8. 肾上腺素与促凝血剂机制 (Adrenaline & Coagulant Mechanics)
         // 自然受创激发的肾上腺素最大严重度
         public const float AdrenalineNaturalMaxSeverity = 0.49f;
-        // 肾上腺素注射器激发的肾上腺素严重度
-        public const float AdrenalineSyringeSeverity = 1.0f;
+
+        // 每次注射增加的严重度 (统一为 1.0)
+        public const float TxaSyringeSeverityIncrement = 1.0f;
+        public const float AdrenalineSyringeSeverityIncrement = 1.0f;
+
+        // 药效最高严重度上限
+        public const float TxaMaxSeverity = 3.0f;
+        public const float AdrenalineMaxSeverity = 3.0f;
+
+        // 状态衰减速度 (2.0/天 = 12小时消退1.0)
+        public const float TxaSeverityDecayPerDay = 2.0f;
+        public const float AdrenalineSeverityDecayPerDay = 2.0f;
+
+        // TXA 药理常数
+        public const float TxaBleedingMultiplier = 0.5f;              // TXA 降低物理流血速率 50%
+        public const float TxaCoagulopathyReductionPerDay = 3.0f;     // TXA 每天逆转凝血功能障碍速度
+        public const float TxaMassiveBleedingChanceMultiplier = 0.5f;  // TXA 降低大出血几率 50%
+
+        // 过量毒性事件触发阈值
+        public const float OverdoseToxicityThreshold = 1.0f;          // 过量阈值
+        public const float OverdoseFatalThreshold = 2.0f;             // 致命阈值
+
+        // TXA 毒理事件概率 (基于 RareTick = 250 ticks = 4.16秒)
+        public const float TxaSeizureChanceOverdose = 0.01f;          // 严重度 1.0~2.0 时每 RareTick 抽搐率 (1%)
+        public const float TxaSeizureChanceFatal = 0.05f;             // 严重度 >2.0 时每 RareTick 抽搐率 (5%)
+        public const float TxaEmbolismChanceOverdose = 0.005f;        // 严重度 1.0~2.0 时每 RareTick 血栓率 (0.5%)
+        public const float TxaEmbolismChanceFatal = 0.03f;            // 严重度 >2.0 时每 RareTick 血栓率 (3%)
+
+        // 肾上腺素毒理事件概率 (基于 RareTick)
+        public const float AdrenalineMiChanceOverdose = 0.01f;        // 严重度 1.0~2.0 时心梗率 (1%)
+        public const float AdrenalineMiChanceFatal = 0.06f;           // 严重度 >2.0 时心梗率 (6%)
+        public const float AdrenalineAcidosisOverdosePerDay = 0.8f;   // 严重度 1.0~2.0 时每天加深的酸中毒
+        public const float AdrenalineAcidosisFatalPerDay = 2.0f;      // 严重度 >2.0 时每天加深的酸中毒
+        #endregion
+
+        #region 9. 吗啡机制 (Morphine Mechanics)
+        // 每次注射增加的严重度
+        public const float MorphineSyringeSeverityIncrement = 1.0f;
+        // 吗啡最高严重度上限
+        public const float MorphineMaxSeverity = 3.0f;
+        // 状态衰减速度 (2.0/天 = 12小时消退1.0)
+        public const float MorphineSeverityDecayPerDay = 2.0f;
+
+        // 吗啡药效常数
+        public const float MorphineMyocardialInfarctionSpeedMultiplier = 0.70f; // 吗啡减缓心肌梗死恶化速度 30% (乘以0.7)
+        public const float MorphineShockSirsSpeedMultiplier = 0.60f;            // 吗啡减缓休克和SIRS恶化速度 40% (乘以0.6)
+        public const float MorphineSurgerySuccessOffset = 0.15f;                // 吗啡镇静下，复位/正骨手术成功率提升 15%
+
+        // 吗啡毒理事件概率 (基于 RareTick = 250 ticks = 4.16秒)
+        public const float MorphineToxicityThreshold = 1.0f;           // 过量阈值
+        public const float MorphineFatalThreshold = 2.0f;              // 致命阈值
+
+        // 致命中毒下，每 RareTick 发生急性呼吸骤停（呼吸能力直接归零）的概率 (1%)
+        public const float MorphineRespiratoryArrestChancePerRareTick = 0.01f;
         #endregion
     }
 }

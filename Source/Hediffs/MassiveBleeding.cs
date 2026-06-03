@@ -71,6 +71,12 @@ namespace EmergencyExpanded
                             finalChance = Mathf.Clamp(finalChance, EE_Constants.MassiveBleedingChanceMin, EE_Constants.MassiveBleedingChanceMax);
                         }
 
+                        // 如果注射了 TXA，将大出血几率折半
+                        if (EE_DefOf.EE_TxaActive != null && pawn.health.hediffSet.HasHediff(EE_DefOf.EE_TxaActive))
+                        {
+                            finalChance *= EE_Constants.TxaMassiveBleedingChanceMultiplier;
+                        }
+
                         // 6. 掷骰子判定是否破裂
                         if (dinfo.Amount >= EE_Settings.MassiveBleedingMinDamage && Rand.Chance(finalChance))
                         {

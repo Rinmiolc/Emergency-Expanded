@@ -55,7 +55,15 @@ namespace EmergencyExpanded
             if (traumaLoad > 25f || bloodLossRatio > 0.45f)
             {
                 float factor = (traumaLoad / 40f) + (bloodLossRatio * 1.5f);
-                severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);
+                float increment = (Props.severityIncreasePerDay * factor / 1000f);
+
+                // 吗啡镇静减缓 SIRS 恶化速度 (减缓 40%)
+                if (EE_DefOf.EE_MorphineActive != null && Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MorphineActive))
+                {
+                    increment *= EE_Constants.MorphineShockSirsSpeedMultiplier;
+                }
+
+                severityAdjustment += increment;
             }
             else
             {

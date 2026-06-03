@@ -73,6 +73,13 @@ namespace EmergencyExpanded
             {
                 // 每 60 刻度增加量
                 float severityIncrease = (totalPressure - 0.3f) * EE_Constants.ShockSeverityIncreasePerDay / 1000f;
+
+                // 吗啡镇静减缓休克恶化速度 (减缓 40%)
+                if (EE_DefOf.EE_MorphineActive != null && pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MorphineActive))
+                {
+                    severityIncrease *= EE_Constants.MorphineShockSirsSpeedMultiplier;
+                }
+
                 this.Severity += severityIncrease;
             }
             else

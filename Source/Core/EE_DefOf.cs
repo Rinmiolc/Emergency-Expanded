@@ -27,6 +27,16 @@ namespace EmergencyExpanded
         public static HediffDef EE_Pneumothorax;
         public static HediffDef EE_Shock;
         
+        // TXA 与 肾上腺素毒理机制 Defs
+        public static HediffDef EE_TxaActive;
+        public static HediffDef EE_TxaSeizure;
+        public static ThingDef EE_TxaSyringe;
+        
+        // 吗啡毒理与急救机制 Defs
+        public static HediffDef EE_MorphineActive;
+        public static HediffDef EE_MorphineRespiratoryArrest;
+        public static ThingDef EE_MorphineSyringe;
+        
         // MODS 细化器官损伤与衰竭 Def
         public static HediffDef EE_MyocardialIschemia;
         public static HediffDef EE_HeartFailure;

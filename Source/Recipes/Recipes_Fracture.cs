@@ -39,7 +39,12 @@ namespace EmergencyExpanded
                 fracture.isInternallyFixed = false;
 
                 float docSkill = billDoer.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
-                fracture.alignmentQuality = UnityEngine.Mathf.Clamp(docSkill * 0.035f + Rand.Range(-0.08f, 0.08f), 0.20f, 0.65f);
+                float alignment = docSkill * 0.035f + Rand.Range(-0.08f, 0.08f);
+                if (EE_DefOf.EE_MorphineActive != null && pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MorphineActive))
+                {
+                    alignment += EE_Constants.MorphineSurgerySuccessOffset;
+                }
+                fracture.alignmentQuality = UnityEngine.Mathf.Clamp(alignment, 0.20f, 0.65f);
 
                 // Call Tended to get standard bandage overlay and tended mote
                 fracture.Tended(0.50f, 1.0f);
@@ -81,7 +86,12 @@ namespace EmergencyExpanded
                 fracture.isInternallyFixed = false;
 
                 float docSkill = billDoer.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
-                fracture.alignmentQuality = UnityEngine.Mathf.Clamp(0.50f + docSkill * 0.022f + Rand.Range(-0.05f, 0.05f), 0.60f, 0.98f);
+                float alignment = 0.50f + docSkill * 0.022f + Rand.Range(-0.05f, 0.05f);
+                if (EE_DefOf.EE_MorphineActive != null && pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MorphineActive))
+                {
+                    alignment += EE_Constants.MorphineSurgerySuccessOffset;
+                }
+                fracture.alignmentQuality = UnityEngine.Mathf.Clamp(alignment, 0.60f, 0.98f);
 
                 // Call Tended to get standard bandage overlay and tended mote
                 fracture.Tended(0.85f, 1.0f);
@@ -120,7 +130,12 @@ namespace EmergencyExpanded
                 fracture.isStrictBedrest = false;
 
                 float docSkill = billDoer.skills?.GetSkill(SkillDefOf.Medicine)?.Level ?? 5f;
-                fracture.alignmentQuality = UnityEngine.Mathf.Clamp(0.75f + docSkill * 0.013f + Rand.Range(-0.03f, 0.03f), 0.85f, 1.0f);
+                float alignment = 0.75f + docSkill * 0.013f + Rand.Range(-0.03f, 0.03f);
+                if (EE_DefOf.EE_MorphineActive != null && pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MorphineActive))
+                {
+                    alignment += EE_Constants.MorphineSurgerySuccessOffset;
+                }
+                fracture.alignmentQuality = UnityEngine.Mathf.Clamp(alignment, 0.85f, 1.0f);
 
                 // Call Tended to get standard bandage overlay and tended mote
                 fracture.Tended(1.0f, 1.0f);

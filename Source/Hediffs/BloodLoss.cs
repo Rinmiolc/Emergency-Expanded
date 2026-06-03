@@ -31,6 +31,12 @@ namespace EmergencyExpanded
                     multiplier *= (1f + (EE_Constants.CoagulopathyBleedMultiplier - 1f) * coagSev);
                 }
 
+                // 应用 TXA 促凝血剂流血降速
+                if (EE_DefOf.EE_TxaActive != null && __instance.HasHediff(EE_DefOf.EE_TxaActive))
+                {
+                    multiplier *= EE_Constants.TxaBleedingMultiplier;
+                }
+
                 __result *= (multiplier * EE_Settings.GlobalBleedingFactor);
             }
             finally

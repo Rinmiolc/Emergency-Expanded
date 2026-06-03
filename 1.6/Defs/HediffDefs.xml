@@ -101,12 +101,7 @@
     <hediffClass>EmergencyExpanded.Hediff_MyocardialInfarction</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <initialSeverity>0.01</initialSeverity>
-    <tendable>false</tendable> 
-    <comps>
-      <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>8.0</severityPerDay> 
-      </li>
-    </comps>
+    <tendable>false</tendable>
     <stages>
       <li>
         <label>室颤</label>
@@ -266,10 +261,10 @@
   <HediffDef>
     <defName>AdrenalineBoost</defName>
     <label>肾上腺素增强</label>
-    <description>小人在受到物理创伤或致命危机刺激时分泌的强力肾上腺素，能临时显著增强移动、操作和意识能力，并能够极大削弱身体痛觉感知，防止休克倒地。但在激素消退后会产生强烈的脱水与疲劳反应。</description>
+    <description>小人在受到物理创伤、致命危机刺激或注射针剂时分泌的强力肾上腺素。能显著增强移动、操作和维生器官能力，并极大屏蔽痛觉防止休克。若连续注射过量，会导致严重的交感过载与儿茶酚胺风暴，诱发致命心梗与酸中毒。</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.9, 0.6, 0.2)</defaultLabelColor>
-    <maxSeverity>1.0</maxSeverity>
+    <maxSeverity>3.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
@@ -288,7 +283,7 @@
         </capMods>
       </li>
       <li>
-        <minSeverity>0.25</minSeverity>
+        <minSeverity>0.26</minSeverity>
         <label>应激爆发</label>
         <painFactor>0.85</painFactor>
         <capMods>
@@ -305,7 +300,7 @@
         </statOffsets>
       </li>
       <li>
-        <minSeverity>0.50</minSeverity>
+        <minSeverity>0.51</minSeverity>
         <label>强心激发</label>
         <painFactor>0.75</painFactor>
         <capMods>
@@ -322,7 +317,7 @@
         </statOffsets>
       </li>
       <li>
-        <minSeverity>0.75</minSeverity>
+        <minSeverity>0.76</minSeverity>
         <label>极限突破</label>
         <painFactor>0.50</painFactor>
         <capMods>
@@ -336,6 +331,39 @@
           <MeleeDodgeChance>5.0</MeleeDodgeChance>
           <MeleeHitChance>2.0</MeleeHitChance>
           <ShootingAccuracyPawn>2.0</ShootingAccuracyPawn>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>1.01</minSeverity>
+        <label>交感过载 - 药物过量</label>
+        <painFactor>0.70</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.05</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.15</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>0.10</offset></li> <!-- 开始受舒张期缩短和高后负荷影响，泵血效率停止增长并下滑 -->
+          <li><capacity>Breathing</capacity><offset>0.10</offset></li>
+        </capMods>
+        <statOffsets>
+          <MeleeHitChance>-2.0</MeleeHitChance>
+          <ShootingAccuracyPawn>-2.0</ShootingAccuracyPawn>
+        </statOffsets>
+      </li>
+      <li>
+        <minSeverity>2.01</minSeverity>
+        <label>儿茶酚胺风暴 - 致命过量</label>
+        <painFactor>0.90</painFactor>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.30</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.20</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.40</offset></li>
+          <li><capacity>BloodPumping</capacity><offset>-0.40</offset></li> <!-- 急性心力衰竭 / 心室充盈严重受限，循环崩溃 -->
+          <li><capacity>Breathing</capacity><offset>-0.30</offset></li>    <!-- 心源性肺水肿，换气障碍 -->
+        </capMods>
+        <statOffsets>
+          <MeleeHitChance>-4.0</MeleeHitChance>
+          <ShootingAccuracyPawn>-4.0</ShootingAccuracyPawn>
         </statOffsets>
       </li>
     </stages>
@@ -562,25 +590,142 @@
     </comps>
   </HediffDef>
 
-  <!-- ======================== 肾上腺素针剂专属不应期（隐藏） ======================== -->
+  <!-- ======================== TXA 促凝血状态 (单 Hediff) ======================== -->
   <HediffDef>
-    <defName>EE_AdrenalineSyringeCooldown</defName>
-    <label>针剂不应期：肾上腺素</label>
-    <description>短时间内注射过高浓度针剂造成的受体脱敏。在此期间再次注射相同类型的针剂将无法产生效果。该状态是隐藏的。</description>
-    <hediffClass>EmergencyExpanded.Hediff_HiddenCooldown</hediffClass>
-    <isBad>false</isBad>
+    <defName>EE_TxaActive</defName>
+    <label>TXA生效中</label>
+    <description>氨甲环酸在体内发生药效的状态。能够通过抑制纤维蛋白溶解来稳定血栓，将全身物理流血速度折半，解除并预防凝血功能障碍，同时降低受到枪伤/锋利创伤时引发大出血的几率。短时间内过量注射会导致全身微血栓栓塞和神经肌肉抽搐风险。</description>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
+    <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
+    <maxSeverity>3.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
       <li Class="HediffCompProperties_SeverityPerDay">
-        <severityPerDay>-3.0</severityPerDay> <!-- 1.0 / 3.0 = 0.333天 = 8小时 -->
+        <severityPerDay>-2.0</severityPerDay>
       </li>
+      <li Class="EmergencyExpanded.HediffCompProperties_TxaEffect"/>
     </comps>
     <stages>
       <li>
-        <minSeverity>0</minSeverity>
-        <becomeVisible>false</becomeVisible>
+        <label>安全促凝</label>
+      </li>
+      <li>
+        <minSeverity>1.01</minSeverity>
+        <label>高凝蓄积 - 药物过量</label>
+        <capMods>
+          <li><capacity>Metabolism</capacity><offset>-0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.05</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>2.01</minSeverity>
+        <label>危险过量 - 极高危</label>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>Metabolism</capacity><offset>-0.20</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.15</offset></li>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+        </capMods>
       </li>
     </stages>
   </HediffDef>
 
+  <!-- ======================== TXA 中毒诱发强直性抽搐 ======================== -->
+  <HediffDef>
+    <defName>EE_TxaSeizure</defName>
+    <label>强直性抽搐 (TXA中毒)</label>
+    <description>由于体内氨甲环酸（TXA）浓度过高，拮抗中枢 GABA-A 受体而引发的兴奋性中毒癫痫。小人会陷入全身强直性肌肉痉挛，暂时失去意识与全部行动能力，并产生剧烈的肌肉撕裂痛。</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.9, 0.3, 0.3)</defaultLabelColor>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>4500~9000</disappearsAfterTicks> <!-- 1.25 到 2.5 小时 -->
+        <showRemainingTime>true</showRemainingTime>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <painOffset>0.40</painOffset>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.10</setMax></li>
+          <li><capacity>Moving</capacity><setMax>0.00</setMax></li>
+          <li><capacity>Manipulation</capacity><setMax>0.00</setMax></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ======================== 吗啡生效中 (单 Hediff) ======================== -->
+  <HediffDef>
+    <defName>EE_MorphineActive</defName>
+    <label>吗啡镇痛中</label>
+    <description>吗啡在体内发生药效的状态。能极大屏蔽痛觉，减缓心肌梗死（30%）、物理休克及全身炎症（40%）的恶化速率，并使骨折接骨/石膏包扎手术成功率提升 15%。副作用是导致轻度嗜睡与活动缓慢。连续过量注射会导致严重的呼吸抑制、深度昏迷甚至呼吸骤停。</description>
+    <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
+    <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
+    <maxSeverity>3.0</maxSeverity>
+    <initialSeverity>1.0</initialSeverity>
+    <comps>
+      <li Class="HediffCompProperties_SeverityPerDay">
+        <severityPerDay>-2.0</severityPerDay>
+      </li>
+      <li Class="EmergencyExpanded.HediffCompProperties_MorphineEffect"/>
+    </comps>
+    <stages>
+      <li>
+        <label>镇痛治疗</label>
+        <painFactor>0.15</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.10</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.10</offset></li>
+          <li><capacity>Breathing</capacity><offset>-0.10</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>1.01</minSeverity>
+        <label>吗啡过量 - 中枢抑制</label>
+        <painFactor>0.05</painFactor>
+        <capMods>
+          <li><capacity>Consciousness</capacity><offset>-0.30</offset></li>
+          <li><capacity>Moving</capacity><offset>-0.25</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.20</offset></li>
+          <li><capacity>Breathing</capacity><offset>-0.40</offset></li>
+        </capMods>
+      </li>
+      <li>
+        <minSeverity>2.01</minSeverity>
+        <label>吗啡中毒 - 深度昏迷</label>
+        <painFactor>0.00</painFactor>
+        <lifeThreatening>true</lifeThreatening>
+        <capMods>
+          <li><capacity>Consciousness</capacity><setMax>0.10</setMax></li>
+          <li><capacity>Moving</capacity><offset>-0.80</offset></li>
+          <li><capacity>Manipulation</capacity><offset>-0.80</offset></li>
+          <li><capacity>Breathing</capacity><offset>-0.75</offset></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
+
+  <!-- ======================== 吗啡中毒诱发呼吸骤停 ======================== -->
+  <HediffDef>
+    <defName>EE_MorphineRespiratoryArrest</defName>
+    <label>呼吸骤停 (吗啡中毒)</label>
+    <description>由于吗啡等阿片类药物极度过量，深度抑制脑干呼吸中枢引发的急性自主呼吸停止。小人的呼吸能力将瞬间降为 0%，导致严重的脑缺氧与酸中毒。急需安排其他医生进行心肺复苏（CPR）或等待体内吗啡代谢完毕！</description>
+    <hediffClass>HediffWithComps</hediffClass>
+    <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
+    <comps>
+      <li Class="HediffCompProperties_Disappears">
+        <disappearsAfterTicks>3000~6000</disappearsAfterTicks> <!-- 50 到 100 分钟 -->
+        <showRemainingTime>true</showRemainingTime>
+      </li>
+    </comps>
+    <stages>
+      <li>
+        <capMods>
+          <li><capacity>Breathing</capacity><setMax>0.00</setMax></li>
+        </capMods>
+      </li>
+    </stages>
+  </HediffDef>
 </Defs>

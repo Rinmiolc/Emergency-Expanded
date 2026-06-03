@@ -32,6 +32,62 @@ namespace EmergencyExpanded
                 }
             }
         }
+
+        public override void CompPostTick(ref float severityAdjustment)
+        {
+            base.CompPostTick(ref severityAdjustment);
+            if (Pawn == null || Pawn.Dead) return;
+            if (!Pawn.IsHashIntervalTick(250)) return;
+
+            float severity = parent.Severity;
+            if (severity > EE_Constants.OverdoseToxicityThreshold)
+            {
+                // 1. 判定急性心肌梗死/室颤
+                float miChance = (severity > EE_Constants.OverdoseFatalThreshold) 
+                    ? EE_Constants.AdrenalineMiChanceFatal 
+                    : EE_Constants.AdrenalineMiChanceOverdose;
+
+                if (Verse.Rand.Chance(miChance))
+                {
+                    HediffDef miDef = EE_DefOf.EE_MyocardialInfarction;
+                    if (miDef != null && !Pawn.health.hediffSet.HasHediff(miDef))
+                    {
+                        // 诱发心梗
+                        Hediff mi = HediffMaker.MakeHediff(miDef, Pawn);
+                        mi.Severity = 0.05f; // 起始室颤
+                        Pawn.health.AddHediff(mi, null, null, null);
+                        
+                        if (Pawn.Spawned && Pawn.Map != null)
+                        {
+                            MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "心血管危象 - 心室颤动!", UnityEngine.Color.red);
+                        }
+                    }
+                }
+
+                // 2. 累加代谢性酸中毒
+                float acidosisPerDay = (severity > EE_Constants.OverdoseFatalThreshold)
+                    ? EE_Constants.AdrenalineAcidosisFatalPerDay
+                    : EE_Constants.AdrenalineAcidosisOverdosePerDay;
+
+                float acidosisIncrement = (acidosisPerDay / 60000f) * 250f; // RareTick 为 250 ticks
+                
+                HediffDef acidosisDef = EE_DefOf.MetabolicAcidosis;
+                if (acidosisDef != null)
+                {
+                    Hediff acidosis = Pawn.health.hediffSet.GetFirstHediffOfDef(acidosisDef);
+                    if (acidosis == null)
+                    {
+                        acidosis = HediffMaker.MakeHediff(acidosisDef, Pawn);
+                        acidosis.Severity = acidosisIncrement;
+                        Pawn.health.AddHediff(acidosis, null, null, null);
+                    }
+                    else
+                    {
+                        acidosis.Severity = UnityEngine.Mathf.Min(acidosis.Severity + acidosisIncrement, 1.0f);
+                    }
+                }
+            }
+        }
     }
 
     // ================= 物理受击触发肾上腺素补丁 =================
@@ -84,38 +140,34 @@ namespace EmergencyExpanded
         }
     }
 
-    // ================= 通用针剂隐藏冷却状态 =================
-    public class Hediff_HiddenCooldown : Verse.HediffWithComps
-    {
-        public override bool Visible => false; // 隐藏状态，避免面板杂乱
-    }
-
     // ================= 通用针剂使用基类 =================
     public abstract class IngestionOutcomeDoer_SyringeBase : RimWorld.IngestionOutcomeDoer
     {
-        public Verse.HediffDef cooldownHediff; // XML 中配置的冷却状态
-        public float cooldownSeverity = 1.0f;  // 冷却状态初始严重度
+        public Verse.HediffDef toxicityHediff;       // 蓄积毒性/药效 Hediff
+        public float severityIncrement = 1.0f;       // 每次注射增加的严重度
+        public float maxSeverity = 3.0f;             // 严重度上限
 
         protected override void DoIngestionOutcomeSpecial(Pawn pawn, Verse.Thing ingested, int ingestedCount)
         {
             if (pawn.Dead) return;
 
-            // 检查是否处于对应的针剂冷却期
-            if (cooldownHediff != null && pawn.health.hediffSet.HasHediff(cooldownHediff))
-            {
-                Verse.Messages.Message($"{pawn.LabelShort} 正处于针剂不应期，无法吸收药效！", pawn, RimWorld.MessageTypeDefOf.RejectInput, false);
-                return;
-            }
-
-            // 执行特定的针剂效果
+            // 执行特定的针剂效果（如清除后遗症等）
             ApplySyringeEffect(pawn, ingested, ingestedCount);
 
-            // 施加独立的冷却状态
-            if (cooldownHediff != null)
+            // 施加/累加严重度
+            if (toxicityHediff != null)
             {
-                Verse.Hediff cooldown = Verse.HediffMaker.MakeHediff(cooldownHediff, pawn);
-                cooldown.Severity = cooldownSeverity;
-                pawn.health.AddHediff(cooldown, null, null, null);
+                Verse.Hediff activeHediff = pawn.health.hediffSet.GetFirstHediffOfDef(toxicityHediff);
+                if (activeHediff == null)
+                {
+                    activeHediff = Verse.HediffMaker.MakeHediff(toxicityHediff, pawn);
+                    activeHediff.Severity = severityIncrement;
+                    pawn.health.AddHediff(activeHediff, null, null, null);
+                }
+                else
+                {
+                    activeHediff.Severity = UnityEngine.Mathf.Min(activeHediff.Severity + severityIncrement, maxSeverity);
+                }
             }
         }
 
@@ -127,7 +179,7 @@ namespace EmergencyExpanded
     {
         protected override void ApplySyringeEffect(Pawn pawn, Verse.Thing ingested, int ingestedCount)
         {
-            // 如果当前处于后遗症状态，则直接移除它（选项C：仅重置状态，无额外惩罚）
+            // 如果当前处于后遗症状态，则直接移除它
             Verse.HediffDef crashDef = EE_DefOf.AdrenalineCrash;
             if (crashDef != null)
             {
@@ -136,19 +188,6 @@ namespace EmergencyExpanded
                 {
                     pawn.health.RemoveHediff(crash);
                 }
-            }
-
-            // 施加/增强肾上腺素
-            Verse.HediffDef boostDef = EE_DefOf.AdrenalineBoost;
-            if (boostDef != null)
-            {
-                Verse.Hediff boost = pawn.health.hediffSet.GetFirstHediffOfDef(boostDef);
-                if (boost == null)
-                {
-                    boost = Verse.HediffMaker.MakeHediff(boostDef, pawn);
-                    pawn.health.AddHediff(boost, null, null, null);
-                }
-                boost.Severity = EE_Constants.AdrenalineSyringeSeverity;
             }
         }
     }

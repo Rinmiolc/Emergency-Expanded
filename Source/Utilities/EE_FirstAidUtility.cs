@@ -119,13 +119,13 @@ namespace EmergencyExpanded
                     {
                         foreach (var doer in itemDef.ingestible.outcomeDoers)
                         {
-                            if (doer is IngestionOutcomeDoer_SyringeBase syringeDoer && syringeDoer.cooldownHediff != null)
+                            if (doer is IngestionOutcomeDoer_SyringeBase syringeDoer && syringeDoer.toxicityHediff != null)
                             {
-                                if (patient.health.hediffSet.HasHediff(syringeDoer.cooldownHediff))
+                                float sev = patient.health.hediffSet.GetFirstHediffOfDef(syringeDoer.toxicityHediff)?.Severity ?? 0f;
+                                if (sev >= syringeDoer.maxSeverity)
                                 {
-                                    return false; // 如果有该针剂的不应期，禁止施加
+                                    return false; // 如果已达到最高蓄积上限，禁止继续注射
                                 }
-                                // 如果是当前处理的注射器且尚未处于冷却，那我们就应该允许施加（无视倒地限制）
                                 return true;
                             }
                         }

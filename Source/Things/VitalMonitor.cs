@@ -60,11 +60,48 @@ namespace EmergencyExpanded
             float bioAge = pawn.ageTracker.AgeBiologicalYearsFloat;
             float baseHR = 80f - Mathf.Clamp(bioAge - 15f, 0f, 60f) * 0.2f; // 人类范围在 68 - 80 左右
 
-            // 2. 肾上腺素加成 (额外增加心率)
+            // 2. 肾上腺素加成 (根据 1.0/2.0/3.0 阶段分级加算心率)
             Hediff adrenaline = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
             if (adrenaline != null)
             {
-                baseHR += adrenaline.Severity * 35f; // 最高 +35 bpm
+                float sev = adrenaline.Severity;
+                if (sev <= 1.0f)
+                {
+                    // 正常区间：最高 +40 bpm
+                    baseHR += sev * 40f;
+                }
+                else if (sev <= 2.0f)
+                {
+                    // 过量区间：+40 ~ +80 bpm
+                    baseHR += 40f + (sev - 1.0f) * 40f;
+                }
+                else
+                {
+                    // 致命区间：+80 ~ +150 bpm (儿茶酚胺风暴)
+                    baseHR += 80f + (sev - 2.0f) * 70f;
+                }
+            }
+
+            // 吗啡抑制心率 (根据 1.0/2.0/3.0 阶段分级扣减心率)
+            if (EE_DefOf.EE_MorphineActive != null)
+            {
+                Hediff morphine = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MorphineActive);
+                if (morphine != null)
+                {
+                    float sev = morphine.Severity;
+                    if (sev <= 1.0f)
+                    {
+                        baseHR -= sev * 15f;
+                    }
+                    else if (sev <= 2.0f)
+                    {
+                        baseHR -= 15f + (sev - 1.0f) * 15f;
+                    }
+                    else
+                    {
+                        baseHR -= 30f + (sev - 2.0f) * 15f;
+                    }
+                }
             }
 
             // 3. 急性流血引起的交感神经代偿 (急性失血交感亢奋，心率立刻快速飙升)
