@@ -259,15 +259,10 @@ namespace EmergencyExpanded
             {
                 if (!item.Destroyed)
                 {
-                    if (item.stackCount > 1)
+                    Thing consumed = item.SplitOff(1);
+                    if (!consumed.Destroyed) 
                     {
-                        item.stackCount--;
-                    }
-                    else
-                    {
-                        doctor.carryTracker?.innerContainer?.Remove(item);
-                        doctor.inventory?.innerContainer?.Remove(item);
-                        if (!item.Destroyed) item.Destroy();
+                        consumed.Destroy();
                     }
                 }
                 MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{item.def.LabelCap}已使用", EE_Constants.FirstAidMoteDurationStandard);
