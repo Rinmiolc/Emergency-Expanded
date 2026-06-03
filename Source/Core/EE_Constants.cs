@@ -188,6 +188,14 @@ namespace EmergencyExpanded
         // 原版哮喘发作时，触发气胸的额外严重度惩罚
         public const float AsthmaPneumothoraxSeverityBonus = 0.2f;
 
+        // ================= SIRS 机制与炎性负载权重 (SIRS & Inflammation weights) =================
+        // 包扎后的普通伤口引发全身炎症反应的权重比例
+        public const float SirsWeightTendedInjury = 0.05f;
+        // 未包扎的普通伤口引发全身炎症反应的权重比例
+        public const float SirsWeightUntendedInjury = 1.0f;
+        // 组织缺氧局部病灶引发全身炎症反应的权重比例
+        public const float SirsWeightTissueHypoxia = 0.05f;
+
         // ================= 泛化休克机制 (Shock Mechanism) =================
         // 各类病理因素向休克转化的基础压力乘数
         public const float ShockPressureFromBloodLoss = 1.0f; // 调低，因为原版失血自己已经有惩罚

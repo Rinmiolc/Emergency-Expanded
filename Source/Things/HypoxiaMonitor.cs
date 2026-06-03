@@ -62,14 +62,14 @@ namespace EmergencyExpanded
             float traumaLoad = 0f;
             foreach (var hediff in __instance.hediffSet.hediffs)
             {
-                if (hediff is Hediff_Injury injury)
+                if (hediff.def == EE_DefOf.TissueHypoxia)
+                {
+                    traumaLoad += hediff.Severity * EE_Constants.SirsWeightTissueHypoxia;
+                }
+                else if (hediff is Hediff_Injury injury)
                 {
                     // 现实中：包扎好的伤口引发的全身炎症反应要小得多
-                    traumaLoad += injury.Severity * (injury.IsTended() ? 0.2f : 1.0f);
-                }
-                else if (hediff.def == EE_DefOf.TissueHypoxia)
-                {
-                    traumaLoad += hediff.Severity;
+                    traumaLoad += injury.Severity * (injury.IsTended() ? EE_Constants.SirsWeightTendedInjury : EE_Constants.SirsWeightUntendedInjury);
                 }
                 // 感染引发的强烈炎症
                 else if (EE_DefOf.EE_Sepsis != null && hediff.def == EE_DefOf.EE_Sepsis)
