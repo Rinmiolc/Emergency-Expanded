@@ -9,6 +9,7 @@
     <hediffClass>EmergencyExpanded.Hediff_TissueHypoxia</hediffClass>
     <initialSeverity>3.0</initialSeverity> 
     <tendable>false</tendable>
+    <displayWound>false</displayWound>
     <injuryProps>
       <painPerSeverity>0.015</painPerSeverity>
       <averagePainPerSeverityPermanent>0.005</averagePainPerSeverityPermanent>
@@ -411,6 +412,7 @@
     <labelNoun>闭合性骨折的伤口</labelNoun>
     <description>骨骼断裂但皮肤完整。导致剧烈疼痛和严重的肢体功能损耗。如果不进行固定就移动，会造成内部肌肉血管二次损伤，甚至错位导致畸形愈合。</description>
     <hediffClass>EmergencyExpanded.Hediff_Fracture</hediffClass>
+    <displayWound>false</displayWound>
     <injuryProps>
       <painPerSeverity>0.04</painPerSeverity>
       <canMerge>false</canMerge>
