@@ -34,7 +34,9 @@ namespace EmergencyExpanded
             if (part == null) return;
 
             // 2. 核心修复：如果这个部位已经被这次伤害彻底摧毁（生命值为0）或已经缺失，就不应该再添加骨折状态。
-            if (pawn.health.hediffSet.GetPartHealth(part) <= 0 || pawn.health.hediffSet.PartIsMissing(part))
+            if (pawn.health.hediffSet.GetPartHealth(part) <= 0 || 
+                pawn.health.hediffSet.PartIsMissing(part) || 
+                !pawn.health.hediffSet.GetNotMissingParts().Contains(part))
             {
                 return;
             }

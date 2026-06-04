@@ -91,7 +91,7 @@ namespace EmergencyExpanded
                         }
 
                         // 生成气胸
-                        if (EE_DefOf.EE_Pneumothorax != null)
+                        if (EE_DefOf.EE_Pneumothorax != null && __instance.hediffSet.GetNotMissingParts().Contains(targetPartForPneumo))
                         {
                             float severityIncrease = EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor;
                             
