@@ -94,8 +94,8 @@ namespace EmergencyExpanded
 
 
         // ================= 凝血病 (Coagulopathy) =================
-        public static float CoagulopathyAcidosisThreshold = 0.2f;
-        public static float CoagulopathyBloodLossThreshold = 0.30f;
+        public const float CoagulopathyAcidosisThreshold = 0.2f;
+        public const float CoagulopathyBloodLossThreshold = 0.30f;
         // 凝血障碍对物理流血速度的最大加成倍数 (例如严重度 1.0 时增加 1.5倍流血速度)
         public const float CoagulopathyBleedMultiplier = 1.5f;
 

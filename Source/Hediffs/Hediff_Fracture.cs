@@ -128,17 +128,17 @@ namespace EmergencyExpanded
             {
                 CheckSecondaryDamage();
                 CheckStrictBedrestFailure();
-            }
 
-            // 保持绷带视觉效果：如果已固定，则强制使其处于被包扎状态 (刷新 tendTicksLeft)
-            if (isSplinted || isCasted || isInternallyFixed || isStrictBedrest)
-            {
-                HediffComp_TendDuration tendComp = this.TryGetComp<HediffComp_TendDuration>();
-                if (tendComp != null && !tendComp.IsTended)
+                // 保持绷带视觉效果：如果已固定，则强制使其处于被包扎状态 (刷新 tendTicksLeft)
+                if (isSplinted || isCasted || isInternallyFixed || isStrictBedrest)
                 {
-                    tendComp.tendTicksLeft = int.MaxValue;
-                    tendComp.tendQuality = 1.0f;
-                    pawn.Drawer?.renderer?.SetAllGraphicsDirty();
+                    HediffComp_TendDuration tendComp = this.TryGetComp<HediffComp_TendDuration>();
+                    if (tendComp != null && !tendComp.IsTended)
+                    {
+                        tendComp.tendTicksLeft = int.MaxValue;
+                        tendComp.tendQuality = 1.0f;
+                        pawn.Drawer?.renderer?.SetAllGraphicsDirty();
+                    }
                 }
             }
         }

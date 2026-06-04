@@ -114,8 +114,17 @@ namespace EmergencyExpanded
                     // 如果已经发生不可逆衰竭，则跳过
                     if (Pawn.health.hediffSet.HasHediff(failureDef, part)) continue;
                     
-                    Hediff injury = Pawn.health.hediffSet.GetFirstHediffOfDef(injuryDef);
-                    if (injury != null && injury.Part == part)
+                    Hediff injury = null;
+                    foreach (Hediff h in Pawn.health.hediffSet.hediffs)
+                    {
+                        if (h.def == injuryDef && h.Part == part)
+                        {
+                            injury = h;
+                            break;
+                        }
+                    }
+
+                    if (injury != null)
                     {
                         injury.Severity += damageAmount;
                         if (injury.Severity >= 1.0f)
@@ -125,25 +134,9 @@ namespace EmergencyExpanded
                     }
                     else
                     {
-                        // 可能存在同类 Hediff 但不在同一个 part（例如双肾），安全起见使用循环寻找当前 part 的 injury
-                        bool found = false;
-                        foreach (Hediff h in Pawn.health.hediffSet.hediffs)
-                        {
-                            if (h.def == injuryDef && h.Part == part)
-                            {
-                                h.Severity += damageAmount;
-                                found = true;
-                                if (h.Severity >= 1.0f) TriggerOrganFailure(part, h, failureDef);
-                                break;
-                            }
-                        }
-                        
-                        if (!found)
-                        {
-                            Hediff newInjury = HediffMaker.MakeHediff(injuryDef, Pawn, part);
-                            newInjury.Severity = damageAmount;
-                            Pawn.health.AddHediff(newInjury, part, null, null);
-                        }
+                        Hediff newInjury = HediffMaker.MakeHediff(injuryDef, Pawn, part);
+                        newInjury.Severity = damageAmount;
+                        Pawn.health.AddHediff(newInjury, part, null, null);
                     }
                 }
             }

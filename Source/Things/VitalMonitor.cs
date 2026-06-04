@@ -531,33 +531,5 @@ namespace EmergencyExpanded
         }
     }
 
-    // ================= 4. Harmony 注入与过滤挂载补丁 =================
-    [HarmonyPatch(typeof(Pawn), "GetGizmos")]
-    public static class Patch_Pawn_GetGizmos
-    {
-        public static void Postfix(Pawn __instance, ref IEnumerable<Gizmo> __result)
-        {
-            // 健壮性与兼容性过滤
-            if (__instance == null || __instance.Dead) return;
-            if (!__instance.RaceProps.IsFlesh) return; // 排除机械族、石头人等非肉体
-            if (__instance.IsShambler) return;        // 排除 1.5/1.6 异常蹒跚怪
-            if (__instance.RaceProps.IsMechanoid) return; // 极佳的安全过滤排除机械族
-            if (!EE_Settings.EnableEcgGui) return;    // 检查设置开关
-
-            // 仅对玩家当前选中操控的单个血肉生物显示心电图体征仪（防止多选时UI过载）
-            if (Find.Selector.SingleSelectedThing == __instance)
-            {
-                __result = AddMonitorGizmo(__instance, __result);
-            }
-        }
-
-        private static IEnumerable<Gizmo> AddMonitorGizmo(Pawn pawn, IEnumerable<Gizmo> originalGizmos)
-        {
-            foreach (var gizmo in originalGizmos)
-            {
-                yield return gizmo;
-            }
-            yield return new Gizmo_VitalMonitor(pawn);
-        }
-    }
+    // Note: The GetGizmos Harmony patch has been consolidated into Patch_Pawn_GetGizmos.cs
 }

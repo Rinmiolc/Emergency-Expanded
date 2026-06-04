@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Patch>
+  <!-- 1. 替换 Hemogen 抽血菜谱的 workerClass (仅在 Biotech 载入时执行) -->
+  <Operation Class="PatchOperationFindMod">
+    <mods>
+      <li>Ludeon.RimWorld.Biotech</li>
+      <li>Biotech</li>
+    </mods>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/RecipeDef[defName="ExtractHemogenPack"]/workerClass</xpath>
+      <value>
+        <workerClass>EmergencyExpanded.Recipe_ExtractHemogenEE</workerClass>
+      </value>
+    </match>
+    <!-- 空 nomatch 保证当 Biotech DLC 未启用时，该操作仍返回 true，不打印报错日志 -->
+    <nomatch Class="PatchOperationSequence">
+      <operations />
+    </nomatch>
+  </Operation>
+
+  <!-- 2. 替换原版医生治疗工作分配的 giverClass 为自定义的 WorkGiver_TendEE (注意：原版 defName 中间无下划线) -->
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/WorkGiverDef[defName="DoctorTendToHumanlikes"]/giverClass</xpath>
+    <value>
+      <giverClass>EmergencyExpanded.WorkGiver_TendEE</giverClass>
+    </value>
+  </Operation>
+
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/WorkGiverDef[defName="DoctorTendToAnimals"]/giverClass</xpath>
+    <value>
+      <giverClass>EmergencyExpanded.WorkGiver_TendEE</giverClass>
+    </value>
+  </Operation>
+
+  <!-- 3. 将原版烧伤的 hediffClass 替换为自定义的 Hediff_InjuryBurn (如果 hediffClass 不存在则添加，存在则替换) -->
+  <Operation Class="PatchOperationConditional">
+    <xpath>Defs/HediffDef[defName="Burn"]/hediffClass</xpath>
+    <match Class="PatchOperationReplace">
+      <xpath>Defs/HediffDef[defName="Burn"]/hediffClass</xpath>
+      <value>
+        <hediffClass>EmergencyExpanded.Hediff_InjuryBurn</hediffClass>
+      </value>
+    </match>
+    <nomatch Class="PatchOperationAdd">
+      <xpath>Defs/HediffDef[defName="Burn"]</xpath>
+      <value>
+        <hediffClass>EmergencyExpanded.Hediff_InjuryBurn</hediffClass>
+      </value>
+    </nomatch>
+  </Operation>
+
+  <!-- 4. 为 BasePawn 挂载我们的自定义组件以管理 Gizmos 和周期性危机监测 -->
+  <Operation Class="PatchOperationAdd">
+    <xpath>Defs/ThingDef[@Name="BasePawn"]/comps</xpath>
+    <value>
+      <li Class="EmergencyExpanded.CompProperties_EE_PawnGizmos" />
+    </value>
+  </Operation>
+</Patch>

@@ -39,7 +39,7 @@ namespace EmergencyExpanded
 
         public bool CheckConditionA()
         {
-            return Patch_Pawn_HealthTracker_HealthTick.CheckConditionA(Pawn);
+            return CompEE_PawnGizmos.CheckConditionA(Pawn);
         }
 
         private void ForceBiologicalDeath()

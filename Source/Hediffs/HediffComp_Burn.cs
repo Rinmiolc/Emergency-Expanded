@@ -49,15 +49,13 @@ namespace EmergencyExpanded
         {
             base.CompPostTick(ref severityAdjustment);
             if (parent.pawn == null || parent.pawn.Dead) return;
+            if (!parent.pawn.IsHashIntervalTick(120)) return;
             
             // 如果是大面积烧伤且未包扎/持续流失体液，引发休克
             if (BurnDegree >= 2 && parent.Severity > 10f && !parent.pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Shock))
             {
-                if (parent.pawn.IsHashIntervalTick(120))
-                {
-                    Hediff shock = HediffMaker.MakeHediff(EE_DefOf.EE_Shock, parent.pawn, null);
-                    parent.pawn.health.AddHediff(shock, null, null, null);
-                }
+                Hediff shock = HediffMaker.MakeHediff(EE_DefOf.EE_Shock, parent.pawn, null);
+                parent.pawn.health.AddHediff(shock, null, null, null);
             }
         }
     }

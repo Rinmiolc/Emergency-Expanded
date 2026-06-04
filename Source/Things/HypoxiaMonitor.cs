@@ -5,15 +5,10 @@ using System.Collections.Generic;
 
 namespace EmergencyExpanded
 {
-    [HarmonyPatch(typeof(Pawn_HealthTracker), "HealthTick")]
-    public static class Patch_Pawn_HealthTracker_SystemicCrisisMonitor
+    public static class Patch_Pawn_HealthTracker_SystemicCrisisMonitor_Helper
     {
-        public static void Postfix(Pawn_HealthTracker __instance)
+        public static void RunCrisisMonitor(Pawn_HealthTracker __instance, Pawn pawn)
         {
-            Pawn pawn = __instance.hediffSet?.pawn;
-            
-            if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh || pawn.IsShambler || !pawn.IsHashIntervalTick(60)) 
-                return;
 
             float pumping = __instance.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = __instance.capacities.GetLevel(PawnCapacityDefOf.Breathing);

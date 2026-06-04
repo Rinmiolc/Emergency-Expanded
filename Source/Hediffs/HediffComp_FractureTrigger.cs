@@ -1,52 +1,40 @@
-using HarmonyLib;
 using RimWorld;
 using Verse;
-using System.Linq;
 using UnityEngine;
+using System.Linq;
 
 namespace EmergencyExpanded
 {
-    // 改为拦截 AddHediff 以彻底兼容 Combat Extended 及其它第三方武器伤害模型
-    [HarmonyPatch(typeof(Pawn_HealthTracker), "AddHediff", new System.Type[] { typeof(Hediff), typeof(BodyPartRecord), typeof(DamageInfo?), typeof(DamageWorker.DamageResult) })]
-    public static class Patch_DamageWorker_Fracture
+    public class HediffCompProperties_FractureTrigger : HediffCompProperties
     {
-        [HarmonyPostfix]
-        public static void Postfix(Pawn_HealthTracker __instance, Pawn ___pawn, Hediff hediff, BodyPartRecord part, DamageInfo? dinfo, DamageWorker.DamageResult result)
+        public HediffCompProperties_FractureTrigger()
         {
+            this.compClass = typeof(HediffComp_FractureTrigger);
+        }
+    }
+
+    public class HediffComp_FractureTrigger : HediffComp
+    {
+        public override void CompPostPostAdd(DamageInfo? dinfo)
+        {
+            base.CompPostPostAdd(dinfo);
+
             if (EE_GlobalFlags.IsForcingDown) return;
 
-            // 1. 基础过滤：仅针对新增的外伤 (Injury)
-            if (hediff == null || !(hediff is Hediff_Injury)) return;
-            
-            // 如果 dinfo 为空 (如使用开发者工具 Add Hediff)，我们依然可以尝试根据伤口类型和严重度来推算
-            float amt = dinfo.HasValue ? dinfo.Value.Amount : hediff.Severity;
-            DamageDef def = dinfo.HasValue ? dinfo.Value.Def : null;
-
-            if (def == null)
-            {
-                if (hediff.def.defName.Contains("Crush") || hediff.def.defName.Contains("Blunt") || hediff.def.defName.Contains("Bruise")) def = DamageDefOf.Blunt;
-                else if (hediff.def.defName.Contains("Cut") || hediff.def.defName.Contains("Scratch") || hediff.def.defName.Contains("Stab") || hediff.def.defName.Contains("Bite")) def = DamageDefOf.Cut;
-                else if (hediff.def.defName.Contains("Gunshot") || hediff.def.defName.Contains("Arrow")) def = DamageDefOf.Bullet;
-                else if (hediff.def.defName.Contains("Bomb") || hediff.def.defName.Contains("Explosion")) def = DamageDefOf.Bomb;
-                else def = DamageDefOf.Blunt; // Fallback for debugging
-            }
-
-            Pawn pawn = ___pawn;
+            Pawn pawn = this.Pawn;
             if (pawn == null || pawn.Dead) return;
 
-            // 2. 兼容性与性能过滤：仅限人类 flesh 生物，排除机械族与蹒跚怪等
+            // 1. 兼容性与性能过滤：仅限人类 flesh 生物，排除机械族与蹒跚怪等
             if (!pawn.RaceProps.IsFlesh) return;
             if (pawn.RaceProps.BloodDef == null) return;
             if (pawn.IsShambler) return;
             if (ModsConfig.AnomalyActive && pawn.IsMutant) return;
 
-            // RimWorld 的 DamageWorker_AddInjury 通常会将 part 作为 null 传入，而把它直接赋给 hediff.Part
-            part = part ?? hediff.Part;
+            BodyPartRecord part = this.parent.Part;
             if (part == null) return;
 
-            // 3. 核心修复：如果这个部位已经被这次伤害彻底摧毁（生命值为0）或已经缺失，就不应该再添加骨折状态。
-            // 否则会触发 RimWorld 引擎底层报错 "Tried to add health diff to missing part"
-            if (__instance.hediffSet.GetPartHealth(part) <= 0 || __instance.hediffSet.PartIsMissing(part))
+            // 2. 核心修复：如果这个部位已经被这次伤害彻底摧毁（生命值为0）或已经缺失，就不应该再添加骨折状态。
+            if (pawn.health.hediffSet.GetPartHealth(part) <= 0 || pawn.health.hediffSet.PartIsMissing(part))
             {
                 return;
             }
@@ -54,17 +42,30 @@ namespace EmergencyExpanded
             if (EE_BodyPartCache.IsBonePart(part.def))
             {
                 // 判定是否已经具有该部位的骨折，避免重复生成
-                if (__instance.hediffSet.hediffs.Any(h => (h.def == EE_DefOf.EE_ClosedFracture || h.def == EE_DefOf.EE_OpenFracture) && h.Part == part))
+                if (pawn.health.hediffSet.hediffs.Any(h => (h.def == EE_DefOf.EE_ClosedFracture || h.def == EE_DefOf.EE_OpenFracture) && h.Part == part))
                 {
                     return;
                 }
 
-                float maxHP = part.def.GetMaxHealth(pawn);
+                // 如果 dinfo 为空 (如使用开发者工具 Add Hediff)，根据伤口严重度来推算
+                float amt = dinfo.HasValue ? dinfo.Value.Amount : this.parent.Severity;
+                DamageDef def = dinfo.HasValue ? dinfo.Value.Def : null;
 
+                if (def == null)
+                {
+                    string defName = this.parent.def.defName;
+                    if (defName.Contains("Crush") || defName.Contains("Blunt") || defName.Contains("Bruise")) def = DamageDefOf.Blunt;
+                    else if (defName.Contains("Cut") || defName.Contains("Scratch") || defName.Contains("Stab") || defName.Contains("Bite")) def = DamageDefOf.Cut;
+                    else if (defName.Contains("Gunshot") || defName.Contains("Arrow")) def = DamageDefOf.Bullet;
+                    else if (defName.Contains("Bomb") || defName.Contains("Explosion")) def = DamageDefOf.Bomb;
+                    else def = DamageDefOf.Blunt; // Fallback
+                }
+
+                float maxHP = part.def.GetMaxHealth(pawn);
                 float fractureChance = 0f;
                 float openChance = 0f;
 
-                // 4. 根据不同伤害类型套用平衡性数学模型
+                // 3. 根据不同伤害类型套用平衡性数学模型
                 if (def == DamageDefOf.Blunt || def == DamageDefOf.Crush || (def.armorCategory != null && def.armorCategory.defName == "Blunt"))
                 {
                     // 近战钝击：骨折的核心来源
@@ -80,7 +81,7 @@ namespace EmergencyExpanded
                 }
                 else if (def.isExplosive || def == DamageDefOf.Bomb)
                 {
-                    // 爆炸伤害：平衡性下调至 30% 几率
+                    // 爆炸伤害：平衡性下调
                     if (amt >= EE_Constants.FractureExplosionDamageThreshold)
                     {
                         fractureChance = EE_Constants.FractureExplosionChance;
@@ -115,7 +116,7 @@ namespace EmergencyExpanded
                     openChance = 0.90f;
                 }
 
-                // 5. 摇号判定骨折生成
+                // 4. 摇号判定骨折生成
                 if (fractureChance > 0f && Rand.Chance(fractureChance))
                 {
                     bool isOpen = Rand.Chance(openChance);
@@ -127,20 +128,19 @@ namespace EmergencyExpanded
                         Hediff_Fracture fracture = (Hediff_Fracture)HediffMaker.MakeHediff(fracDef, pawn, part);
                         fracture.Severity = Mathf.Clamp(amt * EE_Constants.FractureSeverityConversionFactor, EE_Constants.FractureSeverityMin, EE_Constants.FractureSeverityMax); 
                         
-                        __instance.AddHediff(fracture, part, dinfo, result);
+                        pawn.health.AddHediff(fracture, part, dinfo, null);
 
-                        // 开放性骨折自带高额出血，在此联动大出血机制，极其真实
+                        // 开放性骨折自带高额出血，在此联动大出血机制
                         if (isOpen && EE_DefOf.MassiveBleeding != null)
                         {
                             // 修复：大出血不应生成在骨头上，而是生成在包裹骨头的血肉（即父节点部位）上
-                            // 关键修复：确保安全追溯非缺失部位，避免 CE 等模组下瞬间多处摧毁带来的 Missing Part 报错
                             BodyPartRecord bleedPart = EE_MedicalUtility.GetNearestNonMissingPart(pawn, part.parent ?? part);
 
-                            if (bleedPart != null && !__instance.hediffSet.PartIsMissing(bleedPart))
+                            if (bleedPart != null && !pawn.health.hediffSet.PartIsMissing(bleedPart))
                             {
                                 Hediff rupture = HediffMaker.MakeHediff(EE_DefOf.MassiveBleeding, pawn, bleedPart);
                                 rupture.Severity = 1.0f;
-                                __instance.AddHediff(rupture, bleedPart, dinfo, result);
+                                pawn.health.AddHediff(rupture, bleedPart, dinfo, null);
                             }
                         }
 

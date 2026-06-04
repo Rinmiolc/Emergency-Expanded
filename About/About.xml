@@ -7,7 +7,7 @@
   <supportedVersions>
     <li>1.6</li>
   </supportedVersions>
-  <description>Emergency Expanded 是一款为 RimWorld 1.6 打造的硬核医疗与战地急救扩展 Mod。它在兼顾原版可玩性与兼容性的同时，引入了一套自洽、科学的急症病理与战地施救系统。</description>
+  <description>Emergency Expanded (简称EE) 是一款为 RimWorld 1.6 打造的硬核医疗与战地急救扩展 Mod。它在兼顾原版可玩性与兼容性的同时，引入了一套自洽、科学的急症病理与战地施救系统。</description>
   <modDependencies>
     <li>
       <packageId>brrainz.harmony</packageId>
@@ -16,4 +16,16 @@
       <downloadUrl>https://github.com/pardeike/HarmonyRimWorld/releases/latest</downloadUrl>
     </li>
   </modDependencies>
+  <loadAfter>
+    <li>brrainz.harmony</li>
+    <li>erdelf.HumanoidAlienRaces</li>
+    <li>CETeam.CombatExtended</li>
+    <li>Uuugggg.SmartMedicine</li>
+  </loadAfter>
+  <incompatibleWith>
+    <li>Troopersmith1.DeathRattle</li>
+    <li>trojan.deathrattle</li>
+    <li>cat2002.lifesupport</li>
+    <li>vanya.lifesupport</li>
+  </incompatibleWith>
 </ModMetaData>
