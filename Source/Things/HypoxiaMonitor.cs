@@ -122,27 +122,7 @@ namespace EmergencyExpanded
                     foreach (BodyPartRecord part in __instance.hediffSet.GetNotMissingParts())
                     {
                         if (part.def == null || part.depth == BodyPartDepth.Inside) continue;
-                        
-                        bool isExtremity = false;
-                        if (part.def.tags != null && 
-                           (part.def.tags.Contains(BodyPartTagDefOf.ManipulationLimbSegment) || 
-                            part.def.tags.Contains(BodyPartTagDefOf.MovingLimbSegment)))
-                        {
-                            if (part.parts == null || part.parts.Count == 0)
-                            {
-                                isExtremity = true;
-                            }
-                        }
-                        if (!isExtremity)
-                        {
-                            string defNameLower = part.def.defName.ToLower();
-                            if (defNameLower.Contains("finger") || defNameLower.Contains("toe") || 
-                                defNameLower.Contains("nose") || defNameLower.Contains("ear"))
-                            {
-                                isExtremity = true;
-                            }
-                        }
-                        if (isExtremity)
+                        if (EE_BodyPartCache.IsExtremityPart(part))
                         {
                             tmpExtremities.Add(part);
                         }
@@ -200,34 +180,7 @@ namespace EmergencyExpanded
             }
             else
             {
-                BodyPartRecord heart = null;
-                List<BodyPartRecord> sources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
-                if (sources != null && sources.Count > 0)
-                {
-                    heart = sources[0];
-                }
-                if (heart == null)
-                {
-                    foreach (BodyPartRecord part in pawn.health.hediffSet.GetNotMissingParts())
-                    {
-                        if (part.def == BodyPartDefOf.Heart)
-                        {
-                            heart = part;
-                            break;
-                        }
-                    }
-                }
-                if (heart == null)
-                {
-                    foreach (BodyPartRecord part in pawn.health.hediffSet.GetNotMissingParts())
-                    {
-                        if (part.def != null && part.def.defName.IndexOf("heart", System.StringComparison.OrdinalIgnoreCase) >= 0)
-                        {
-                            heart = part;
-                            break;
-                        }
-                    }
-                }
+                BodyPartRecord heart = EE_BodyPartCache.GetHeartPart(pawn);
 
                 float bpm = VitalTracker.CalculateDynamicHeartRate(pawn);
 

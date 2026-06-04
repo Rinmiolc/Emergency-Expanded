@@ -94,7 +94,7 @@ namespace EmergencyExpanded
                 case EmergencyItemType.Defibrillator:
                     // 除颤仪：目标必须具有心室颤动 (VF) 或原版心脏病发作 (HeartAttack) 状态，且未死亡
                     return (EE_DefOf.EE_MyocardialInfarction != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction)) ||
-                           patient.health.hediffSet.HasHediff(HediffDef.Named("HeartAttack"));
+                           (EE_DefOf.HeartAttack != null && patient.health.hediffSet.HasHediff(EE_DefOf.HeartAttack));
                     
                 case EmergencyItemType.Irrigation:
                     // 生理盐水冲洗：目标必须有包含污染度的开放伤口
@@ -505,7 +505,9 @@ namespace EmergencyExpanded
             Hediff vf = (EE_DefOf.EE_MyocardialInfarction != null) 
                 ? patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction) 
                 : null;
-            Hediff heartAttack = patient.health.hediffSet.GetFirstHediffOfDef(HediffDef.Named("HeartAttack"));
+            Hediff heartAttack = (EE_DefOf.HeartAttack != null) 
+                ? patient.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.HeartAttack) 
+                : null;
 
             if (vf == null && heartAttack == null) return false;
 

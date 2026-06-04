@@ -165,7 +165,7 @@ namespace EmergencyExpanded
                 
                 if (Rand.Chance(chance))
                 {
-                    HediffDef heartAttackDef = HediffDef.Named("HeartAttack");
+                    HediffDef heartAttackDef = EE_DefOf.HeartAttack;
                     if (heartAttackDef != null && !Pawn.health.hediffSet.HasHediff(heartAttackDef, ischemia.Part))
                     {
                         Hediff heartAttack = HediffMaker.MakeHediff(heartAttackDef, Pawn, ischemia.Part);

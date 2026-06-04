@@ -10,6 +10,13 @@ namespace EmergencyExpanded
         [HarmonyPostfix]
         public static void Postfix(PawnCapacitiesHandler __instance, PawnCapacityDef capacity, ref float __result, Pawn ___pawn)
         {
+            // 极速短路：只关心致命核心属性，其他 Moving, Manipulation 等直接拦截
+            if (capacity != PawnCapacityDefOf.BloodPumping && 
+                capacity != PawnCapacityDefOf.Breathing && 
+                capacity != PawnCapacityDefOf.Consciousness && 
+                capacity != PawnCapacityDefOf.BloodFiltration) 
+                return;
+
             if (___pawn == null || ___pawn.Dead || !___pawn.RaceProps.IsFlesh) return;
 
             // 失血性休克锁定机制：当失血超过40%时，限制最高供血和呼吸能力

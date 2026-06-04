@@ -11,6 +11,19 @@ namespace EmergencyExpanded
 
         private Pawn Patient => (Pawn)job.GetTarget(PatientIndex).Thing;
 
+        private static SoundDef anesthetizeSound;
+        private static SoundDef AnesthetizeSound
+        {
+            get
+            {
+                if (anesthetizeSound == null)
+                {
+                    anesthetizeSound = SoundDef.Named("Recipe_Anesthetize");
+                }
+                return anesthetizeSound;
+            }
+        }
+
         public override bool TryMakePreToilReservations(bool errorOnFailed)
         {
             // 心肺复苏需要医生占用患者来进行高强度施救
@@ -38,7 +51,7 @@ namespace EmergencyExpanded
             };
 
             // 播放经典的医用麻醉/操作音效作为背景音
-            cprToil.PlaySustainerOrSound(SoundDef.Named("Recipe_Anesthetize"));
+            cprToil.PlaySustainerOrSound(AnesthetizeSound);
 
             // 循环的进度条，展示心肺复苏 Rhythmic（有节奏的）按压动态
             cprToil.WithProgressBar(PatientIndex, () =>
@@ -62,8 +75,11 @@ namespace EmergencyExpanded
                     Patient.rotationTracker?.FaceCell(pawn.Position);
                 }
 
-                // 每一 Tick 刷新患者身上的“接受 CPR 中”状态，设定 120 ticks 的自动消退时长
-                RefreshCprHediff(Patient);
+                // 每 30 Ticks 刷新患者身上的“接受 CPR 中”状态，设定 120 ticks 的自动消退时长
+                if (pawn.IsHashIntervalTick(30))
+                {
+                    RefreshCprHediff(Patient);
+                }
 
                 // 医生获得医疗经验（每 60 刻度获得 8 点经验）
                 if (pawn.skills != null && pawn.IsHashIntervalTick(60))

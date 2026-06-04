@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -19,12 +20,22 @@ namespace EmergencyExpanded
             if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh) return true;
 
             // ================= 1. 烧伤融合机制 (Burn Merging) =================
-            if (hediff.def.defName == "Burn")
+            if (hediff.def == EE_DefOf.Burn)
             {
                 BodyPartRecord targetPart = part ?? hediff.Part;
+                List<Hediff> hediffList = pawn.health.hediffSet.hediffs;
+                Hediff existingBurn = null;
                 
-                // 寻找同一个部位上且未包扎的现有烧伤
-                Hediff existingBurn = pawn.health.hediffSet.hediffs.FirstOrDefault(h => h.def.defName == "Burn" && h.Part == targetPart && !h.IsTended());
+                // 用 for 循环代替 FirstOrDefault 规避 GC 垃圾产生
+                for (int i = 0; i < hediffList.Count; i++)
+                {
+                    Hediff h = hediffList[i];
+                    if (h.def == EE_DefOf.Burn && h.Part == targetPart && !h.IsTended())
+                    {
+                        existingBurn = h;
+                        break;
+                    }
+                }
                 
                 if (existingBurn != null)
                 {
@@ -85,14 +96,24 @@ namespace EmergencyExpanded
                             float severityIncrease = EE_Constants.PneumothoraxBaseSeverity + originalDamage * EE_Constants.PneumothoraxSeverityFactor;
                             
                             // 哮喘急性联动：如果拥有原版哮喘，气胸严重度和易感性显著增加
-                            bool hasAsthma = pawn.health.hediffSet.HasHediff(HediffDef.Named("Asthma"));
+                            bool hasAsthma = (EE_DefOf.Asthma != null) && pawn.health.hediffSet.HasHediff(EE_DefOf.Asthma);
                             if (hasAsthma)
                             {
                                 severityIncrease = (severityIncrease * EE_Constants.AsthmaPneumothoraxChanceMultiplier) + EE_Constants.AsthmaPneumothoraxSeverityBonus;
                             }
 
                             // 检查是否已经具有气胸
-                            Hediff existingPneumo = __instance.hediffSet.hediffs.FirstOrDefault(h => h.def == EE_DefOf.EE_Pneumothorax && h.Part == targetPartForPneumo);
+                            List<Hediff> hediffList = __instance.hediffSet.hediffs;
+                            Hediff existingPneumo = null;
+                            for (int i = 0; i < hediffList.Count; i++)
+                            {
+                                Hediff h = hediffList[i];
+                                if (h.def == EE_DefOf.EE_Pneumothorax && h.Part == targetPartForPneumo)
+                                {
+                                    existingPneumo = h;
+                                    break;
+                                }
+                            }
                             
                             if (existingPneumo != null)
                             {

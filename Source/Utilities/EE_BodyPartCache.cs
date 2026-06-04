@@ -14,6 +14,9 @@ namespace EmergencyExpanded
         private static HashSet<BodyPartDef> nonBoneParts = new HashSet<BodyPartDef>();
         private static HashSet<BodyPartDef> nonLimbParts = new HashSet<BodyPartDef>();
         private static HashSet<BodyPartDef> nonMajorVesselParts = new HashSet<BodyPartDef>();
+        private static HashSet<BodyPartDef> extremityParts = new HashSet<BodyPartDef>();
+        private static HashSet<BodyPartDef> nonExtremityParts = new HashSet<BodyPartDef>();
+        private static Dictionary<BodyDef, BodyPartRecord> heartPartCache = new Dictionary<BodyDef, BodyPartRecord>();
 
         public static bool IsBonePart(BodyPartDef def)
         {
@@ -153,6 +156,82 @@ namespace EmergencyExpanded
             }
             bloodPumpingSourcesCache[body] = parts;
             return parts;
+        }
+
+        public static bool IsExtremityPart(BodyPartRecord part)
+        {
+            if (part == null || part.def == null) return false;
+            BodyPartDef def = part.def;
+            if (extremityParts.Contains(def)) return true;
+            if (nonExtremityParts.Contains(def)) return false;
+
+            bool isExtremity = false;
+            if (def.tags != null && (def.tags.Contains(BodyPartTagDefOf.ManipulationLimbSegment) || def.tags.Contains(BodyPartTagDefOf.MovingLimbSegment)))
+            {
+                if (part.parts == null || part.parts.Count == 0)
+                {
+                    isExtremity = true;
+                }
+            }
+
+            if (!isExtremity)
+            {
+                string defNameLower = def.defName.ToLower();
+                if (defNameLower.Contains("finger") || defNameLower.Contains("toe") || 
+                    defNameLower.Contains("nose") || defNameLower.Contains("ear"))
+                {
+                    isExtremity = true;
+                }
+            }
+
+            if (isExtremity) extremityParts.Add(def);
+            else nonExtremityParts.Add(def);
+
+            return isExtremity;
+        }
+
+        public static BodyPartRecord GetHeartPart(Pawn pawn)
+        {
+            if (pawn?.RaceProps?.body == null) return null;
+            BodyDef body = pawn.RaceProps.body;
+            if (heartPartCache.TryGetValue(body, out BodyPartRecord heart))
+            {
+                return heart;
+            }
+
+            foreach (BodyPartRecord part in body.AllParts)
+            {
+                if (part.def.tags != null && part.def.tags.Contains(BodyPartTagDefOf.BloodPumpingSource))
+                {
+                    heart = part;
+                    break;
+                }
+            }
+            if (heart == null)
+            {
+                foreach (BodyPartRecord part in body.AllParts)
+                {
+                    if (part.def == BodyPartDefOf.Heart)
+                    {
+                        heart = part;
+                        break;
+                    }
+                }
+            }
+            if (heart == null)
+            {
+                foreach (BodyPartRecord part in body.AllParts)
+                {
+                    if (part.def != null && part.def.defName.IndexOf("heart", System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        heart = part;
+                        break;
+                    }
+                }
+            }
+
+            heartPartCache[body] = heart;
+            return heart;
         }
     }
 }

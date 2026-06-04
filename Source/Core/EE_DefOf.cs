@@ -80,6 +80,11 @@ namespace EmergencyExpanded
         
         public static BodyPartDef Brain;
         
+        // 原版 Def 静态缓存，规避运行时 Named 反射检索
+        public static HediffDef Asthma;
+        public static HediffDef HeartAttack;
+        public static HediffDef Burn;
+        
         // 音效新增 Def
         public static SoundDef EE_BoneCrunch;
 
