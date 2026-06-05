@@ -6,6 +6,7 @@
     <label>生物学死亡倒计时</label>
     <description>该机体已经完全失去了呼吸与血液泵送能力，且中枢神经系统已死亡或损毁。细胞正在迅速缺氧坏死，当倒计时结束时，将判定为不可逆的生物学死亡。及时的心肺复苏可以暂停这一过程。</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
+    <visible>false</visible>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.01</initialSeverity>
@@ -35,6 +36,7 @@
     <label>生物学死亡</label>
     <description>在彻底丧失循环与呼吸较长时间后发生的绝对细胞死亡。任何抢救手段均已无效。</description>
     <hediffClass>Hediff</hediffClass>
+    <visible>false</visible>
     <defaultLabelColor>(0.2, 0.2, 0.2)</defaultLabelColor>
     <initialSeverity>1.0</initialSeverity>
     <isBad>true</isBad>
@@ -53,6 +55,7 @@
     <label>宣布死亡</label>
     <description>医生已放弃对该无生还可能机体的抢救，正式宣布死亡。</description>
     <hediffClass>Hediff</hediffClass>
+    <visible>false</visible>
     <defaultLabelColor>(0.2, 0.2, 0.2)</defaultLabelColor>
     <initialSeverity>1.0</initialSeverity>
     <isBad>true</isBad>
@@ -67,3 +70,4 @@
   </HediffDef>
 
 </Defs>
+
