@@ -507,7 +507,7 @@
     <stages>
       <li>
         <label>潜伏期</label>
-        <visible>false</visible>
+        <becomeVisible>false</becomeVisible>
       </li>
       <li>
         <minSeverity>0.15</minSeverity>
