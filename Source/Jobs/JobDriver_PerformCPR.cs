@@ -35,8 +35,25 @@ namespace EmergencyExpanded
             // 确保患者没有被移除、且未死亡
             this.FailOnDespawnedOrNull(PatientIndex);
             this.FailOn(() => Patient.Dead);
-            // 只有患者处于心梗/心室颤动状态时，才可以继续实施 CPR
-            this.FailOn(() => EE_DefOf.EE_MyocardialInfarction == null || !Patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction));
+            // 只有患者处于心梗、有死亡倒计时或者平线状态时，才可以继续实施 CPR
+            this.FailOn(() => 
+            {
+                if (EE_DefOf.EE_MyocardialInfarction != null && Patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction))
+                {
+                    return false;
+                }
+                if (EE_DefOf.EE_BiologicalDeathTimer != null && Patient.health.hediffSet.HasHediff(EE_DefOf.EE_BiologicalDeathTimer))
+                {
+                    return false;
+                }
+                float pumping = Patient.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+                float breathing = Patient.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+                if (pumping <= EE_Constants.VitalFlatlineThreshold && breathing <= EE_Constants.VitalFlatlineThreshold)
+                {
+                    return false;
+                }
+                return true;
+            });
 
             // 走近患者
             yield return Toils_Goto.GotoThing(PatientIndex, PathEndMode.Touch);

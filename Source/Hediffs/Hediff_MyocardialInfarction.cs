@@ -10,8 +10,11 @@ namespace EmergencyExpanded
         public override void Tick()
         {
             base.Tick();
-            // 心肌梗死 100% 进度不再强制致死，交由后续多脏器缺氧衰竭机制处理
-            if (this.pawn != null && !this.pawn.Dead)
+            
+            if (this.pawn == null || this.pawn.Dead) return;
+
+            // 每 60 Ticks 更新一次，稀疏化 Severity 变动通知以大幅节省 CPU 负载 (60000 ticks = 1天)
+            if (this.pawn.IsHashIntervalTick(60))
             {
                 float baseRate = 8.0f; // 每天增加 8.0 严重度
                 
@@ -21,9 +24,8 @@ namespace EmergencyExpanded
                     baseRate *= EE_Constants.MorphineMyocardialInfarctionSpeedMultiplier;
                 }
 
-                // 转换成每 Tick 的严重度增量 (60000 ticks = 1天)
-                float increment = baseRate / 60000f;
-                this.Severity += increment;
+                // 每 60 Ticks 对应的增量为 baseRate / 1000f
+                this.Severity += baseRate / 1000f;
             }
         }
     }

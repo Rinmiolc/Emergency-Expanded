@@ -81,18 +81,15 @@ namespace EmergencyExpanded
         {
             float recoverAmount = EE_Constants.ModsOrganRecoveryRate / 1000f; // 每天恢复量折算到 60 Ticks
             
-            HediffDef[] injuryDefs = { 
-                EE_DefOf.EE_AcuteKidneyInjury, 
-                EE_DefOf.EE_AcuteLiverInjury, 
-                EE_DefOf.EE_AcuteRespiratoryDistress, 
-                EE_DefOf.EE_MyocardialIschemia 
-            };
-            
-            foreach (HediffDef def in injuryDefs)
+            // 采用单次倒序 for 循环，规避 LINQ 闭包与 List 的实例化分配，达到 0 GC 消耗
+            List<Hediff> hediffs = Pawn.health.hediffSet.hediffs;
+            for (int i = hediffs.Count - 1; i >= 0; i--)
             {
-                List<Hediff> injuries = new List<Hediff>();
-                Pawn.health.hediffSet.GetHediffs(ref injuries, h => h.def == def);
-                foreach (Hediff h in injuries)
+                Hediff h = hediffs[i];
+                if (h.def == EE_DefOf.EE_AcuteKidneyInjury || 
+                    h.def == EE_DefOf.EE_AcuteLiverInjury || 
+                    h.def == EE_DefOf.EE_AcuteRespiratoryDistress || 
+                    h.def == EE_DefOf.EE_MyocardialIschemia)
                 {
                     h.Severity -= recoverAmount;
                 }
@@ -105,9 +102,12 @@ namespace EmergencyExpanded
             
             float damageAmount = damageRatePerDay / 1000f; // 1000 ticks of 60-hash intervals = 60,000 ticks (1 day)
             
-            foreach (BodyPartRecord part in Pawn.health.hediffSet.GetNotMissingParts())
+            // 用 Pawn.RaceProps.body.AllParts 的 for 循环遍历代替 GetNotMissingParts() 这种会产生 IEnumerable 状态机的遍历
+            List<BodyPartRecord> parts = Pawn.RaceProps.body.AllParts;
+            for (int i = 0; i < parts.Count; i++)
             {
-                if (part.def == null) continue;
+                BodyPartRecord part = parts[i];
+                if (part.def == null || Pawn.health.hediffSet.PartIsMissing(part)) continue;
                 
                 if (EE_BodyPartCache.IsOrganType(part.def, tag, fallbackKeyword))
                 {
@@ -115,8 +115,10 @@ namespace EmergencyExpanded
                     if (Pawn.health.hediffSet.HasHediff(failureDef, part)) continue;
                     
                     Hediff injury = null;
-                    foreach (Hediff h in Pawn.health.hediffSet.hediffs)
+                    List<Hediff> hediffs = Pawn.health.hediffSet.hediffs;
+                    for (int j = 0; j < hediffs.Count; j++)
                     {
+                        Hediff h = hediffs[j];
                         if (h.def == injuryDef && h.Part == part)
                         {
                             injury = h;

@@ -4,19 +4,6 @@ using RimWorld;
 // 拦截RimHUD的血量预估函数，修正其对血量过低时的错误预估
 namespace EmergencyExpanded
 {
-    // 这个标签告诉游戏在加载画面时运行这段代码
-    [StaticConstructorOnStartup]
-    public static class EmergencyExpandedMain
-    {
-        static EmergencyExpandedMain()
-        {
-            // 初始化 Harmony 实例并应用所有标记了 [HarmonyPatch] 的补丁
-            var harmony = new Harmony("com.rinmiolc.emergencyexpanded");
-            harmony.PatchAll(); 
-            Log.Message("[EE] Harmony patch has been successfully loaded.");
-        }
-    }
-
     // 拦截代码 (重构为 Postfix 改善兼容性)
     [HarmonyPatch(typeof(HealthUtility), "TicksUntilDeathDueToBloodLoss")]
     public static class Patch_TicksUntilDeathDueToBloodLoss

@@ -87,6 +87,8 @@ namespace EmergencyExpanded
         
         // 音效新增 Def
         public static SoundDef EE_BoneCrunch;
+        public static SoundDef EE_Defibrillator_Charge;
+        public static SoundDef EE_Defibrillator_Shock;
 
         static EE_DefOf()
         {

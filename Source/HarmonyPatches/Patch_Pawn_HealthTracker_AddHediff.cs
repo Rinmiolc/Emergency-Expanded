@@ -64,8 +64,13 @@ namespace EmergencyExpanded
                 }
                 else if (injury.def != null)
                 {
-                    string defName = injury.def.defName.ToLower();
-                    if (defName.Contains("gunshot") || defName.Contains("cut") || defName.Contains("stab") || defName.Contains("scratch") || defName.Contains("bite") || defName.Contains("pierce"))
+                    string defName = injury.def.defName;
+                    if (defName.IndexOf("gunshot", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        defName.IndexOf("cut", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        defName.IndexOf("stab", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        defName.IndexOf("scratch", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        defName.IndexOf("bite", System.StringComparison.OrdinalIgnoreCase) >= 0 ||
+                        defName.IndexOf("pierce", System.StringComparison.OrdinalIgnoreCase) >= 0)
                     {
                         isSharp = true;
                     }

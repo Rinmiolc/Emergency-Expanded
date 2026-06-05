@@ -64,15 +64,7 @@ namespace EmergencyExpanded
                         HediffDef miDef = EE_DefOf.EE_MyocardialInfarction;
                         if (miDef != null)
                         {
-                            BodyPartRecord heart = EE_BodyPartCache.GetBloodPumpingSources(Pawn)?.FirstOrDefault();
-                            if (heart == null)
-                            {
-                                heart = Pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(p => p.def == BodyPartDefOf.Heart);
-                            }
-                            if (heart == null)
-                            {
-                                heart = Pawn.health.hediffSet.GetNotMissingParts().FirstOrDefault(p => p.def.defName.IndexOf("heart", System.StringComparison.OrdinalIgnoreCase) >= 0);
-                            }
+                            BodyPartRecord heart = EE_BodyPartCache.GetHeartPart(Pawn);
 
                             if (!Pawn.health.hediffSet.HasHediff(miDef, heart))
                             {

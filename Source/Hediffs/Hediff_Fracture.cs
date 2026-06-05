@@ -63,35 +63,47 @@ namespace EmergencyExpanded
         }
 
         private HediffStage cachedStage;
+        private bool lastSplinted;
+        private bool lastCasted;
+        private bool lastInternallyFixed;
+        private bool lastStrictBedrest;
 
-        // 通过重载虚属性 CurStage 动态生成和控制骨折在不同阶段对小人行动/操作能力的设定，完美解决 RimWorld 引擎中 CapMods 非虚的难题！
+        // 通过重载虚属性 CurStage 动态生成和控制骨折在不同阶段对小人行动/操作能力的设定，并使用状态缓存防止 GC 垃圾产生。
         public override HediffStage CurStage
         {
             get
             {
-                if (cachedStage == null)
+                if (cachedStage == null || 
+                    lastSplinted != isSplinted || 
+                    lastCasted != isCasted || 
+                    lastInternallyFixed != isInternallyFixed || 
+                    lastStrictBedrest != isStrictBedrest)
                 {
+                    lastSplinted = isSplinted;
+                    lastCasted = isCasted;
+                    lastInternallyFixed = isInternallyFixed;
+                    lastStrictBedrest = isStrictBedrest;
+
                     cachedStage = new HediffStage();
-                }
-
-                // 动态构建能力限制列表 (上肢骨折仅减 Manipulation，下肢骨折仅减 Moving)
-                cachedStage.capMods = new List<PawnCapacityModifier>();
-                PawnCapacityDef capacity = GetAffectedCapacity();
-                if (capacity != null)
-                {
-                    float offsetVal = EE_Constants.FractureCapacityOffsetNone;
-                    if (isInternallyFixed) offsetVal = 0.0f;
-                    else if (isCasted) offsetVal = EE_Constants.FractureCapacityOffsetCast;
-                    else if (isStrictBedrest) offsetVal = EE_Constants.FractureCapacityOffsetBedrest;
-                    else if (isSplinted) offsetVal = EE_Constants.FractureCapacityOffsetSplint;
-
-                    if (offsetVal < 0.0f)
+                    cachedStage.capMods = new List<PawnCapacityModifier>();
+                    
+                    PawnCapacityDef capacity = GetAffectedCapacity();
+                    if (capacity != null)
                     {
-                        cachedStage.capMods.Add(new PawnCapacityModifier
+                        float offsetVal = EE_Constants.FractureCapacityOffsetNone;
+                        if (isInternallyFixed) offsetVal = 0.0f;
+                        else if (isCasted) offsetVal = EE_Constants.FractureCapacityOffsetCast;
+                        else if (isStrictBedrest) offsetVal = EE_Constants.FractureCapacityOffsetBedrest;
+                        else if (isSplinted) offsetVal = EE_Constants.FractureCapacityOffsetSplint;
+
+                        if (offsetVal < 0.0f)
                         {
-                            capacity = capacity,
-                            offset = offsetVal
-                        });
+                            cachedStage.capMods.Add(new PawnCapacityModifier
+                            {
+                                capacity = capacity,
+                                offset = offsetVal
+                            });
+                        }
                     }
                 }
 

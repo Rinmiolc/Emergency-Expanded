@@ -57,6 +57,22 @@ namespace EmergencyExpanded
         {
             if (pawn == null || pawn.Dead) return 0f;
 
+            // 0. 优先短路：如果心脏物理缺失，则心搏立刻归零 (Flatline)
+            var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
+            bool isHeartMissing = false;
+            if (pumpingSources != null)
+            {
+                for (int i = 0; i < pumpingSources.Count; i++)
+                {
+                    if (pawn.health.hediffSet.PartIsMissing(pumpingSources[i]))
+                    {
+                        isHeartMissing = true;
+                        break;
+                    }
+                }
+            }
+            if (isHeartMissing) return 0f;
+
             // 1. 根据生理年龄计算基准静息心率 (年轻略快，老年略慢)
             float bioAge = pawn.ageTracker.AgeBiologicalYearsFloat;
             float baseHR = 80f - Mathf.Clamp(bioAge - 15f, 0f, 60f) * 0.2f; // 人类范围在 68 - 80 左右

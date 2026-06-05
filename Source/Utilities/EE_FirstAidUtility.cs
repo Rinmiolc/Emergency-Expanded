@@ -199,6 +199,7 @@ namespace EmergencyExpanded
             EmergencyItemType type = GetEmergencyItemType(item.def);
             if (type == EmergencyItemType.None) return;
 
+            string labelCap = item.def.LabelCap;
             bool consumeItem = true;
 
             switch (type)
@@ -265,7 +266,7 @@ namespace EmergencyExpanded
                         consumed.Destroy();
                     }
                 }
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{item.def.LabelCap}已使用", EE_Constants.FirstAidMoteDurationStandard);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{labelCap}已使用", EE_Constants.FirstAidMoteDurationStandard);
                 if (doctor.skills != null)
                 {
                     doctor.skills.Learn(SkillDefOf.Medicine, 180f);
@@ -495,10 +496,9 @@ namespace EmergencyExpanded
             VitalTracker.TriggerDefibrillatorShock(patient);
 
             // 电击音效
-            Verse.SoundDef shockSound = DefDatabase<Verse.SoundDef>.GetNamed("EE_Defibrillator_Shock", false);
-            if (shockSound != null)
+            if (EE_DefOf.EE_Defibrillator_Shock != null)
             {
-                Verse.Sound.SoundStarter.PlayOneShot(shockSound, new TargetInfo(patient.Position, patient.Map));
+                Verse.Sound.SoundStarter.PlayOneShot(EE_DefOf.EE_Defibrillator_Shock, new TargetInfo(patient.Position, patient.Map));
             }
 
             // 1. 读取当前可电击的病情状态 (室颤 或 原版心脏病发作)

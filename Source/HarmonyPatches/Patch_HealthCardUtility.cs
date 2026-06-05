@@ -9,13 +9,35 @@ namespace EmergencyExpanded
     [HarmonyPatch(typeof(HealthCardUtility), "VisibleHediffGroupsInOrder")]
     public static class Patch_HealthCardUtility_VisibleHediffGroupsInOrder
     {
+        private class GroupComparer : IComparer<IGrouping<BodyPartRecord, Hediff>>
+        {
+            public static readonly GroupComparer Instance = new GroupComparer();
+
+            public int Compare(IGrouping<BodyPartRecord, Hediff> x, IGrouping<BodyPartRecord, Hediff> y)
+            {
+                int priorityX = GetPartPriority(x.Key);
+                int priorityY = GetPartPriority(y.Key);
+                int compare = priorityX.CompareTo(priorityY);
+                if (compare != 0) return compare;
+
+                string labelX = x.Key != null ? x.Key.Label : "";
+                string labelY = y.Key != null ? y.Key.Label : "";
+                return string.Compare(labelX, labelY, System.StringComparison.Ordinal);
+            }
+        }
+
         public static void Postfix(ref IEnumerable<IGrouping<BodyPartRecord, Hediff>> __result)
         {
             if (__result == null) return;
 
-            __result = __result.OrderBy(group => GetPartPriority(group.Key))
-                               .ThenBy(group => group.Key != null ? group.Key.Label : "")
-                               .ToList();
+            // 预估容量，拷贝结果并进行就地排序以完全消灭 LINQ 每帧产生的 GC 垃圾
+            List<IGrouping<BodyPartRecord, Hediff>> sortedList = new List<IGrouping<BodyPartRecord, Hediff>>();
+            foreach (var group in __result)
+            {
+                sortedList.Add(group);
+            }
+            sortedList.Sort(GroupComparer.Instance);
+            __result = sortedList;
         }
 
         private static int GetPartPriority(BodyPartRecord part)

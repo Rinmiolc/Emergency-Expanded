@@ -70,7 +70,29 @@ namespace EmergencyExpanded
             if (!targetPawn.RaceProps.IsFlesh || targetPawn.RaceProps.BloodDef == null) return; // 必须是血肉生物且具有血液
 
             // 2.5. CPR 心肺复苏判定 (不消耗任何道具，手空着也能做)
-            if (EE_DefOf.EE_MyocardialInfarction != null && targetPawn.Downed && targetPawn.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction))
+            bool needsCpr = false;
+            if (targetPawn.Downed)
+            {
+                if (EE_DefOf.EE_MyocardialInfarction != null && targetPawn.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction))
+                {
+                    needsCpr = true;
+                }
+                else if (EE_DefOf.EE_BiologicalDeathTimer != null && targetPawn.health.hediffSet.HasHediff(EE_DefOf.EE_BiologicalDeathTimer))
+                {
+                    needsCpr = true;
+                }
+                else
+                {
+                    float pumping = targetPawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+                    float breathing = targetPawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
+                    if (pumping <= EE_Constants.VitalFlatlineThreshold && breathing <= EE_Constants.VitalFlatlineThreshold)
+                    {
+                        needsCpr = true;
+                    }
+                }
+            }
+
+            if (needsCpr)
             {
                 string cprLabel = $"为 {targetPawn.LabelShort} 进行心肺复苏 (CPR)";
                 Action cprAction = () =>

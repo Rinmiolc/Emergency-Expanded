@@ -5,9 +5,6 @@ namespace EmergencyExpanded
 {
     public class Hediff_Shock : HediffWithComps
     {
-        private static HediffDef burnDef;
-        private static HediffDef heartAttackDef;
-
         public override void Tick()
         {
             base.Tick();
@@ -21,9 +18,6 @@ namespace EmergencyExpanded
 
         private void UpdateShockSeverity()
         {
-            if (burnDef == null) burnDef = HediffDef.Named("Burn");
-            if (heartAttackDef == null) heartAttackDef = HediffDef.Named("HeartAttack");
-
             float totalPressure = 0f;
 
             // 1. 低血容量压力 - 失血
@@ -37,7 +31,7 @@ namespace EmergencyExpanded
             float burnPressure = 0f;
             foreach (var hediff in pawn.health.hediffSet.hediffs)
             {
-                if (hediff.def == burnDef)
+                if (hediff.def == EE_DefOf.Burn)
                 {
                     HediffComp_Burn burnComp = hediff.TryGetComp<HediffComp_Burn>();
                     if (burnComp != null)
@@ -64,7 +58,7 @@ namespace EmergencyExpanded
             }
 
             // 5. 心源性休克 (一旦心脏骤停，循环立刻崩溃，休克压力激增)
-            Hediff heartAttack = pawn.health.hediffSet.hediffs.Find(h => h.def == heartAttackDef);
+            Hediff heartAttack = pawn.health.hediffSet.hediffs.Find(h => h.def == EE_DefOf.HeartAttack);
             Hediff vf = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction);
             if (heartAttack != null || vf != null)
             {
