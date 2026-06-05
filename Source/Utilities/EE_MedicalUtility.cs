@@ -35,5 +35,43 @@ namespace EmergencyExpanded
             }
             return pawn.RaceProps.body.corePart; // 终极回退到核心躯干
         }
+
+        /// <summary>
+        /// 计算全身系统性炎性负载 (Trauma Load)。
+        /// 融合了缺氧、外伤、败血症、坏死等因素，用于判定 SIRS 的触发与演进。
+        /// 过滤了 Severity <= 3.0f 的微型擦伤/伤口，并进行平滑过渡。
+        /// </summary>
+        public static float CalculateTraumaLoad(Pawn pawn)
+        {
+            if (pawn == null || pawn.Dead) return 0f;
+
+            float traumaLoad = 0f;
+            foreach (var hediff in pawn.health.hediffSet.hediffs)
+            {
+                if (EE_DefOf.TissueHypoxia != null && hediff.def == EE_DefOf.TissueHypoxia)
+                {
+                    traumaLoad += hediff.Severity * EE_Constants.SirsWeightTissueHypoxia;
+                }
+                else if (hediff is Hediff_Injury injury)
+                {
+                    // 忽略 severity <= 3.0f 的微小抓伤/擦伤对全身系统性炎性负载的影响，防止小动物抓伤累加引发 SIRS
+                    if (injury.Severity > 3.0f)
+                    {
+                        float effectiveSeverity = injury.Severity - 3.0f;
+                        traumaLoad += effectiveSeverity * (injury.IsTended() ? EE_Constants.SirsWeightTendedInjury : EE_Constants.SirsWeightUntendedInjury);
+                    }
+                }
+                // 感染引发的强烈炎症
+                else if (EE_DefOf.EE_Sepsis != null && hediff.def == EE_DefOf.EE_Sepsis)
+                {
+                    traumaLoad += hediff.Severity * 40f; 
+                }
+                else if (EE_DefOf.EE_Necrosis != null && hediff.def == EE_DefOf.EE_Necrosis)
+                {
+                    traumaLoad += hediff.Severity * 10f;
+                }
+            }
+            return traumaLoad;
+        }
     }
 }

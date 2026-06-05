@@ -54,28 +54,7 @@ namespace EmergencyExpanded
             }
 
             // 3. 全身炎症反应综合征 (SIRS)
-            float traumaLoad = 0f;
-            foreach (var hediff in __instance.hediffSet.hediffs)
-            {
-                if (hediff.def == EE_DefOf.TissueHypoxia)
-                {
-                    traumaLoad += hediff.Severity * EE_Constants.SirsWeightTissueHypoxia;
-                }
-                else if (hediff is Hediff_Injury injury)
-                {
-                    // 现实中：包扎好的伤口引发的全身炎症反应要小得多
-                    traumaLoad += injury.Severity * (injury.IsTended() ? EE_Constants.SirsWeightTendedInjury : EE_Constants.SirsWeightUntendedInjury);
-                }
-                // 感染引发的强烈炎症
-                else if (EE_DefOf.EE_Sepsis != null && hediff.def == EE_DefOf.EE_Sepsis)
-                {
-                    traumaLoad += hediff.Severity * 40f; 
-                }
-                else if (EE_DefOf.EE_Necrosis != null && hediff.def == EE_DefOf.EE_Necrosis)
-                {
-                    traumaLoad += hediff.Severity * 10f;
-                }
-            }
+            float traumaLoad = EE_MedicalUtility.CalculateTraumaLoad(pawn);
             // 现实中，引发SIRS需要严重的创伤（如多处枪伤/断肢）或重度失血休克
             if (traumaLoad > 25f || bloodLossRatio > 0.45f)
             {

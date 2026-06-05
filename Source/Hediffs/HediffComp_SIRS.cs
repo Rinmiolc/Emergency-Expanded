@@ -23,28 +23,7 @@ namespace EmergencyExpanded
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
             if (!Pawn.IsHashIntervalTick(60)) return;
 
-            float traumaLoad = 0f;
-            foreach (var hediff in Pawn.health.hediffSet.hediffs)
-            {
-                if (hediff.def == EE_DefOf.TissueHypoxia)
-                {
-                    traumaLoad += hediff.Severity * EE_Constants.SirsWeightTissueHypoxia;
-                }
-                else if (hediff is Hediff_Injury injury)
-                {
-                    // 现实中，伤口清创包扎能大幅切断炎性因子(DAMPs)的持续释放。
-                    // 降低已包扎伤口的权重至 5% (原为 20%)，使及时治疗能有效逆转 SIRS。
-                    traumaLoad += injury.Severity * (injury.IsTended() ? EE_Constants.SirsWeightTendedInjury : EE_Constants.SirsWeightUntendedInjury);
-                }
-                else if (EE_DefOf.EE_Sepsis != null && hediff.def == EE_DefOf.EE_Sepsis)
-                {
-                    traumaLoad += hediff.Severity * 40f; 
-                }
-                else if (EE_DefOf.EE_Necrosis != null && hediff.def == EE_DefOf.EE_Necrosis)
-                {
-                    traumaLoad += hediff.Severity * 10f;
-                }
-            }
+            float traumaLoad = EE_MedicalUtility.CalculateTraumaLoad(Pawn);
             
             Hediff bloodLoss = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
             float bloodLossSeverity = bloodLoss?.Severity ?? 0f;
