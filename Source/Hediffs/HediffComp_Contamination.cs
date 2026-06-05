@@ -5,6 +5,14 @@ using System.Text;
 
 namespace EmergencyExpanded
 {
+    public class HediffCompProperties_Contamination : HediffCompProperties
+    {
+        public HediffCompProperties_Contamination()
+        {
+            this.compClass = typeof(HediffComp_Contamination);
+        }
+    }
+
     public class HediffComp_Contamination : HediffComp
     {
         public HediffCompProperties_Contamination Props => (HediffCompProperties_Contamination)this.props;
