@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_BurnDegree1>I度</EE_BurnDegree1>
+  <EE_BurnDegree1Desc>一度烧伤：表皮烧伤，轻度红肿。</EE_BurnDegree1Desc>
+  <EE_BurnDegree2>II度</EE_BurnDegree2>
+  <EE_BurnDegree2Desc>二度烧伤：部分皮肤组织烧伤，水泡形成，极度疼痛且易引发感染。</EE_BurnDegree2Desc>
+  <EE_BurnDegree3>III度</EE_BurnDegree3>
+  <EE_BurnDegree3Desc>三度烧伤：全层皮肤及皮下组织坏死，极易引发严重感染和败血症。</EE_BurnDegree3Desc>
+  <EE_Cancel>取消</EE_Cancel>
+  <EE_CommandDeclareDeath_Desc>放弃对该伤员的所有抢救尝试，正式宣布其死亡。</EE_CommandDeclareDeath_Desc>
+  <EE_CommandDeclareDeath_Label>宣布死亡</EE_CommandDeclareDeath_Label>
+  <EE_Command_FastFirstAid_Desc>框选多名伤员，该医生将依次前往进行急救。\n\n右键点击可切换使用的急救物品。</EE_Command_FastFirstAid_Desc>
+  <EE_Command_FastFirstAid_Desc_Med>框选需要急救的伤员。\n当前使用物品: {0}</EE_Command_FastFirstAid_Desc_Med>
+  <EE_Command_FastFirstAid_Label>快速急救</EE_Command_FastFirstAid_Label>
+  <EE_Confirm>确认</EE_Confirm>
+  <EE_ConfirmDeclareDeathDesc>你确定要对 {0} 宣布死亡吗？这将会直接终结该小人的生命。</EE_ConfirmDeclareDeathDesc>
+  <EE_ContaminationDegree>污染度: {0}%</EE_ContaminationDegree>
+  <EE_Doctor>医生</EE_Doctor>
+  <EE_FractureCastedTag>[石膏固定]</EE_FractureCastedTag>
+  <EE_FractureInternallyFixedTag>[钢板内固定]</EE_FractureInternallyFixedTag>
+  <EE_FractureSplintedTag>[骨折环固定]</EE_FractureSplintedTag>
+  <EE_FractureStrictBedrestTag>[正骨静卧]</EE_FractureStrictBedrestTag>
+  <EE_FractureUnfixedTag>[未固定]</EE_FractureUnfixedTag>
+  <EE_LetterBrainDeathMods_Desc>{0} 因多脏器功能衰竭导致严重脑部坏死，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。</EE_LetterBrainDeathMods_Desc>
+  <EE_LetterBrainDeath_Desc>{0} 因长时间脑部缺氧与严重脑损伤，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。</EE_LetterBrainDeath_Desc>
+  <EE_LetterBrainDeath_Label>脑死亡</EE_LetterBrainDeath_Label>
+  <EE_LetterMyocardialInfarction_Desc>{0} 因严重心肌缺血突发心肌梗死！需立即进行抢救，否则极易恶化为心室颤动并导致死亡。</EE_LetterMyocardialInfarction_Desc>
+  <EE_LetterMyocardialInfarction_Label>心肌梗死</EE_LetterMyocardialInfarction_Label>
+  <EE_LetterOrganFailure_Desc>{0} 的 {1} 由于长时间处于缺血休克状态，发生了不可逆的坏死，演变为 {2}！现在只能通过器官移植来挽救这部分机能。</EE_LetterOrganFailure_Desc>
+  <EE_LetterOrganFailure_Label>器官衰竭</EE_LetterOrganFailure_Label>
+  <EE_LetterOsteotomySuccess_Desc>{0} 成功为 {1} 实施了畸形接骨重折术。小人错位愈合的 {2} 骨骼已被外科器械强行截断，畸形组织已清理。该肢体已重新处于【开放性骨折】状态，请尽快为其安排正确的正骨复位或钢板螺钉内固定手术！</EE_LetterOsteotomySuccess_Desc>
+  <EE_LetterOsteotomySuccess_Label>重折手术成功</EE_LetterOsteotomySuccess_Label>
+  <EE_LetterSepsis_Desc>{0}的伤口感染极度恶化，细菌入血引发了败血症！如果不及时治疗将引发多器官衰竭并危及生命！</EE_LetterSepsis_Desc>
+  <EE_LetterSepsis_Label>败血症</EE_LetterSepsis_Label>
+  <EE_LetterSpontaneousPneumothorax_Desc>{0} 因急性呼吸窘迫（ARDS）导致肺部顺应性极度下降，自发诱发了张力性气胸！</EE_LetterSpontaneousPneumothorax_Desc>
+  <EE_LetterSpontaneousPneumothorax_Label>自发性气胸</EE_LetterSpontaneousPneumothorax_Label>
+  <EE_MessageCastingSuccess>[EE] 石膏固定成功：{0} 为 {1} 的 {2} 实施了石膏包扎，对齐质量 {3}！</EE_MessageCastingSuccess>
+  <EE_MessageDebridementAccidentalAmputation>由于{0}的清创手法过于粗暴，不慎将{1}的{2}完全切除！</EE_MessageDebridementAccidentalAmputation>
+  <EE_MessageDebridementSuccess>{0}成功为{1}执行了清创术，去除了污染和坏死组织。本次清创造成了 {2} 点切割伤害。</EE_MessageDebridementSuccess>
+  <EE_MessageFractureHealedPerfect>{0} 的 {1} 骨骼愈合完毕，复位对齐良好，肢体功能已完全恢复！</EE_MessageFractureHealedPerfect>
+  <EE_MessageHeartAttackVFWorsened>{0}的心脏病极度恶化，已经转化为致命的室颤（心室蠕动）！</EE_MessageHeartAttackVFWorsened>
+  <EE_MessageIrrigationSuccess>{0}成功为{1}执行了伤口冲洗，除去了污垢和可能滋生细菌的杂质。</EE_MessageIrrigationSuccess>
+  <EE_MessageMalunionCrippled>{0} 的 {1} 骨折虽然已闭合，但由于缺乏正确复位与硬化固定，导致骨骼畸形愈合，留下了永久跛行/残疾！</EE_MessageMalunionCrippled>
+  <EE_MessageMedicCannotFindMedicine>{0} 找不到 {1}!</EE_MessageMedicCannotFindMedicine>
+  <EE_MessageOrifSuccess>[EE] 内固定手术成功：{0} 为 {1} 的 {2} 实施了内固定，钢板植入牢固，对齐质量 {3}！</EE_MessageOrifSuccess>
+  <EE_MessageStrictBedrestFail>{0} 未遵医嘱绝对静卧，导致传统正骨固定失效，断骨再次发生位移！</EE_MessageStrictBedrestFail>
+  <EE_MessageTraditionalSettingSuccess>[EE] 传统正骨成功：{0} 为 {1} 的 {2} 实施了正骨，对齐质量 {3}。小人已进入绝对静卧约束状态！</EE_MessageTraditionalSettingSuccess>
+  <EE_MessageWoundContaminatedInfection>{0}的伤口由于污染过度，引发了{1}！</EE_MessageWoundContaminatedInfection>
+  <EE_MoteBedrestSettingFail>正骨失效!</EE_MoteBedrestSettingFail>
+  <EE_MoteCardiacVF>心血管危象 - 心室颤动!</EE_MoteCardiacVF>
+  <EE_MoteCardioversionFail>电复律失败！</EE_MoteCardioversionFail>
+  <EE_MoteCardioversionSuccess>电复律成功！已恢复窦性心律</EE_MoteCardioversionSuccess>
+  <EE_MoteClosedFracture>闭合性骨折!</EE_MoteClosedFracture>
+  <EE_MoteDefibSideEffectBurn>除颤副作用：轻度皮肤灼伤</EE_MoteDefibSideEffectBurn>
+  <EE_MoteDefibrillationFail>除颤未成功！</EE_MoteDefibrillationFail>
+  <EE_MoteDefibrillationSuccess>除颤成功！恢复窦性心律</EE_MoteDefibrillationSuccess>
+  <EE_MoteDefibrillatorDestroyed>除颤仪损毁</EE_MoteDefibrillatorDestroyed>
+  <EE_MoteFirstAidKitDamaged>急救包已损坏</EE_MoteFirstAidKitDamaged>
+  <EE_MoteFractureDisplacedPain>{0} 断骨移位剧痛!</EE_MoteFractureDisplacedPain>
+  <EE_MoteHemostasisFailChance>止血失败 ({0}%)</EE_MoteHemostasisFailChance>
+  <EE_MoteHemostasisFailZero>止血失败 (0%)</EE_MoteHemostasisFailZero>
+  <EE_MoteHemostasisSuccess>止血成功</EE_MoteHemostasisSuccess>
+  <EE_MoteItemConsumed>{0}已消耗</EE_MoteItemConsumed>
+  <EE_MoteItemUsed>{0}已使用</EE_MoteItemUsed>
+  <EE_MoteMassiveBleeding>大出血!</EE_MoteMassiveBleeding>
+  <EE_MoteMassiveBleedingClosed>大出血伤口已完全闭合！</EE_MoteMassiveBleedingClosed>
+  <EE_MoteMorphineRespiratoryArrest>吗啡中毒 - 呼吸骤停!</EE_MoteMorphineRespiratoryArrest>
+  <EE_MoteNeedleDecompressionSuccess>已减压 (胸腔穿刺)</EE_MoteNeedleDecompressionSuccess>
+  <EE_MoteOpenFracture>开放性骨折!</EE_MoteOpenFracture>
+  <EE_MotePneumothorax>气胸!</EE_MotePneumothorax>
+  <EE_MotePneumothoraxAsthma>气胸 (合并哮喘)!</EE_MotePneumothoraxAsthma>
+  <EE_MoteRosc>自主循环已恢复</EE_MoteRosc>
+  <EE_MoteSplintApplied>{0}已固定夹板</EE_MoteSplintApplied>
+  <EE_MoteTourniquetApplied>{0}已施加止血带</EE_MoteTourniquetApplied>
+  <EE_MoteTransfusionBloodLossReduced>输血：失血已减轻</EE_MoteTransfusionBloodLossReduced>
+  <EE_MoteTxaEmbolismMI>高凝冠状动脉栓塞 - 心梗!</EE_MoteTxaEmbolismMI>
+  <EE_MoteTxaMicrovascularEmbolism>微血管栓塞: {0} 缺氧!</EE_MoteTxaMicrovascularEmbolism>
+  <EE_MoteTxaToxicitySeizure>高凝毒性 - 强直性抽搐!</EE_MoteTxaToxicitySeizure>
+  <EE_MoteWoundIrrigatedField>已野战冲洗伤口</EE_MoteWoundIrrigatedField>
+  <EE_OrderEmergencyHemostasis>为 {0} 紧急止血 (剩余: {1})</EE_OrderEmergencyHemostasis>
+  <EE_OrderPerformCPR>为 {0} 进行心肺复苏 (CPR)</EE_OrderPerformCPR>
+  <EE_OrderPerformDefibrillation>使用除颤仪为 {0} 除颤 (剩余: {1})</EE_OrderPerformDefibrillation>
+  <EE_OrderPickupToInventory>拾取 {0} 到背包</EE_OrderPickupToInventory>
+  <EE_OrderUseItemOn>对 {0} 使用 {1} (剩余: {2})</EE_OrderUseItemOn>
+  <EE_PneumothoraxDecompressedTag>已减压</EE_PneumothoraxDecompressedTag>
+  <EE_RemainingCount>{0} (剩余: {1})</EE_RemainingCount>
+  <EE_Settings_AdditionalOptions>附加选项</EE_Settings_AdditionalOptions>
+  <EE_Settings_DifficultyPresetEasy>简单 - 更少的大出血与骨折，更充裕的抢救时间</EE_Settings_DifficultyPresetEasy>
+  <EE_Settings_DifficultyPresetGlobal>全局难度预设</EE_Settings_DifficultyPresetGlobal>
+  <EE_Settings_DifficultyPresetHardcore>硬核 - 平衡且具有挑战性的体验</EE_Settings_DifficultyPresetHardcore>
+  <EE_Settings_DifficultyPresetRealistic>拟真 - 极高的大出血与骨折率。更符合现实，但你确定要这么做？</EE_Settings_DifficultyPresetRealistic>
+  <EE_Settings_EnableDebugMode>开启调试模式 (Debug)</EE_Settings_EnableDebugMode>
+  <EE_Settings_EnableDebugModeDesc>测试专用：将大出血、骨折等主要危机事件发生率强制提升至 90%。</EE_Settings_EnableDebugModeDesc>
+  <EE_Settings_EnableDynamicMassiveBleeding>动态大出血概率</EE_Settings_EnableDynamicMassiveBleeding>
+  <EE_Settings_EnableDynamicMassiveBleedingDesc>开启后，受到高额单次伤害时大出血几率显著提升。关闭则使用固定基础几率（防止高伤武器次次大出血）。</EE_Settings_EnableDynamicMassiveBleedingDesc>
+  <EE_Settings_EnableEcgGui>显示心电图监测仪 (ECG GUI)</EE_Settings_EnableEcgGui>
+  <EE_Settings_EnableEcgGuiDesc>选中目标时在底部显示实时动态心电图与血氧饱和度。</EE_Settings_EnableEcgGuiDesc>
+  <EE_WoundContaminationDegree>伤口污染度: {0}%</EE_WoundContaminationDegree>
+  <EE_WoundContaminationRisk>伤口有感染风险。</EE_WoundContaminationRisk>
+  <EE_WoundContaminationWarningHigh>警告：高污染度，极易引发严重感染，建议立即进行清创！</EE_WoundContaminationWarningHigh>
+</LanguageData>

@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -63,7 +63,7 @@ namespace EmergencyExpanded
                             
                             if (Pawn.Spawned && Pawn.Map != null)
                             {
-                                MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "心血管危象 - 心室颤动!", UnityEngine.Color.red);
+                                MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "EE_MoteCardiacVF".Translate(), UnityEngine.Color.red);
                             }
                         }
                     }

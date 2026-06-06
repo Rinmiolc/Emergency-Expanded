@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <HypoxicBrainDamage.description>由于严重脑缺氧导致的不可逆脑组织永久性坏死。这会实质性地且不可逆地摧毁小人的认知、语言和运动运动能力。</HypoxicBrainDamage.description>
+  <HypoxicBrainDamage.label>缺氧性脑损伤</HypoxicBrainDamage.label>
+  <HypoxicBrainDamage.stages.0.label>轻度神经功能缺损</HypoxicBrainDamage.stages.0.label>
+  <HypoxicBrainDamage.stages.1.label>中度神经功能缺损</HypoxicBrainDamage.stages.1.label>
+  <HypoxicBrainDamage.stages.2.label>重度偏瘫与失语</HypoxicBrainDamage.stages.2.label>
+  <HypoxicBrainDamage.stages.3.label>濒临全面脑死亡</HypoxicBrainDamage.stages.3.label>
+</LanguageData>

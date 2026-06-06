@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
@@ -16,8 +16,8 @@ namespace EmergencyExpanded
         public Command_FastFirstAid(Pawn medic)
         {
             this.medic = medic;
-            this.defaultLabel = "快速急救";
-            this.defaultDesc = "框选多名伤员，该医生将依次前往进行急救。\n\n右键点击可切换使用的急救物品。";
+            this.defaultLabel = "EE_Command_FastFirstAid_Label".Translate();
+            this.defaultDesc = "EE_Command_FastFirstAid_Desc".Translate();
             
             ThingDef selectedMed = GetSelectedMedicine();
             if (selectedMed != null)
@@ -74,7 +74,7 @@ namespace EmergencyExpanded
                     int totalCount = group.Sum(t => t.stackCount);
                     Thing firstThing = group.First();
 
-                    string label = $"{itemDef.LabelCap} (剩余: {totalCount})";
+                    string label = "EE_RemainingCount".Translate(itemDef.LabelCap, totalCount);
                     Action action = () =>
                     {
                         PreferredMedicine[medic] = itemDef;
@@ -105,8 +105,8 @@ namespace EmergencyExpanded
             this.selectedMedicineDef = selectedMedicineDef;
             this.medType = EE_FirstAidUtility.GetEmergencyItemType(selectedMedicineDef);
 
-            this.defaultLabel = "快速急救";
-            this.defaultDesc = $"框选需要急救的伤员。\n当前使用物品: {selectedMedicineDef.LabelCap}";
+            this.defaultLabel = "EE_Command_FastFirstAid_Label".Translate();
+            this.defaultDesc = "EE_Command_FastFirstAid_Desc_Med".Translate(selectedMedicineDef.LabelCap);
             this.icon = selectedMedicineDef.uiIcon;
             this.iconAngle = selectedMedicineDef.uiIconAngle;
             this.iconOffset = selectedMedicineDef.uiIconOffset;
@@ -200,7 +200,7 @@ namespace EmergencyExpanded
 
             if (firstThing == null)
             {
-                Messages.Message($"{medic.LabelShort} 找不到 {selectedMedicineDef.LabelCap}!", medic, MessageTypeDefOf.RejectInput, false);
+                Messages.Message("EE_MessageMedicCannotFindMedicine".Translate(medic.LabelShort, selectedMedicineDef.LabelCap), medic, MessageTypeDefOf.RejectInput, false);
                 return;
             }
 

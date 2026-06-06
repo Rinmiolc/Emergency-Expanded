@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_MorphineRespiratoryArrest.description>由于吗啡等阿片类药物极度过量，深度抑制脑干呼吸中枢引发的急性自主呼吸停止。小人的呼吸能力将瞬间降为 0%，导致严重的脑缺氧与酸中毒。急需安排其他医生进行心肺复苏（CPR）或等待体内吗啡代谢完毕！</EE_MorphineRespiratoryArrest.description>
+  <EE_MorphineRespiratoryArrest.label>呼吸骤停 (吗啡中毒)</EE_MorphineRespiratoryArrest.label>
+</LanguageData>

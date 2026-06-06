@@ -4,10 +4,10 @@
   <!-- 传统正骨术 (Traditional Bone Setting) -->
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>EE_Recipe_TraditionalBoneSetting</defName>
-    <label>传统正骨术</label>
-    <description>使用传统手法进行复位牵引，并用大量草药外敷和简易夹板进行重度卧床固定。只适用于闭合性骨折。手术完成后，患者必须绝对静卧在床，若中途起床活动极易导致固定失效而发生畸形愈合。</description>
+    <label>Traditional bone setting</label>
+    <description>Use manual reduction and simple splints with herbal poultices to immobilize closed fractures. Requires strict bed rest; moving early will break the setting and cause malunion.</description>
     <workerClass>EmergencyExpanded.Recipe_BoneSetting</workerClass>
-    <jobString>正在进行传统正骨术。</jobString>
+    <jobString>Performing traditional bone setting.</jobString>
     <workAmount>1500</workAmount>
     <surgerySuccessChanceFactor>1.00</surgerySuccessChanceFactor>
     <deathOnFailedSurgeryChance>0.01</deathOnFailedSurgeryChance>
@@ -50,10 +50,10 @@
   <!-- 医用石膏固定术 (Plaster Casting) -->
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>EE_Recipe_PlasterCasting</defName>
-    <label>医用石膏固定术</label>
-    <description>在病床上对骨折肢体进行手法复位并缠绕医用石膏绷带进行硬化固定。石膏提供极佳的物理力学刚性，完全免除二次伤害并消除畸形愈合风险，且比夹板轻便，允许小人进行中度强度的活动。</description>
+    <label>Plaster casting</label>
+    <description>Manually reduce the fracture and apply rigid plaster casting. Plaster provides excellent mechanical rigidity, completely preventing secondary injury and malunion, while allowing moderate mobility.</description>
     <workerClass>EmergencyExpanded.Recipe_PlasterCasting</workerClass>
-    <jobString>正在实施医用石膏固定术。</jobString>
+    <jobString>Applying plaster cast.</jobString>
     <workAmount>1200</workAmount>
     <surgerySuccessChanceFactor>1.00</surgerySuccessChanceFactor>
     <deathOnFailedSurgeryChance>0.01</deathOnFailedSurgeryChance>
@@ -96,10 +96,10 @@
   <!-- 切开复位内固定术 (ORIF Surgery) -->
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>EE_Recipe_ORIF</defName>
-    <label>切开复位内固定术</label>
-    <description>通过外科手术切开软组织，将接骨钢板或钛合金螺钉直接打入碎骨进行刚性内固定。能对最严重的开放性或粉碎性骨折实现完美复位。术后无需卧床且骨折将以极快速度康复，不留任何后遗症。</description>
+    <label>ORIF surgery</label>
+    <description>Open Reduction Internal Fixation (ORIF) surgery. Incises soft tissue and secures fractured bone with plates and screws. Ideal for severe open or comminuted fractures. Requires no bed rest and heals rapidly without complications.</description>
     <workerClass>EmergencyExpanded.Recipe_ORIF</workerClass>
-    <jobString>正在进行切开复位内固定术。</jobString>
+    <jobString>Performing ORIF surgery.</jobString>
     <workAmount>3000</workAmount>
     <surgerySuccessChanceFactor>0.95</surgerySuccessChanceFactor>
     <deathOnFailedSurgeryChance>0.05</deathOnFailedSurgeryChance>
@@ -140,10 +140,10 @@
   <!-- 畸形接骨重折术 (Osteotomy) -->
   <RecipeDef ParentName="SurgeryFlesh">
     <defName>EE_Recipe_Osteotomy</defName>
-    <label>畸形接骨重折术</label>
-    <description>使用外科手术刀与骨锯，强行打断小人因先前处理不当而畸形愈合的错位骨骼，清除多余骨痂，使其重新回到开放性骨折状态，以便重新进行正确复位与固定。</description>
+    <label>Osteotomy</label>
+    <description>Use surgical knives and bone saws to intentionally re-fracture malunited bones, clearing callus tissue and reverting the limb to an open fracture state for proper resetting.</description>
     <workerClass>EmergencyExpanded.Recipe_Osteotomy</workerClass>
-    <jobString>正在执行畸形接骨重折术。</jobString>
+    <jobString>Performing osteotomy.</jobString>
     <workAmount>3500</workAmount>
     <surgerySuccessChanceFactor>0.90</surgerySuccessChanceFactor>
     <deathOnFailedSurgeryChance>0.08</deathOnFailedSurgeryChance>

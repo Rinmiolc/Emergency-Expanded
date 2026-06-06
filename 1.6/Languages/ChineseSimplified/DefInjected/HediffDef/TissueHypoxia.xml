@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <TissueHypoxia.description>由于严重缺氧和代谢性酸中毒导致的局部组织损伤。像冻伤一样，它会持续破坏组织扣减血量，如果不及早恢复血液循环，会导致部位永久脱落。</TissueHypoxia.description>
+  <TissueHypoxia.injuryProps.destroyedLabel>组织坏死</TissueHypoxia.injuryProps.destroyedLabel>
+  <TissueHypoxia.injuryProps.destroyedOutLabel>组织坏死</TissueHypoxia.injuryProps.destroyedOutLabel>
+  <TissueHypoxia.label>组织缺氧</TissueHypoxia.label>
+  <TissueHypoxia.labelNoun>缺氧组织</TissueHypoxia.labelNoun>
+</LanguageData>

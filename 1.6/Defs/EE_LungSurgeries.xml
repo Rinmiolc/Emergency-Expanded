@@ -3,10 +3,10 @@
 
   <RecipeDef>
     <defName>EE_Recipe_NeedleDecompression</defName>
-    <label>执行胸腔穿刺减压术</label>
-    <description>将针头插入胸膜腔以释放积聚的气体，缓解张力性气胸。需要医药。</description>
+    <label>Perform needle decompression</label>
+    <description>Insert a needle into the pleural cavity to release trapped air, relieving tension pneumothorax. Requires medicine.</description>
     <workerClass>EmergencyExpanded.Recipe_NeedleDecompression</workerClass>
-    <jobString>正在进行胸腔穿刺减压...</jobString>
+    <jobString>Performing needle decompression...</jobString>
     <workAmount>1000</workAmount>
     <hideBodyPartNames>false</hideBodyPartNames>
     <isViolation>false</isViolation>

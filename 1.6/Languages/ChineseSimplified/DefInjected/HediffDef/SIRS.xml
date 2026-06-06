@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <SIRS.description>大面积组织损伤引发的海量炎症因子释放，导致全身毛细血管扩张与通透性增加。这是多脏器功能障碍的前奏。</SIRS.description>
+  <SIRS.label>全身炎症反应综合征</SIRS.label>
+  <SIRS.stages.0.label>潜伏期</SIRS.stages.0.label>
+  <SIRS.stages.1.label>早期</SIRS.stages.1.label>
+  <SIRS.stages.2.label>进展期</SIRS.stages.2.label>
+  <SIRS.stages.3.label>晚期 (微循环衰竭)</SIRS.stages.3.label>
+</LanguageData>

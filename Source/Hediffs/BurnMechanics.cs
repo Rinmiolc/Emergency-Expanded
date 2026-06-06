@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 
 namespace EmergencyExpanded
@@ -54,9 +54,9 @@ namespace EmergencyExpanded
             get
             {
                 int degree = BurnDegree;
-                if (degree == 3) return "III度";
-                if (degree == 2) return "II度";
-                return "I度";
+                if (degree == 3) return "EE_BurnDegree3".Translate();
+                if (degree == 2) return "EE_BurnDegree2".Translate();
+                return "EE_BurnDegree1".Translate();
             }
         }
         
@@ -65,9 +65,9 @@ namespace EmergencyExpanded
             get
             {
                 int degree = BurnDegree;
-                if (degree == 3) return "三度烧伤：全层皮肤及皮下组织坏死，极易引发严重感染和败血症。";
-                if (degree == 2) return "二度烧伤：部分皮肤组织烧伤，水泡形成，极度疼痛且易引发感染。";
-                return "一度烧伤：表皮烧伤，轻度红肿。";
+                if (degree == 3) return "EE_BurnDegree3Desc".Translate();
+                if (degree == 2) return "EE_BurnDegree2Desc".Translate();
+                return "EE_BurnDegree1Desc".Translate();
             }
         }
         

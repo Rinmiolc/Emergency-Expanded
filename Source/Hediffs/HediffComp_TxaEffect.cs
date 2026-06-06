@@ -1,4 +1,4 @@
-using System.Linq;
+﻿using System.Linq;
 using Verse;
 using RimWorld;
 
@@ -50,7 +50,7 @@ namespace EmergencyExpanded
 
                         if (Pawn.Spawned && Pawn.Map != null)
                         {
-                            MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "高凝毒性 - 强直性抽搐!", UnityEngine.Color.red);
+                            MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "EE_MoteTxaToxicitySeizure".Translate(), UnityEngine.Color.red);
                         }
                     }
                 }
@@ -75,7 +75,7 @@ namespace EmergencyExpanded
 
                                 if (Pawn.Spawned && Pawn.Map != null)
                                 {
-                                    MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "高凝冠状动脉栓塞 - 心梗!", UnityEngine.Color.red);
+                                    MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "EE_MoteTxaEmbolismMI".Translate(), UnityEngine.Color.red);
                                 }
                             }
                         }
@@ -98,7 +98,7 @@ namespace EmergencyExpanded
 
                                 if (Pawn.Spawned && Pawn.Map != null)
                                 {
-                                    MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, $"微血管栓塞: {targetPart.Label} 缺氧!", UnityEngine.Color.red);
+                                    MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "EE_MoteTxaMicrovascularEmbolism".Translate(targetPart.Label), UnityEngine.Color.red);
                                 }
                             }
                         }

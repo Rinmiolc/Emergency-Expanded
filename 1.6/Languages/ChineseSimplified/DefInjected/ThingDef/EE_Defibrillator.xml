@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Defibrillator.description>一台精密的便携式战地除颤仪，专门用于抢救发生心肌梗死与心室颤动（VF）的小人。除颤仪对前期的“心室颤动”（病情严重度低于60%）有极高成功率，而对晚期完全“心跳骤停”的小人，直接电击除颤成功率极低，除非有另一人正在对其实施心肺复苏（CPR）以建立微灌注，方能大幅提升成功率。使用时消耗除颤仪本身。除颤失败时，高能电流会对患者的躯体造成微量电击灼伤。</EE_Defibrillator.description>
+  <EE_Defibrillator.label>便携式除颤仪</EE_Defibrillator.label>
+</LanguageData>

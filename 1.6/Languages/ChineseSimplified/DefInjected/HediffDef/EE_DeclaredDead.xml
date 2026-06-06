@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_DeclaredDead.description>医生已放弃对该无生还可能机体的抢救，正式宣布死亡。</EE_DeclaredDead.description>
+  <EE_DeclaredDead.label>宣布死亡</EE_DeclaredDead.label>
+</LanguageData>

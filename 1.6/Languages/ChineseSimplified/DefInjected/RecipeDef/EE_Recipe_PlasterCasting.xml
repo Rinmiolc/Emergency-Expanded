@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_PlasterCasting.description>在病床上对骨折肢体进行手法复位并缠绕医用石膏绷带进行硬化固定。石膏提供极佳的物理力学刚性，完全免除二次伤害并消除畸形愈合风险，且比夹板轻便，允许小人进行中度强度的活动。</EE_Recipe_PlasterCasting.description>
+  <EE_Recipe_PlasterCasting.jobString>正在实施医用石膏固定术。</EE_Recipe_PlasterCasting.jobString>
+  <EE_Recipe_PlasterCasting.label>医用石膏固定术</EE_Recipe_PlasterCasting.label>
+</LanguageData>

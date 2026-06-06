@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Shock.description>全身有效循环血量锐减导致微循环灌流严重不足的综合征。这并非一种独立的疾病，而是失血、败血症、大面积烧伤等致命创伤发展到晚期的共同致命路径。处于休克状态时，身体的核心器官将无法获得足够的氧气，如果不及时逆转，将导致多器官衰竭并致死。</EE_Shock.description>
+  <EE_Shock.label>休克</EE_Shock.label>
+  <EE_Shock.labelNoun>休克</EE_Shock.labelNoun>
+  <EE_Shock.stages.0.label>代偿期</EE_Shock.stages.0.label>
+  <EE_Shock.stages.1.label>失代偿期</EE_Shock.stages.1.label>
+  <EE_Shock.stages.2.label>不可逆期</EE_Shock.stages.2.label>
+</LanguageData>

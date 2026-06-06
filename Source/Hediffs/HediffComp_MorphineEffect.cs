@@ -1,4 +1,4 @@
-using Verse;
+﻿using Verse;
 using RimWorld;
 
 namespace EmergencyExpanded
@@ -36,7 +36,7 @@ namespace EmergencyExpanded
 
                         if (Pawn.Spawned && Pawn.Map != null)
                         {
-                            MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "吗啡中毒 - 呼吸骤停!", UnityEngine.Color.red);
+                            MoteMaker.ThrowText(Pawn.DrawPos, Pawn.Map, "EE_MoteMorphineRespiratoryArrest".Translate(), UnityEngine.Color.red);
                         }
                     }
                 }

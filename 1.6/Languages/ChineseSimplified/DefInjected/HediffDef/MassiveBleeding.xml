@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <MassiveBleeding.description>由于主要血管或动脉破损引发的灾难性大出血。如果不立即就地施加压迫包扎或止血带结扎，伤员将在极短时间内死于失血性休克。</MassiveBleeding.description>
+  <MassiveBleeding.injuryProps.destroyedLabel>血管彻底断裂</MassiveBleeding.injuryProps.destroyedLabel>
+  <MassiveBleeding.label>大出血</MassiveBleeding.label>
+  <MassiveBleeding.labelNoun>大出血的伤口</MassiveBleeding.labelNoun>
+</LanguageData>

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -132,7 +132,7 @@ namespace EmergencyExpanded
                                 
                                 if (pawn.Spawned && pawn.Map != null)
                                 {
-                                    string moteText = hasAsthma ? "气胸 (合并哮喘)!" : "气胸!";
+                                    string moteText = hasAsthma ? "EE_MotePneumothoraxAsthma".Translate() : "EE_MotePneumothorax".Translate();
                                     MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, moteText, Color.red);
                                 }
                             }

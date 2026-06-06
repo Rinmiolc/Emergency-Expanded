@@ -4,8 +4,8 @@
   <!-- 急救包 (First Aid Kit) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_FirstAidKit</defName>
-    <label>急救包</label>
-    <description>内含粗制草药提取液、简易压迫绷带和固定板。专为战地就地抢救设计，包扎速度极快且完全不受野外无医疗床的工作量惩罚，但由于药品条件简陋，处理伤口的品质（Tend Quality）较低。不能用于常规的外科手术。对于大出血，一个急救包最多可尝试包扎 5 次。</description>
+    <label>First aid kit</label>
+    <description>Contains crude herbal extract, simple pressure bandages, and splint boards. Designed for rapid field triage with zero outdoor bed penalties. Due to basic supplies, tend quality is relatively low. Cannot be used for routine surgeries. For massive bleeding, a kit can be used up to 5 times.</description>
     <graphicData>
       <texPath>Things/FirstAid/FirstAidKit</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -27,8 +27,8 @@
   <!-- 急救箱 (First Aid Box) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_FirstAidBox</defName>
-    <label>急救箱</label>
-    <description>标准军用战地急救箱，内含快速凝血粉、无菌压力绷带、可吸收缝合线和强效镇痛针。在混乱的枪战现场使用速度极快，且在野外就地抢救时没有任何速度惩罚，是封堵四肢和躯干大出血的核心耗材。不能用于基地的常规手术。对于大出血，一个急救箱最多可尝试包扎 10 次。</description>
+    <label>First aid box</label>
+    <description>A standard military field medical kit containing rapid clotting powder, sterile pressure bandages, absorbable sutures, and potent analgesic needles. Very fast to use with no outdoor bed penalties. Ideal for treating massive hemorrhages on limbs and torso. Cannot be used for routine surgeries. Can be used up to 10 times for massive bleeding.</description>
     <graphicData>
       <texPath>Things/FirstAid/FirstAidBox</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -50,8 +50,8 @@
   <!-- 四肢止血带 (Tourniquet) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_Tourniquet</defName>
-    <label>四肢止血带</label>
-    <description>高强度单手便携式弹力止血带。只能在四肢受伤时绑扎。施用速度快至毫秒级别，使用后能瞬间将目标四肢上的所有大出血伤口包扎止血，作为战场续命的强力工具，无需耗费漫长的常规包扎读条。</description>
+    <label>Tourniquet</label>
+    <description>A high-strength, portable tourniquet. Can only be applied to limbs. Extremely fast to apply, instantly binding and stopping all bleeding wounds on the target limb as a life-saving measure, bypassing long normal bandaging times.</description>
     <graphicData>
       <texPath>Things/Tourniquet</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -73,8 +73,8 @@
   <!-- 骨折环 (Primitive Splint) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_FractureRing</defName>
-    <label>骨折环</label>
-    <description>由木条和粗质绷带制成的简易正骨夹板。可由医疗兵在野外直接施用以紧急固定受损骨骼，彻底免除移动造成的二次刺刺伤害，但无法保证完美的骨骼复位质量，依然有畸形愈合的风险。</description>
+    <label>Primitive splint</label>
+    <description>A simple splint made of wooden sticks and rough bandages. Can be applied directly in the field to temporarily immobilize fractured bones, preventing secondary tissue damage from movement, but does not guarantee perfect bone alignment and carries a risk of malunion.</description>
     <graphicData>
       <texPath>Things/PrimitiveSplint</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -96,8 +96,8 @@
   <!-- 石膏绷带 (Plaster Bandage) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_PlasterBandage</defName>
-    <label>石膏绷带</label>
-    <description>加入石膏粉的医用绷带。浸水后卷在患肢上可快速硬化，提供完美的刚性保守固定。只能在干净的病床上由医生通过“石膏固定术”施加，完全免除二次伤害并消除畸形愈合风险。</description>
+    <label>Plaster bandage</label>
+    <description>Medical bandages infused with plaster powder. Hardens quickly when wet, providing rigid conservative immobilization. Must be applied on a clean hospital bed via plaster casting surgery. Completely prevents secondary damage and eliminates malunion risks.</description>
     <graphicData>
       <texPath>Things/PlasterBandage</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -119,8 +119,8 @@
   <!-- 除颤仪 (Defibrillator) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_Defibrillator</defName>
-    <label>便携式除颤仪</label>
-    <description>一台精密的便携式战地除颤仪，专门用于抢救发生心肌梗死与心室颤动（VF）的小人。除颤仪对前期的“心室颤动”（病情严重度低于60%）有极高成功率，而对晚期完全“心跳骤停”的小人，直接电击除颤成功率极低，除非有另一人正在对其实施心肺复苏（CPR）以建立微灌注，方能大幅提升成功率。使用时消耗除颤仪本身。除颤失败时，高能电流会对患者的躯体造成微量电击灼伤。</description>
+    <label>Portable defibrillator</label>
+    <description>A precise portable field defibrillator, designed to rescue pawns suffering from myocardial infarction or ventricular fibrillation (VF). Extremely effective in the early stage of VF (severity below 60%), but has a very low success rate for late-stage cardiac arrest unless another pawn is performing CPR to maintain perfusion. Consumed upon use. Fails cause minor electrical burn injuries.</description>
     <graphicData>
       <texPath>Things/Defibrillator</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -143,9 +143,9 @@
 
   <RecipeDef>
     <defName>Make_EE_FractureRing</defName>
-    <label>制作骨折环</label>
-    <description>使用木材和少量皮革或布料制作简易的正骨固定板。</description>
-    <jobString>制作骨折环中。</jobString>
+    <label>Make primitive splint</label>
+    <description>Make a simple bone setting splint using wood and cloth.</description>
+    <jobString>Making primitive splint.</jobString>
     <workAmount>600</workAmount>
     <ingredients>
       <li>
@@ -174,9 +174,9 @@
 
   <RecipeDef>
     <defName>Make_EE_PlasterBandage</defName>
-    <label>制作石膏绷带</label>
-    <description>利用石块磨粉、草药提取液和纺织品绷带制作坚固的医用固定石膏。</description>
-    <jobString>制作石膏绷带中。</jobString>
+    <label>Make plaster bandage</label>
+    <description>Craft rigid plaster bandages from stone chunks, herbal extracts, and textiles.</description>
+    <jobString>Making plaster bandage.</jobString>
     <workAmount>1000</workAmount>
     <ingredients>
       <li>
@@ -224,9 +224,9 @@
 
   <RecipeDef>
     <defName>Make_EE_Defibrillator</defName>
-    <label>制作便携式除颤仪</label>
-    <description>利用钢铁、工业元器件和高级元器件，精细装配一台便携式战地除颤仪。</description>
-    <jobString>制作便携式除颤仪中。</jobString>
+    <label>Make portable defibrillator</label>
+    <description>Assemble a portable field defibrillator from steel, industrial components, and spacer components.</description>
+    <jobString>Making portable defibrillator.</jobString>
     <workAmount>2000</workAmount>
     <ingredients>
       <li>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <BloodLoss.stages.0.label>轻度失血</BloodLoss.stages.0.label>
+  <BloodLoss.stages.1.label>Ⅰ级失血性休克 - 代偿</BloodLoss.stages.1.label>
+  <BloodLoss.stages.2.label>Ⅱ级失血性休克</BloodLoss.stages.2.label>
+  <BloodLoss.stages.3.label>Ⅲ级失血性休克</BloodLoss.stages.3.label>
+  <BloodLoss.stages.4.label>Ⅳ级失血性休克 - 终末期</BloodLoss.stages.4.label>
+</LanguageData>

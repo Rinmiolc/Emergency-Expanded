@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_BroadAntibiotics.description>强效的静脉注射级广谱抗生素。专门用于对抗已经爆发的严重化脓、败血症以及其他致命感染。不可用于预防，只在治疗发作期感染时有奇效。</EE_BroadAntibiotics.description>
+  <EE_BroadAntibiotics.ingestible.ingestCommandString>静脉注射 {0}</EE_BroadAntibiotics.ingestible.ingestCommandString>
+  <EE_BroadAntibiotics.ingestible.ingestReportString>正在注射 {0}。</EE_BroadAntibiotics.ingestible.ingestReportString>
+  <EE_BroadAntibiotics.label>广谱抗生素</EE_BroadAntibiotics.label>
+</LanguageData>

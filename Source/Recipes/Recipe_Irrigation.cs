@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -46,7 +46,7 @@ namespace EmergencyExpanded
 
             if (didAnything && pawn.Spawned)
             {
-                Messages.Message($"{billDoer?.LabelShort ?? "医生"}成功为{pawn.LabelShort}执行了伤口冲洗，除去了污垢和可能滋生细菌的杂质。", pawn, MessageTypeDefOf.PositiveEvent);
+                Messages.Message("EE_MessageIrrigationSuccess".Translate(billDoer?.LabelShort ?? "EE_Doctor".Translate(), pawn.LabelShort), pawn, MessageTypeDefOf.PositiveEvent);
             }
         }
     }

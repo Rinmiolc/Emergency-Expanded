@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 
 namespace EmergencyExpanded
@@ -78,7 +78,7 @@ namespace EmergencyExpanded
                     
                     if (Pawn.Spawned)
                     {
-                        Messages.Message($"{Pawn.LabelShort}的心脏病极度恶化，已经转化为致命的室颤（心室蠕动）！", Pawn, MessageTypeDefOf.NegativeHealthEvent);
+                        Messages.Message("EE_MessageHeartAttackVFWorsened".Translate(Pawn.LabelShort), Pawn, MessageTypeDefOf.NegativeHealthEvent);
                     }
                 }
             }

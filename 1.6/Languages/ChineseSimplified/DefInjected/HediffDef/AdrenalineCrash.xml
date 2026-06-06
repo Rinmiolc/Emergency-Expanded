@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <AdrenalineCrash.description>强烈肾上腺素应激爆发后的崩溃与脱水疲劳期。由于身体机能极度透支以及乳酸的大量堆积，小人的运动能力、操作精度及意识会明显下降，并且创伤的炎性反应使得痛觉感受器变得异常敏感。</AdrenalineCrash.description>
+  <AdrenalineCrash.label>肾上腺素后遗症</AdrenalineCrash.label>
+  <AdrenalineCrash.stages.0.label>逐步缓释</AdrenalineCrash.stages.0.label>
+  <AdrenalineCrash.stages.1.label>重度脱水疲劳</AdrenalineCrash.stages.1.label>
+</LanguageData>

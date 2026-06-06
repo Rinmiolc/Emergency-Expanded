@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_TraditionalBoneSetting.description>使用传统手法进行复位牵引，并用大量草药外敷和简易夹板进行重度卧床固定。只适用于闭合性骨折。手术完成后，患者必须绝对静卧在床，若中途起床活动极易导致固定失效而发生畸形愈合。</EE_Recipe_TraditionalBoneSetting.description>
+  <EE_Recipe_TraditionalBoneSetting.jobString>正在进行传统正骨术。</EE_Recipe_TraditionalBoneSetting.jobString>
+  <EE_Recipe_TraditionalBoneSetting.label>传统正骨术</EE_Recipe_TraditionalBoneSetting.label>
+</LanguageData>

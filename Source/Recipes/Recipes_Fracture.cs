@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -50,7 +50,7 @@ namespace EmergencyExpanded
                 fracture.Tended(0.50f, 1.0f);
                 pawn.Drawer?.renderer?.SetAllGraphicsDirty();
 
-                Messages.Message($"[EE] 传统正骨成功：{billDoer.LabelShort} 为 {pawn.LabelShort} 的 {part.Label} 实施了正骨，对齐质量 {fracture.alignmentQuality.ToStringPercent()}。小人已进入绝对静卧约束状态！", pawn, MessageTypeDefOf.PositiveEvent);
+                Messages.Message("EE_MessageTraditionalSettingSuccess".Translate(billDoer.LabelShort, pawn.LabelShort, part.Label, fracture.alignmentQuality.ToStringPercent()), pawn, MessageTypeDefOf.PositiveEvent);
             }
         }
     }
@@ -97,7 +97,7 @@ namespace EmergencyExpanded
                 fracture.Tended(0.85f, 1.0f);
                 pawn.Drawer?.renderer?.SetAllGraphicsDirty();
 
-                Messages.Message($"[EE] 石膏固定成功：{billDoer.LabelShort} 为 {pawn.LabelShort} 的 {part.Label} 实施了石膏包扎，对齐质量 {fracture.alignmentQuality.ToStringPercent()}！", pawn, MessageTypeDefOf.PositiveEvent);
+                Messages.Message("EE_MessageCastingSuccess".Translate(billDoer.LabelShort, pawn.LabelShort, part.Label, fracture.alignmentQuality.ToStringPercent()), pawn, MessageTypeDefOf.PositiveEvent);
             }
         }
     }
@@ -141,7 +141,7 @@ namespace EmergencyExpanded
                 fracture.Tended(1.0f, 1.0f);
                 pawn.Drawer?.renderer?.SetAllGraphicsDirty();
 
-                Messages.Message($"[EE] 内固定手术成功：{billDoer.LabelShort} 为 {pawn.LabelShort} 的 {part.Label} 实施了内固定，钢板植入牢固，对齐质量 {fracture.alignmentQuality.ToStringPercent()}！", pawn, MessageTypeDefOf.PositiveEvent);
+                Messages.Message("EE_MessageOrifSuccess".Translate(billDoer.LabelShort, pawn.LabelShort, part.Label, fracture.alignmentQuality.ToStringPercent()), pawn, MessageTypeDefOf.PositiveEvent);
             }
         }
     }
@@ -181,12 +181,7 @@ namespace EmergencyExpanded
                     }
                 }
 
-                Find.LetterStack.ReceiveLetter(
-                    "重折手术成功",
-                    $"{billDoer.LabelShort} 成功为 {pawn.LabelShort} 实施了畸形接骨重折术。小人错位愈合的 {part.Label} 骨骼已被外科器械强行截断，畸形组织已清理。该肢体已重新处于【开放性骨折】状态，请尽快为其安排正确的正骨复位或钢板螺钉内固定手术！",
-                    LetterDefOf.PositiveEvent,
-                    pawn
-                );
+                Find.LetterStack.ReceiveLetter("EE_LetterOsteotomySuccess_Label".Translate(), "EE_LetterOsteotomySuccess_Desc".Translate(billDoer.LabelShort, pawn.LabelShort, part.Label), LetterDefOf.PositiveEvent, pawn);
             }
         }
     }

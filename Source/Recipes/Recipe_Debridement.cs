@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -73,11 +73,11 @@ namespace EmergencyExpanded
             {
                 if (partDestroyed)
                 {
-                    Messages.Message($"由于{billDoer?.LabelShort ?? "医生"}的清创手法过于粗暴，不慎将{pawn.LabelShort}的{part.Label}完全切除！", pawn, MessageTypeDefOf.NegativeHealthEvent);
+                    Messages.Message("EE_MessageDebridementAccidentalAmputation".Translate(billDoer?.LabelShort ?? "EE_Doctor".Translate(), pawn.LabelShort, part.Label), pawn, MessageTypeDefOf.NegativeHealthEvent);
                 }
                 else
                 {
-                    Messages.Message($"{billDoer?.LabelShort ?? "医生"}成功为{pawn.LabelShort}执行了清创术，去除了污染和坏死组织。本次清创造成了 {damageAmount.ToString("F1")} 点切割伤害。", pawn, MessageTypeDefOf.PositiveEvent);
+                    Messages.Message("EE_MessageDebridementSuccess".Translate(billDoer?.LabelShort ?? "EE_Doctor".Translate(), pawn.LabelShort, damageAmount.ToString("F1")), pawn, MessageTypeDefOf.PositiveEvent);
                 }
             }
         }

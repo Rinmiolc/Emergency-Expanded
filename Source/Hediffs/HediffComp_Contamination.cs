@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 using UnityEngine;
 using System.Text;
@@ -175,7 +175,7 @@ namespace EmergencyExpanded
                     localInf = Pawn.health.hediffSet.hediffs.Find(h => h.def == targetLocalInfection && h.Part == this.parent.Part);
                     if (Pawn.Spawned)
                     {
-                        Messages.Message($"{Pawn.LabelShort}的伤口由于污染过度，引发了{targetLocalInfection.label}！", Pawn, MessageTypeDefOf.NegativeHealthEvent);
+                        Messages.Message("EE_MessageWoundContaminatedInfection".Translate(Pawn.LabelShort, targetLocalInfection.label), Pawn, MessageTypeDefOf.NegativeHealthEvent);
                     }
                 }
             }
@@ -233,7 +233,7 @@ namespace EmergencyExpanded
                     Pawn.health.AddHediff(EE_DefOf.EE_Sepsis);
                     if (Pawn.Spawned)
                     {
-                        Find.LetterStack.ReceiveLetter("败血症", $"{Pawn.LabelShort}的伤口感染极度恶化，细菌入血引发了败血症！如果不及时治疗将引发多器官衰竭并危及生命！", LetterDefOf.ThreatSmall, Pawn);
+                        Find.LetterStack.ReceiveLetter("EE_LetterSepsis_Label".Translate(), "EE_LetterSepsis_Desc".Translate(Pawn.LabelShort), LetterDefOf.ThreatSmall, Pawn);
                     }
                     
                     // 联动触发 SIRS
@@ -260,7 +260,7 @@ namespace EmergencyExpanded
             {
                 if (contamination > 0.10f)
                 {
-                    return "污染度: " + (contamination * 100f).ToString("F0") + "%";
+                    return "EE_ContaminationDegree".Translate((contamination * 100f).ToString("F0"));
                 }
                 return null;
             }
@@ -273,14 +273,14 @@ namespace EmergencyExpanded
                 if (contamination > 0.0f)
                 {
                     StringBuilder sb = new StringBuilder();
-                    sb.AppendLine("伤口污染度: " + (contamination * 100f).ToString("F1") + "%");
+                    sb.AppendLine("EE_WoundContaminationDegree".Translate((contamination * 100f).ToString("F1")));
                     if (contamination > 0.5f)
                     {
-                        sb.AppendLine("警告：高污染度，极易引发严重感染，建议立即进行清创！");
+                        sb.AppendLine("EE_WoundContaminationWarningHigh".Translate());
                     }
                     else if (contamination > 0.2f)
                     {
-                        sb.AppendLine("伤口有感染风险。");
+                        sb.AppendLine("EE_WoundContaminationRisk".Translate());
                     }
                     return sb.ToString().TrimEndNewlines();
                 }

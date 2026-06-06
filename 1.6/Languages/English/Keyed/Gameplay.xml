@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_BurnDegree1>1st Degree</EE_BurnDegree1>
+  <EE_BurnDegree1Desc>First-degree burn: Epidermal burn, mild redness and swelling.</EE_BurnDegree1Desc>
+  <EE_BurnDegree2>2nd Degree</EE_BurnDegree2>
+  <EE_BurnDegree2Desc>Second-degree burn: Partial skin damage, blister formation. Extremely painful and prone to infection.</EE_BurnDegree2Desc>
+  <EE_BurnDegree3>3rd Degree</EE_BurnDegree3>
+  <EE_BurnDegree3Desc>Third-degree burn: Necrosis of full-thickness skin and subcutaneous tissues. Extremely prone to severe infection and sepsis.</EE_BurnDegree3Desc>
+  <EE_Cancel>Cancel</EE_Cancel>
+  <EE_CommandDeclareDeath_Desc>Abandon all rescue attempts for this patient and formally declare their death.</EE_CommandDeclareDeath_Desc>
+  <EE_CommandDeclareDeath_Label>Declare Death</EE_CommandDeclareDeath_Label>
+  <EE_Command_FastFirstAid_Desc>Select multiple wounded pawns; the doctor will perform first aid on them sequentially.\n\nRight-click to toggle first aid items.</EE_Command_FastFirstAid_Desc>
+  <EE_Command_FastFirstAid_Desc_Med>Select pawns that need first aid.\nCurrently using: {0}</EE_Command_FastFirstAid_Desc_Med>
+  <EE_Command_FastFirstAid_Label>Emergency First Aid</EE_Command_FastFirstAid_Label>
+  <EE_Confirm>Confirm</EE_Confirm>
+  <EE_ConfirmDeclareDeathDesc>Are you sure you want to declare {0} dead? This will immediately terminate their life.</EE_ConfirmDeclareDeathDesc>
+  <EE_ContaminationDegree>Contamination: {0}%</EE_ContaminationDegree>
+  <EE_Doctor>doctor</EE_Doctor>
+  <EE_FractureCastedTag>[Casted]</EE_FractureCastedTag>
+  <EE_FractureInternallyFixedTag>[ORIF Fixed]</EE_FractureInternallyFixedTag>
+  <EE_FractureSplintedTag>[Splinted]</EE_FractureSplintedTag>
+  <EE_FractureStrictBedrestTag>[Bedrest]</EE_FractureStrictBedrestTag>
+  <EE_FractureUnfixedTag>[Unfixed]</EE_FractureUnfixedTag>
+  <EE_LetterBrainDeathMods_Desc>{0} has suffered irreversible brain death due to severe cerebral necrosis from multiple organ failure, entering a permanent vegetative state.</EE_LetterBrainDeathMods_Desc>
+  <EE_LetterBrainDeath_Desc>{0} has suffered irreversible brain death due to prolonged cerebral hypoxia and severe brain damage, entering a permanent vegetative state.</EE_LetterBrainDeath_Desc>
+  <EE_LetterBrainDeath_Label>Brain Death</EE_LetterBrainDeath_Label>
+  <EE_LetterMyocardialInfarction_Desc>{0} has suffered a sudden myocardial infarction due to severe myocardial ischemia! Immediate rescue is required, otherwise it can easily deteriorate into ventricular fibrillation and cause death.</EE_LetterMyocardialInfarction_Desc>
+  <EE_LetterMyocardialInfarction_Label>Myocardial Infarction</EE_LetterMyocardialInfarction_Label>
+  <EE_LetterOrganFailure_Desc>{0}'s {1} has suffered irreversible necrosis due to prolonged ischemia from shock, developing into {2}! Organ transplantation is now required to restore this function.</EE_LetterOrganFailure_Desc>
+  <EE_LetterOrganFailure_Label>Organ Failure</EE_LetterOrganFailure_Label>
+  <EE_LetterOsteotomySuccess_Desc>{0} successfully performed an osteotomy on {1}. The malunited bone in the {2} has been surgically fractured and deformed tissues cleared. The limb is now back in an [Open Fracture] state. Please schedule proper reduction and fixation immediately!</EE_LetterOsteotomySuccess_Desc>
+  <EE_LetterOsteotomySuccess_Label>Osteotomy Successful</EE_LetterOsteotomySuccess_Label>
+  <EE_LetterSepsis_Desc>{0}'s wound infection has severely deteriorated into sepsis! If not treated promptly, it will trigger multiple organ dysfunction syndrome (MODS) and threaten life.</EE_LetterSepsis_Desc>
+  <EE_LetterSepsis_Label>Sepsis</EE_LetterSepsis_Label>
+  <EE_LetterSpontaneousPneumothorax_Desc>{0} has suffered a spontaneous tension pneumothorax due to severely decreased lung compliance from acute respiratory distress syndrome (ARDS)!</EE_LetterSpontaneousPneumothorax_Desc>
+  <EE_LetterSpontaneousPneumothorax_Label>Spontaneous Pneumothorax</EE_LetterSpontaneousPneumothorax_Label>
+  <EE_MessageCastingSuccess>[EE] Plaster casting successful: {0} casted {1}'s {2} with an alignment quality of {3}!</EE_MessageCastingSuccess>
+  <EE_MessageDebridementAccidentalAmputation>Due to {0}'s clumsy debridement technique, {1}'s {2} was accidentally amputated completely!</EE_MessageDebridementAccidentalAmputation>
+  <EE_MessageDebridementSuccess>{0} successfully performed debridement on {1}, clearing contamination and necrotic tissue. This caused {2} points of cut damage.</EE_MessageDebridementSuccess>
+  <EE_MessageFractureHealedPerfect>{0}'s {1} bone has fully healed with good alignment. Limb function is completely restored!</EE_MessageFractureHealedPerfect>
+  <EE_MessageHeartAttackVFWorsened>{0}'s cardiac condition has severely worsened, deteriorating into fatal ventricular fibrillation!</EE_MessageHeartAttackVFWorsened>
+  <EE_MessageIrrigationSuccess>{0} successfully performed wound irrigation on {1}, clearing filth and potential bacterial hazards.</EE_MessageIrrigationSuccess>
+  <EE_MessageMalunionCrippled>{0}'s {1} fracture has closed, but due to lack of proper reduction and rigid fixation, it has malunited, leaving a permanent disability/limp!</EE_MessageMalunionCrippled>
+  <EE_MessageMedicCannotFindMedicine>{0} cannot find {1}!</EE_MessageMedicCannotFindMedicine>
+  <EE_MessageOrifSuccess>[EE] ORIF surgery successful: {0} performed internal fixation on {1}'s {2} with an alignment quality of {3}!</EE_MessageOrifSuccess>
+  <EE_MessageStrictBedrestFail>{0} failed to maintain absolute bed rest, causing the traditional bone setting fixation to fail and the bone to displace again!</EE_MessageStrictBedrestFail>
+  <EE_MessageTraditionalSettingSuccess>[EE] Traditional bone setting successful: {0} set {1}'s {2} with an alignment quality of {3}. The patient is now restricted to absolute bed rest!</EE_MessageTraditionalSettingSuccess>
+  <EE_MessageWoundContaminatedInfection>{0}'s wound was excessively contaminated and has developed {1}!</EE_MessageWoundContaminatedInfection>
+  <EE_MoteBedrestSettingFail>Bone Setting Failed!</EE_MoteBedrestSettingFail>
+  <EE_MoteCardiacVF>Cardiovascular Crisis - Ventricular Fibrillation!</EE_MoteCardiacVF>
+  <EE_MoteCardioversionFail>Cardioversion failed!</EE_MoteCardioversionFail>
+  <EE_MoteCardioversionSuccess>Cardioversion successful! Sinus rhythm restored</EE_MoteCardioversionSuccess>
+  <EE_MoteClosedFracture>Closed Fracture!</EE_MoteClosedFracture>
+  <EE_MoteDefibSideEffectBurn>Defib side effect: Mild skin burn</EE_MoteDefibSideEffectBurn>
+  <EE_MoteDefibrillationFail>Defibrillation failed!</EE_MoteDefibrillationFail>
+  <EE_MoteDefibrillationSuccess>Defibrillation successful! Sinus rhythm restored</EE_MoteDefibrillationSuccess>
+  <EE_MoteDefibrillatorDestroyed>Defibrillator destroyed</EE_MoteDefibrillatorDestroyed>
+  <EE_MoteFirstAidKitDamaged>First aid kit damaged</EE_MoteFirstAidKitDamaged>
+  <EE_MoteFractureDisplacedPain>{0} suffers severe pain from bone displacement!</EE_MoteFractureDisplacedPain>
+  <EE_MoteHemostasisFailChance>Hemostasis failed ({0}%)</EE_MoteHemostasisFailChance>
+  <EE_MoteHemostasisFailZero>Hemostasis failed (0%)</EE_MoteHemostasisFailZero>
+  <EE_MoteHemostasisSuccess>Hemostasis successful</EE_MoteHemostasisSuccess>
+  <EE_MoteItemConsumed>{0} consumed</EE_MoteItemConsumed>
+  <EE_MoteItemUsed>{0} used</EE_MoteItemUsed>
+  <EE_MoteMassiveBleeding>Massive Bleeding!</EE_MoteMassiveBleeding>
+  <EE_MoteMassiveBleedingClosed>Massive bleeding wound completely closed!</EE_MoteMassiveBleedingClosed>
+  <EE_MoteMorphineRespiratoryArrest>Morphine Toxicity - Respiratory Arrest!</EE_MoteMorphineRespiratoryArrest>
+  <EE_MoteNeedleDecompressionSuccess>Decompressed (Needle Thoracostomy)</EE_MoteNeedleDecompressionSuccess>
+  <EE_MoteOpenFracture>Open Fracture!</EE_MoteOpenFracture>
+  <EE_MotePneumothorax>Pneumothorax!</EE_MotePneumothorax>
+  <EE_MotePneumothoraxAsthma>Pneumothorax (Comorbid Asthma)!</EE_MotePneumothoraxAsthma>
+  <EE_MoteRosc>Return of spontaneous circulation (ROSC)</EE_MoteRosc>
+  <EE_MoteSplintApplied>Splint applied to {0}</EE_MoteSplintApplied>
+  <EE_MoteTourniquetApplied>Tourniquet applied to {0}</EE_MoteTourniquetApplied>
+  <EE_MoteTransfusionBloodLossReduced>Transfusion: Blood loss reduced</EE_MoteTransfusionBloodLossReduced>
+  <EE_MoteTxaEmbolismMI>Coronary Embolism - Myocardial Infarction!</EE_MoteTxaEmbolismMI>
+  <EE_MoteTxaMicrovascularEmbolism>Microvascular Embolism: {0} Hypoxia!</EE_MoteTxaMicrovascularEmbolism>
+  <EE_MoteTxaToxicitySeizure>Hypercoagulation Toxicity - Tonic Seizure!</EE_MoteTxaToxicitySeizure>
+  <EE_MoteWoundIrrigatedField>Wound irrigated in field</EE_MoteWoundIrrigatedField>
+  <EE_OrderEmergencyHemostasis>Emergency hemostasis for {0} (Remaining: {1})</EE_OrderEmergencyHemostasis>
+  <EE_OrderPerformCPR>Perform CPR on {0}</EE_OrderPerformCPR>
+  <EE_OrderPerformDefibrillation>Use defibrillator on {0} (Remaining: {1})</EE_OrderPerformDefibrillation>
+  <EE_OrderPickupToInventory>Pick up {0} to inventory</EE_OrderPickupToInventory>
+  <EE_OrderUseItemOn>Use {1} on {0} (Remaining: {2})</EE_OrderUseItemOn>
+  <EE_PneumothoraxDecompressedTag>Decompressed</EE_PneumothoraxDecompressedTag>
+  <EE_RemainingCount>{0} (Remaining: {1})</EE_RemainingCount>
+  <EE_Settings_AdditionalOptions>Additional Options</EE_Settings_AdditionalOptions>
+  <EE_Settings_DifficultyPresetEasy>Easy - Fewer massive hemorrhages and fractures, more time to rescue</EE_Settings_DifficultyPresetEasy>
+  <EE_Settings_DifficultyPresetGlobal>Global Difficulty Preset</EE_Settings_DifficultyPresetGlobal>
+  <EE_Settings_DifficultyPresetHardcore>Hardcore - Balanced and challenging experience</EE_Settings_DifficultyPresetHardcore>
+  <EE_Settings_DifficultyPresetRealistic>Realistic - Extremely high hemorrhage and fracture rates. Realistic, but are you sure?</EE_Settings_DifficultyPresetRealistic>
+  <EE_Settings_EnableDebugMode>Enable Debug Mode</EE_Settings_EnableDebugMode>
+  <EE_Settings_EnableDebugModeDesc>Testing only: Forces the rate of major crisis events (bleeding, fractures) to 90%.</EE_Settings_EnableDebugModeDesc>
+  <EE_Settings_EnableDynamicMassiveBleeding>Dynamic Massive Bleeding Chance</EE_Settings_EnableDynamicMassiveBleeding>
+  <EE_Settings_EnableDynamicMassiveBleedingDesc>When enabled, single high-damage hits significantly increase the chance of massive bleeding. When disabled, uses a fixed base chance.</EE_Settings_EnableDynamicMassiveBleedingDesc>
+  <EE_Settings_EnableEcgGui>Show ECG Monitor (ECG GUI)</EE_Settings_EnableEcgGui>
+  <EE_Settings_EnableEcgGuiDesc>Display real-time dynamic ECG and SpO2 at the bottom when a pawn is selected.</EE_Settings_EnableEcgGuiDesc>
+  <EE_WoundContaminationDegree>Wound Contamination: {0}%</EE_WoundContaminationDegree>
+  <EE_WoundContaminationRisk>Wound at risk of infection.</EE_WoundContaminationRisk>
+  <EE_WoundContaminationWarningHigh>WARNING: High contamination. Extremely prone to severe infection. Debridement is highly recommended!</EE_WoundContaminationWarningHigh>
+</LanguageData>

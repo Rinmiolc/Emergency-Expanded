@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 
 namespace EmergencyExpanded
@@ -145,7 +145,7 @@ namespace EmergencyExpanded
             {
                 Hediff vegHediff = HediffMaker.MakeHediff(vegDef, Pawn, brain);
                 Pawn.health.AddHediff(vegHediff, brain, null, null);
-                Find.LetterStack.ReceiveLetter("脑死亡", $"{Pawn.NameShortColored} 因长时间脑部缺氧与严重脑损伤，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。", LetterDefOf.NegativeEvent, Pawn);
+                Find.LetterStack.ReceiveLetter("EE_LetterBrainDeath_Label".Translate(), "EE_LetterBrainDeath_Desc".Translate(Pawn.NameShortColored), LetterDefOf.NegativeEvent, Pawn);
             }
 
             // 脑死亡触发后，安全地移除脑缺氧状态

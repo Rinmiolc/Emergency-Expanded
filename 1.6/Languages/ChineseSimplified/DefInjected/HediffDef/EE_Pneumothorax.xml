@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Pneumothorax.description>空气进入胸膜腔，导致肺部部分或完全萎缩。这会严重影响呼吸并引起剧痛。如果发展为张力性气胸，且不立即进行胸腔穿刺减压，将会致命。</EE_Pneumothorax.description>
+  <EE_Pneumothorax.label>气胸</EE_Pneumothorax.label>
+  <EE_Pneumothorax.stages.0.label>轻度</EE_Pneumothorax.stages.0.label>
+  <EE_Pneumothorax.stages.1.label>中度</EE_Pneumothorax.stages.1.label>
+  <EE_Pneumothorax.stages.2.label>张力性气胸</EE_Pneumothorax.stages.2.label>
+  <EE_Pneumothorax.stages.3.label>肺萎缩</EE_Pneumothorax.stages.3.label>
+</LanguageData>

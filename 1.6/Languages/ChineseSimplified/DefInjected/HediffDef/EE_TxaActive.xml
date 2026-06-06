@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_TxaActive.description>氨甲环酸在体内发生药效的状态。能够通过抑制纤维蛋白溶解来稳定血栓，将全身物理流血速度折半，解除并预防凝血功能障碍，同时降低受到枪伤/锋利创伤时引发大出血的几率。短时间内过量注射会导致全身微血栓栓塞和神经肌肉抽搐风险。</EE_TxaActive.description>
+  <EE_TxaActive.label>TXA生效中</EE_TxaActive.label>
+  <EE_TxaActive.stages.0.label>安全促凝</EE_TxaActive.stages.0.label>
+  <EE_TxaActive.stages.1.label>高凝蓄积 - 药物过量</EE_TxaActive.stages.1.label>
+  <EE_TxaActive.stages.2.label>危险过量 - 极高危</EE_TxaActive.stages.2.label>
+</LanguageData>

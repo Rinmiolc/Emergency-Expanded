@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_AcuteRespiratoryDistress.description>急性呼吸窘迫综合征（ARDS）。肺泡内充满液体，严重降低氧气交换效率与肺部顺应性（有极高概率自发气胸）。</EE_AcuteRespiratoryDistress.description>
+  <EE_AcuteRespiratoryDistress.label>急性呼吸窘迫</EE_AcuteRespiratoryDistress.label>
+  <EE_AcuteRespiratoryDistress.stages.0.label>隐性</EE_AcuteRespiratoryDistress.stages.0.label>
+  <EE_AcuteRespiratoryDistress.stages.1.label>轻度</EE_AcuteRespiratoryDistress.stages.1.label>
+  <EE_AcuteRespiratoryDistress.stages.2.label>重度</EE_AcuteRespiratoryDistress.stages.2.label>
+  <EE_AcuteRespiratoryDistress.stages.3.label>极危</EE_AcuteRespiratoryDistress.stages.3.label>
+</LanguageData>

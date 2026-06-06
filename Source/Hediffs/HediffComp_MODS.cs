@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -150,7 +150,7 @@ namespace EmergencyExpanded
             Hediff failure = HediffMaker.MakeHediff(failureDef, Pawn, part);
             Pawn.health.AddHediff(failure, part, null, null);
             
-            Find.LetterStack.ReceiveLetter("器官衰竭", $"{Pawn.NameShortColored} 的 {part.Label} 由于长时间处于缺血休克状态，发生了不可逆的坏死，演变为 {failure.Label}！现在只能通过器官移植来挽救这部分机能。", LetterDefOf.NegativeEvent, Pawn);
+            Find.LetterStack.ReceiveLetter("EE_LetterOrganFailure_Label".Translate(), "EE_LetterOrganFailure_Desc".Translate(Pawn.NameShortColored, part.Label, failure.Label), LetterDefOf.NegativeEvent, Pawn);
         }
         
         private void HandleSynergies()
@@ -172,7 +172,7 @@ namespace EmergencyExpanded
                     {
                         Hediff heartAttack = HediffMaker.MakeHediff(heartAttackDef, Pawn, ischemia.Part);
                         Pawn.health.AddHediff(heartAttack, ischemia.Part, null, null);
-                        Find.LetterStack.ReceiveLetter("心肌梗死", $"{Pawn.NameShortColored} 因严重心肌缺血突发心肌梗死！需立即进行抢救，否则极易恶化为心室颤动并导致死亡。", LetterDefOf.NegativeEvent, Pawn);
+                        Find.LetterStack.ReceiveLetter("EE_LetterMyocardialInfarction_Label".Translate(), "EE_LetterMyocardialInfarction_Desc".Translate(Pawn.NameShortColored), LetterDefOf.NegativeEvent, Pawn);
                     }
                 }
             }
@@ -190,7 +190,7 @@ namespace EmergencyExpanded
                         Hediff pneumo = HediffMaker.MakeHediff(EE_DefOf.EE_Pneumothorax, Pawn, ards.Part);
                         pneumo.Severity = EE_Constants.PneumothoraxBaseSeverity;
                         Pawn.health.AddHediff(pneumo, ards.Part, null, null);
-                        Find.LetterStack.ReceiveLetter("自发性气胸", $"{Pawn.NameShortColored} 因急性呼吸窘迫（ARDS）导致肺部顺应性极度下降，自发诱发了张力性气胸！", LetterDefOf.NegativeEvent, Pawn);
+                        Find.LetterStack.ReceiveLetter("EE_LetterSpontaneousPneumothorax_Label".Translate(), "EE_LetterSpontaneousPneumothorax_Desc".Translate(Pawn.NameShortColored), LetterDefOf.NegativeEvent, Pawn);
                     }
                 }
             }
@@ -228,7 +228,7 @@ namespace EmergencyExpanded
             {
                 Hediff vegHediff = HediffMaker.MakeHediff(vegDef, Pawn, brain);
                 Pawn.health.AddHediff(vegHediff, brain, null, null);
-                Find.LetterStack.ReceiveLetter("脑死亡", $"{Pawn.NameShortColored} 因多脏器功能衰竭导致严重脑部坏死，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。", LetterDefOf.NegativeEvent, Pawn);
+                Find.LetterStack.ReceiveLetter("EE_LetterBrainDeath_Label".Translate(), "EE_LetterBrainDeathMods_Desc".Translate(Pawn.NameShortColored), LetterDefOf.NegativeEvent, Pawn);
             }
 
             Hediff hypoxia = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia);

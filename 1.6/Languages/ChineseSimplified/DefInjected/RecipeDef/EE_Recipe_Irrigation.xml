@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_Irrigation.description>使用无菌冲洗液彻底清理伤口上的异物和环境污染物。此操作可以完全清空伤口的污染度，是预防伤口化脓感染和坏死的最佳前置手段。无需全麻手术，但需要基本的医疗常识。</EE_Recipe_Irrigation.description>
+  <EE_Recipe_Irrigation.jobString>正在进行伤口冲洗。</EE_Recipe_Irrigation.jobString>
+  <EE_Recipe_Irrigation.label>伤口冲洗术</EE_Recipe_Irrigation.label>
+</LanguageData>

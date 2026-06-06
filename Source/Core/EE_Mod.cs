@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 using System.Collections.Generic;
 
@@ -36,25 +36,25 @@ namespace EmergencyExpanded
             listing.Begin(inRect);
 
             Text.Font = GameFont.Medium;
-            listing.Label("全局难度预设");
+            listing.Label("EE_Settings_DifficultyPresetGlobal".Translate());
             Text.Font = GameFont.Small;
             
-            if (listing.RadioButton("简单 - 更少的大出血与骨折，更充裕的抢救时间", Settings.difficulty == DifficultyPreset.Easy))
+            if (listing.RadioButton("EE_Settings_DifficultyPresetEasy".Translate(), Settings.difficulty == DifficultyPreset.Easy))
                 Settings.difficulty = DifficultyPreset.Easy;
-            if (listing.RadioButton("硬核 - 平衡且具有挑战性的体验", Settings.difficulty == DifficultyPreset.Hardcore))
+            if (listing.RadioButton("EE_Settings_DifficultyPresetHardcore".Translate(), Settings.difficulty == DifficultyPreset.Hardcore))
                 Settings.difficulty = DifficultyPreset.Hardcore;
-            if (listing.RadioButton("拟真 - 极高的大出血与骨折率。更符合现实，但你确定要这么做？", Settings.difficulty == DifficultyPreset.Realistic))
+            if (listing.RadioButton("EE_Settings_DifficultyPresetRealistic".Translate(), Settings.difficulty == DifficultyPreset.Realistic))
                 Settings.difficulty = DifficultyPreset.Realistic;
             
             listing.Gap(20f);
             
             Text.Font = GameFont.Medium;
-            listing.Label("附加选项");
+            listing.Label("EE_Settings_AdditionalOptions".Translate());
             Text.Font = GameFont.Small;
 
-            listing.CheckboxLabeled("显示心电图监测仪 (ECG GUI)", ref Settings.enableEcgGui, "选中目标时在底部显示实时动态心电图与血氧饱和度。");
-            listing.CheckboxLabeled("动态大出血概率", ref Settings.enableDynamicMassiveBleeding, "开启后，受到高额单次伤害时大出血几率显著提升。关闭则使用固定基础几率（防止高伤武器次次大出血）。");
-            listing.CheckboxLabeled("开启调试模式 (Debug)", ref Settings.debugMode, "测试专用：将大出血、骨折等主要危机事件发生率强制提升至 90%。");
+            listing.CheckboxLabeled("EE_Settings_EnableEcgGui".Translate(), ref Settings.enableEcgGui, "EE_Settings_EnableEcgGuiDesc".Translate());
+            listing.CheckboxLabeled("EE_Settings_EnableDynamicMassiveBleeding".Translate(), ref Settings.enableDynamicMassiveBleeding, "EE_Settings_EnableDynamicMassiveBleedingDesc".Translate());
+            listing.CheckboxLabeled("EE_Settings_EnableDebugMode".Translate(), ref Settings.debugMode, "EE_Settings_EnableDebugModeDesc".Translate());
 
             listing.End();
         }

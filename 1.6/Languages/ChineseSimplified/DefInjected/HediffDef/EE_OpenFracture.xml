@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_OpenFracture.description>碎骨刺穿皮肤外露。伴随剧烈疼痛、大出血以及极高的伤口感染概率。需要立即进行野外紧急夹板固定并回院手术。</EE_OpenFracture.description>
+  <EE_OpenFracture.injuryProps.destroyedLabel>彻底粉碎</EE_OpenFracture.injuryProps.destroyedLabel>
+  <EE_OpenFracture.label>开放性骨折</EE_OpenFracture.label>
+  <EE_OpenFracture.labelNoun>开放性骨折的伤口</EE_OpenFracture.labelNoun>
+</LanguageData>

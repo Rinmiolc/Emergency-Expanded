@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <MetabolicAcidosis.description>因组织灌注不足导致的酸碱平衡崩盘。系统一旦崩溃，酸中毒将持续恶化啃食机体。发展到晚期时，会引发不可逆的多脏器缺血衰竭并导致死亡。</MetabolicAcidosis.description>
+  <MetabolicAcidosis.label>代谢性酸中毒</MetabolicAcidosis.label>
+  <MetabolicAcidosis.stages.0.label>轻度</MetabolicAcidosis.stages.0.label>
+  <MetabolicAcidosis.stages.1.label>中度</MetabolicAcidosis.stages.1.label>
+  <MetabolicAcidosis.stages.2.label>重度</MetabolicAcidosis.stages.2.label>
+  <MetabolicAcidosis.stages.3.label>极重度 - 崩溃边缘</MetabolicAcidosis.stages.3.label>
+</LanguageData>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_TxaSyringe.description>一支装有氨甲环酸（TXA）的战地用自动注射器。使用速度极快，注射后能通过抑制纤溶系统稳定血栓，显著减缓失血速度（50%），主动逆转失血性休克和酸中毒引发的凝血功能障碍，并降低受击时大出血发生的几率。连续注射会导致严重高凝状态与神经毒性反应，诱发全身抽搐及器官栓塞坏死。</EE_TxaSyringe.description>
+  <EE_TxaSyringe.ingestible.ingestCommandString>注射 {0}</EE_TxaSyringe.ingestible.ingestCommandString>
+  <EE_TxaSyringe.ingestible.ingestReportString>正在注射 {0}。</EE_TxaSyringe.ingestible.ingestReportString>
+  <EE_TxaSyringe.label>TXA强效促凝血剂注射器</EE_TxaSyringe.label>
+</LanguageData>

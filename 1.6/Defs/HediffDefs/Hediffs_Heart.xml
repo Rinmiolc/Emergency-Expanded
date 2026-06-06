@@ -3,8 +3,8 @@
 
   <HediffDef>
     <defName>EE_Tachycardia</defName>
-    <label>心动过速</label>
-    <description>心搏频率异常加快（大于 140 BPM）。这通常是由痛觉刺激、严重失血的交感神经代偿、或注射肾上腺素等因素引发的生理反应。</description>
+    <label>Tachycardia</label>
+    <description>Abnormally rapid heart rate (above 140 BPM). Typically a physiological response to pain, sympathetic compensation for blood loss, or adrenaline injection.</description>
     <hediffClass>Hediff</hediffClass>
     <defaultLabelColor>(0.9, 0.7, 0.15)</defaultLabelColor>
     <isBad>false</isBad>
@@ -12,8 +12,8 @@
 
   <HediffDef>
     <defName>EE_Bradycardia</defName>
-    <label>心动过缓</label>
-    <description>心搏频率异常减慢（低于 45 BPM）。常见于吗啡过量镇静、极重度失血休克终末期、严重低温症或心脏功能衰竭等病理情况。</description>
+    <label>Bradycardia</label>
+    <description>Abnormally slow heart rate (below 45 BPM). Commonly observed in morphine sedation, terminal hemorrhagic shock, hypothermia, or heart failure.</description>
     <hediffClass>Hediff</hediffClass>
     <defaultLabelColor>(0.5, 0.7, 0.9)</defaultLabelColor>
     <isBad>false</isBad>
@@ -21,8 +21,8 @@
 
   <HediffDef>
     <defName>EE_Arrhythmia</defName>
-    <label>心律不齐</label>
-    <description>心搏节律出现不规则扰动。常由重度酸中毒、电解质紊乱、中枢缺氧或肾上腺素/吗啡过量所引发的心肌传导异常引起。</description>
+    <label>Arrhythmia</label>
+    <description>Irregular heart rhythm. Often caused by cardiac conduction abnormalities due to severe acidosis, electrolyte imbalance, hypoxia, or drug overload.</description>
     <hediffClass>Hediff</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <isBad>true</isBad>

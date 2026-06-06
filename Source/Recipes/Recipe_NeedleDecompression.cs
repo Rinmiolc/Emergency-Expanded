@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using RimWorld;
 using Verse;
 
@@ -64,7 +64,7 @@ namespace EmergencyExpanded
 
                 if (pawn.Spawned && pawn.Map != null)
                 {
-                    MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "已减压 (胸腔穿刺)", UnityEngine.Color.green);
+                    MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "EE_MoteNeedleDecompressionSuccess".Translate(), UnityEngine.Color.green);
                 }
             }
         }

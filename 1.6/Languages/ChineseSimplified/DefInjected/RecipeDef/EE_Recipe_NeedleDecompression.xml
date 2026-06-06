@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_NeedleDecompression.description>将针头插入胸膜腔以释放积聚的气体，缓解张力性气胸。需要医药。</EE_Recipe_NeedleDecompression.description>
+  <EE_Recipe_NeedleDecompression.jobString>正在进行胸腔穿刺减压...</EE_Recipe_NeedleDecompression.jobString>
+  <EE_Recipe_NeedleDecompression.label>执行胸腔穿刺减压术</EE_Recipe_NeedleDecompression.label>
+</LanguageData>

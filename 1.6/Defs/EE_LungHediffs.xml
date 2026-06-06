@@ -3,8 +3,8 @@
 
   <HediffDef>
     <defName>EE_Pneumothorax</defName>
-    <label>气胸</label>
-    <description>空气进入胸膜腔，导致肺部部分或完全萎缩。这会严重影响呼吸并引起剧痛。如果发展为张力性气胸，且不立即进行胸腔穿刺减压，将会致命。</description>
+    <label>Pneumothorax</label>
+    <description>Air entering the pleural cavity, causing partial or complete lung collapse. Severely impairs breathing and causes acute pain. If it develops into a tension pneumothorax and is not decompressed immediately, it will be fatal.</description>
     <hediffClass>EmergencyExpanded.Hediff_Pneumothorax</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <isBad>true</isBad>
@@ -17,13 +17,13 @@
     </comps>
     <stages>
       <li>
-        <label>轻度</label>
+        <label>Minor</label>
         <minSeverity>0.0</minSeverity>
         <partEfficiencyOffset>-0.2</partEfficiencyOffset>
         <painOffset>0.1</painOffset>
       </li>
       <li>
-        <label>中度</label>
+        <label>Moderate</label>
         <minSeverity>0.2</minSeverity>
         <partEfficiencyOffset>-0.5</partEfficiencyOffset>
         <painOffset>0.25</painOffset>
@@ -35,7 +35,7 @@
         </capMods>
       </li>
       <li>
-        <label>张力性气胸</label>
+        <label>Tension pneumothorax</label>
         <minSeverity>0.6</minSeverity>
         <partEfficiencyOffset>-0.9</partEfficiencyOffset>
         <painOffset>0.5</painOffset>
@@ -52,7 +52,7 @@
         </capMods>
       </li>
       <li>
-        <label>肺萎缩</label>
+        <label>Lung collapse</label>
         <minSeverity>1.0</minSeverity>
         <partEfficiencyOffset>-1.0</partEfficiencyOffset>
         <painOffset>0.6</painOffset>

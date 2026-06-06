@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 using UnityEngine;
 
@@ -16,7 +16,7 @@ namespace EmergencyExpanded
             {
                 if (isDecompressed)
                 {
-                    return "已减压".Translate();
+                    return "EE_PneumothoraxDecompressedTag".Translate();
                 }
                 return base.LabelInBrackets;
             }

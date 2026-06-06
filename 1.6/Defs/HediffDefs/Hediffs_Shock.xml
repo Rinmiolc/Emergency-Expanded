@@ -3,9 +3,9 @@
 
   <HediffDef>
     <defName>EE_Shock</defName>
-    <label>休克</label>
-    <labelNoun>休克</labelNoun>
-    <description>全身有效循环血量锐减导致微循环灌流严重不足的综合征。这并非一种独立的疾病，而是失血、败血症、大面积烧伤等致命创伤发展到晚期的共同致命路径。处于休克状态时，身体的核心器官将无法获得足够的氧气，如果不及时逆转，将导致多器官衰竭并致死。</description>
+    <label>Shock</label>
+    <labelNoun>shock</labelNoun>
+    <description>A syndrome caused by severe drop in effective circulatory volume leading to microcirculatory hypoperfusion. Not an independent disease, but a common pathway for severe trauma, blood loss, sepsis, and burns. Impairs vital organ oxygenation, causing MODS and death if unresolved.</description>
     <hediffClass>EmergencyExpanded.Hediff_Shock</hediffClass>
     <defaultLabelColor>(0.9, 0.4, 0.4)</defaultLabelColor>
     <comps>
@@ -13,7 +13,7 @@
     </comps>
     <stages>
       <li>
-        <label>代偿期</label>
+        <label>Compensated stage</label>
         <minSeverity>0.0</minSeverity>
         <capMods>
           <li>
@@ -27,7 +27,7 @@
         </capMods>
       </li>
       <li>
-        <label>失代偿期</label>
+        <label>Decompensated stage</label>
         <minSeverity>0.4</minSeverity>
         <capMods>
           <li>
@@ -45,7 +45,7 @@
         </capMods>
       </li>
       <li>
-        <label>不可逆期</label>
+        <label>Irreversible stage</label>
         <minSeverity>0.7</minSeverity>
         <lifeThreatening>true</lifeThreatening>
         <capMods>

@@ -4,8 +4,8 @@
   <!-- 生理盐水 (Saline/Antiseptic Irrigation) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_Saline</defName>
-    <label>生理盐水</label>
-    <description>用于在包扎前彻底冲洗伤口，冲走异物和脏污。配合普通包扎可以大幅度降低伤口的初始污染度，从而避免局部感染和坏死。由于不是正式药品，只能用于急救，不能用于手术。</description>
+    <label>Saline solution</label>
+    <description>Used to irrigate wounds before bandaging, washing away dirt and foreign objects. Significantly reduces wound contamination to prevent infection. Not a formal medicine; only for first aid.</description>
     <graphicData>
       <texPath>Things/SalineBag</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -27,8 +27,8 @@
   <!-- 广谱抗生素 (IV Broad-Spectrum Antibiotics) -->
   <ThingDef ParentName="ResourceBase">
     <defName>EE_BroadAntibiotics</defName>
-    <label>广谱抗生素</label>
-    <description>强效的静脉注射级广谱抗生素。专门用于对抗已经爆发的严重化脓、败血症以及其他致命感染。不可用于预防，只在治疗发作期感染时有奇效。</description>
+    <label>Broad-spectrum antibiotics</label>
+    <description>A powerful intravenous broad-spectrum antibiotic. Specifically used to treat active severe suppuration, sepsis, and other fatal infections. Not for prevention; highly effective during active infection stages.</description>
     <graphicData>
       <texPath>Things/Item/Resource/Medicine/MedicineIndustrial</texPath>
       <graphicClass>Graphic_StackCount</graphicClass>
@@ -53,8 +53,8 @@
       <chairSearchRadius>0</chairSearchRadius>
       <ingestSound>Ingest_Pill</ingestSound>
       <ingestHoldUsesTable>false</ingestHoldUsesTable>
-      <ingestCommandString>静脉注射 {0}</ingestCommandString>
-      <ingestReportString>正在注射 {0}。</ingestReportString>
+      <ingestCommandString>Inject IV {0}</ingestCommandString>
+      <ingestReportString>Injecting IV {0}.</ingestReportString>
       <outcomeDoers>
         <li Class="IngestionOutcomeDoer_GiveHediff">
           <hediffDef>EE_BroadAntibioticsHigh</hediffDef>
@@ -66,9 +66,9 @@
 
   <RecipeDef>
     <defName>Make_EE_Saline</defName>
-    <label>制作生理盐水</label>
-    <description>使用清水和少许草药提取物制作简单的冲洗液。</description>
-    <jobString>制作生理盐水中。</jobString>
+    <label>Make saline solution</label>
+    <description>Craft simple irrigation solution from water and herbal extracts.</description>
+    <jobString>Making saline solution.</jobString>
     <workAmount>300</workAmount>
     <ingredients>
       <li>
@@ -96,9 +96,9 @@
 
   <RecipeDef>
     <defName>Make_EE_BroadAntibiotics</defName>
-    <label>制作广谱抗生素</label>
-    <description>通过工业级的制药台提纯中性胺合成强效广谱抗生素。</description>
-    <jobString>制作静脉抗生素中。</jobString>
+    <label>Make broad-spectrum antibiotics</label>
+    <description>Synthesize potent broad-spectrum antibiotics from neutroamine at a drug lab.</description>
+    <jobString>Making broad-spectrum antibiotics.</jobString>
     <workAmount>1200</workAmount>
     <ingredients>
       <li>

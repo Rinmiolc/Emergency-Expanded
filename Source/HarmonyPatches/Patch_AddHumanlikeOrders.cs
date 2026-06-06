@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -47,7 +47,7 @@ namespace EmergencyExpanded
                 {
                     if (t != null && t.def != null && t.def.category == ThingCategory.Item && t.def.defName.StartsWith("EE_"))
                     {
-                        string optionLabel = $"拾取 {t.LabelShort} 到背包";
+                        string optionLabel = "EE_OrderPickupToInventory".Translate(t.LabelShort);
                         Action action = () =>
                         {
                             Job job = JobMaker.MakeJob(JobDefOf.TakeInventory, t);
@@ -94,7 +94,7 @@ namespace EmergencyExpanded
 
             if (needsCpr)
             {
-                string cprLabel = $"为 {targetPawn.LabelShort} 进行心肺复苏 (CPR)";
+                string cprLabel = "EE_OrderPerformCPR".Translate(targetPawn.LabelShort);
                 Action cprAction = () =>
                 {
                     if (EE_DefOf.EE_PerformCPR != null)
@@ -133,15 +133,15 @@ namespace EmergencyExpanded
                 if (type == EmergencyItemType.Tourniquet || 
                     ((type == EmergencyItemType.FirstAidKit || type == EmergencyItemType.Medicine) && isBleeding))
                 {
-                    optionLabel = $"为 {targetPawn.LabelShort} 紧急止血 (剩余: {totalCount})";
+                    optionLabel = "EE_OrderEmergencyHemostasis".Translate(targetPawn.LabelShort, totalCount);
                 }
                 else if (type == EmergencyItemType.Defibrillator)
                 {
-                    optionLabel = $"使用除颤仪为 {targetPawn.LabelShort} 除颤 (剩余: {totalCount})";
+                    optionLabel = "EE_OrderPerformDefibrillation".Translate(targetPawn.LabelShort, totalCount);
                 }
                 else
                 {
-                    optionLabel = $"对 {targetPawn.LabelShort} 使用 {itemDef.LabelCap} (剩余: {totalCount})";
+                    optionLabel = "EE_OrderUseItemOn".Translate(targetPawn.LabelShort, itemDef.LabelCap, totalCount);
                 }
                 
                 Action action = () =>

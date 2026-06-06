@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <Coagulopathy.description>由于严重创伤、失血、失温以及酸中毒引发的致命三联征之一。凝血酶活性被严重抑制，伤口将极难自然愈合，且失血速度显著加快。</Coagulopathy.description>
+  <Coagulopathy.label>凝血功能障碍</Coagulopathy.label>
+  <Coagulopathy.stages.0.label>轻度</Coagulopathy.stages.0.label>
+  <Coagulopathy.stages.1.label>中度</Coagulopathy.stages.1.label>
+  <Coagulopathy.stages.2.label>重度</Coagulopathy.stages.2.label>
+</LanguageData>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Sepsis.description>病原体侵入血液循环系统引起的全身性严重感染。会极大地破坏免疫系统，并直接诱发全身炎症反应综合征(SIRS)，从而导致多器官衰竭甚至死亡。</EE_Sepsis.description>
+  <EE_Sepsis.label>败血症</EE_Sepsis.label>
+  <EE_Sepsis.stages.0.label>初期</EE_Sepsis.stages.0.label>
+  <EE_Sepsis.stages.1.label>严重</EE_Sepsis.stages.1.label>
+  <EE_Sepsis.stages.2.label>休克前期</EE_Sepsis.stages.2.label>
+</LanguageData>

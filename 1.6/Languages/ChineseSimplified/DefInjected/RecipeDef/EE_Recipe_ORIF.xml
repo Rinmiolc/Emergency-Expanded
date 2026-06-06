@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_ORIF.description>通过外科手术切开软组织，将接骨钢板或钛合金螺钉直接打入碎骨进行刚性内固定。能对最严重的开放性或粉碎性骨折实现完美复位。术后无需卧床且骨折将以极快速度康复，不留任何后遗症。</EE_Recipe_ORIF.description>
+  <EE_Recipe_ORIF.jobString>正在进行切开复位内固定术。</EE_Recipe_ORIF.jobString>
+  <EE_Recipe_ORIF.label>切开复位内固定术</EE_Recipe_ORIF.label>
+</LanguageData>

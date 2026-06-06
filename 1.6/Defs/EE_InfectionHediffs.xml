@@ -4,8 +4,8 @@
   <!-- 坏死 (Necrosis) -->
   <HediffDef ParentName="DiseaseBase">
     <defName>EE_Necrosis</defName>
-    <label>坏死</label>
-    <description>伤口组织因严重感染或缺血而死亡。坏死的组织不仅失去功能，还会不断释放毒素。必须通过外科清创手术彻底切除，否则患肢将逐渐坏死并威胁生命。</description>
+    <label>Necrosis</label>
+    <description>Death of wound tissue due to severe infection or ischemia. Necrotic tissue loses function and releases toxins. Must be surgically removed via debridement, otherwise the limb will decay and threaten life.</description>
     <tendable>false</tendable>
     <maxSeverity>1.0</maxSeverity>
     <comps>
@@ -15,18 +15,18 @@
     </comps>
     <stages>
       <li>
-        <label>初期</label>
+        <label>Initial</label>
         <partEfficiencyOffset>-0.3</partEfficiencyOffset>
         <painOffset>0.3</painOffset>
       </li>
       <li>
-        <label>扩散</label>
+        <label>Spreading</label>
         <minSeverity>0.4</minSeverity>
         <partEfficiencyOffset>-0.6</partEfficiencyOffset>
         <painOffset>0.5</painOffset>
       </li>
       <li>
-        <label>完全坏死</label>
+        <label>Complete necrosis</label>
         <minSeverity>0.8</minSeverity>
         <partEfficiencyOffset>-1.0</partEfficiencyOffset>
         <painOffset>0.8</painOffset>
@@ -38,8 +38,8 @@
   <!-- 败血症 (Sepsis) -->
   <HediffDef ParentName="InfectionBase">
     <defName>EE_Sepsis</defName>
-    <label>败血症</label>
-    <description>病原体侵入血液循环系统引起的全身性严重感染。会极大地破坏免疫系统，并直接诱发全身炎症反应综合征(SIRS)，从而导致多器官衰竭甚至死亡。</description>
+    <label>Sepsis</label>
+    <description>A severe systemic infection caused by pathogens entering the bloodstream. Severely damages the immune system and triggers Systemic Inflammatory Response Syndrome (SIRS), leading to MODS and death.</description>
     <makesSickThought>true</makesSickThought>
     <maxSeverity>1.0</maxSeverity>
     <tendable>false</tendable>
@@ -53,14 +53,14 @@
     </comps>
     <stages>
       <li>
-        <label>初期</label>
+        <label>Initial</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.9</setMax></li>
           <li><capacity>BloodFiltration</capacity><offset>-0.2</offset></li>
         </capMods>
       </li>
       <li>
-        <label>严重</label>
+        <label>Severe</label>
         <minSeverity>0.5</minSeverity>
         <vomitMtbDays>1.5</vomitMtbDays>
         <capMods>
@@ -69,7 +69,7 @@
         </capMods>
       </li>
       <li>
-        <label>休克前期</label>
+        <label>Pre-shock</label>
         <minSeverity>0.8</minSeverity>
         <vomitMtbDays>0.5</vomitMtbDays>
         <lifeThreatening>true</lifeThreatening>
@@ -84,8 +84,8 @@
   <!-- 抗生素药效 (Antibiotics Effect) -->
   <HediffDef>
     <defName>EE_BroadAntibioticsHigh</defName>
-    <label>广谱抗生素</label>
-    <description>血液中含有高浓度的强效广谱抗生素成分。正在主动强力杀灭体内的有害细菌，能显著抑制和治愈发作期感染，同时大幅增强肾脏的血液过滤效率。</description>
+    <label>Broad-spectrum antibiotics</label>
+    <description>High concentration of broad-spectrum antibiotics in the bloodstream. Actively fights bacteria, suppressing infections and boosting kidney blood filtration.</description>
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(0.5, 0.8, 0.9)</defaultLabelColor>
     <isBad>false</isBad>

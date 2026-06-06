@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_AdrenalineSyringe.description>一支装有高浓度肾上腺素的战地用自动注射器。使用速度极快，注射后能瞬间赋予使用者“极限突破”级别的体能爆发、强心以及痛觉屏蔽效果。它还能强行驱散先前的肾上腺素后遗症状态。由于属于强效应激激素，效果消退后也会迎来强烈的虚弱与疲劳期。连续注射会导致严重的儿茶酚胺风暴与高血压危象，有猝死风险。</EE_AdrenalineSyringe.description>
+  <EE_AdrenalineSyringe.ingestible.ingestCommandString>注射 {0}</EE_AdrenalineSyringe.ingestible.ingestCommandString>
+  <EE_AdrenalineSyringe.ingestible.ingestReportString>正在注射 {0}。</EE_AdrenalineSyringe.ingestible.ingestReportString>
+  <EE_AdrenalineSyringe.label>肾上腺素注射器</EE_AdrenalineSyringe.label>
+</LanguageData>

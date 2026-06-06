@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_Osteotomy.description>使用外科手术刀与骨锯，强行打断小人因先前处理不当而畸形愈合的错位骨骼，清除多余骨痂，使其重新回到开放性骨折状态，以便重新进行正确复位与固定。</EE_Recipe_Osteotomy.description>
+  <EE_Recipe_Osteotomy.jobString>正在执行畸形接骨重折术。</EE_Recipe_Osteotomy.jobString>
+  <EE_Recipe_Osteotomy.label>畸形接骨重折术</EE_Recipe_Osteotomy.label>
+</LanguageData>

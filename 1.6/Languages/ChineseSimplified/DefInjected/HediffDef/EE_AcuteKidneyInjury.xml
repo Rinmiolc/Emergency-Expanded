@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_AcuteKidneyInjury.description>因肾血流灌注不足引发的急性肾损伤（AKI）。导致机体血液过滤与排酸能力大幅下降。</EE_AcuteKidneyInjury.description>
+  <EE_AcuteKidneyInjury.label>急性肾损伤</EE_AcuteKidneyInjury.label>
+  <EE_AcuteKidneyInjury.labelNoun>急性肾损伤</EE_AcuteKidneyInjury.labelNoun>
+  <EE_AcuteKidneyInjury.stages.0.label>隐性</EE_AcuteKidneyInjury.stages.0.label>
+  <EE_AcuteKidneyInjury.stages.1.label>轻度</EE_AcuteKidneyInjury.stages.1.label>
+  <EE_AcuteKidneyInjury.stages.2.label>重度</EE_AcuteKidneyInjury.stages.2.label>
+  <EE_AcuteKidneyInjury.stages.3.label>极危</EE_AcuteKidneyInjury.stages.3.label>
+</LanguageData>

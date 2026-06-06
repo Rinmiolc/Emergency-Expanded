@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <WoundInfection.description>伤口处细菌增殖引发的局部炎症与化脓。会导致该部位剧烈疼痛和功能下降。如果不及时用抗生素控制，可能会恶化为坏死或诱发全身性败血症。</WoundInfection.description>
+  <WoundInfection.stages.0.label>轻度</WoundInfection.stages.0.label>
+  <WoundInfection.stages.1.label>中度</WoundInfection.stages.1.label>
+  <WoundInfection.stages.2.label>严重(化脓)</WoundInfection.stages.2.label>
+  <WoundInfection.stages.3.label>极限</WoundInfection.stages.3.label>
+</LanguageData>

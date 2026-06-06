@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <MultipleOrganFailure.description>长时间极低灌注与微循环崩溃导致的不可逆多脏器实质性缺血坏死。如果不迅速扭转循环状态，身体各器官将逐一停工直至死亡。</MultipleOrganFailure.description>
+  <MultipleOrganFailure.label>多器官功能衰竭</MultipleOrganFailure.label>
+  <MultipleOrganFailure.stages.0.label>一期</MultipleOrganFailure.stages.0.label>
+  <MultipleOrganFailure.stages.1.label>二期</MultipleOrganFailure.stages.1.label>
+  <MultipleOrganFailure.stages.2.label>终末期</MultipleOrganFailure.stages.2.label>
+</LanguageData>

@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using Verse;
 using UnityEngine;
 using System.Linq;
@@ -148,7 +148,7 @@ namespace EmergencyExpanded
                         // 飘字警示与播放骨折音效
                         if (pawn.Spawned && pawn.Map != null)
                         {
-                            MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, isOpen ? "开放性骨折!" : "闭合性骨折!", Color.red);
+                            MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, isOpen ? "EE_MoteOpenFracture".Translate() : "EE_MoteClosedFracture".Translate(), Color.red);
 
                             if (EE_DefOf.EE_BoneCrunch != null)
                             {

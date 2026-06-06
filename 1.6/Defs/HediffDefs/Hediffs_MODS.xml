@@ -4,32 +4,32 @@
   <!-- ======================== 心脏 (Heart) ======================== -->
   <HediffDef>
     <defName>EE_MyocardialIschemia</defName>
-    <label>心肌缺血</label>
-    <labelNoun>心肌缺血</labelNoun>
-    <description>由于血流不足导致的心肌急性缺血。如果未能缓解，最终将演变为心力衰竭，其过程甚至可能直接诱发心肌梗死。</description>
+    <label>Myocardial ischemia</label>
+    <labelNoun>myocardial ischemia</labelNoun>
+    <description>Acute ischemia of cardiac muscles due to insufficient perfusion. If unresolved, it progresses to heart failure or triggers sudden myocardial infarction.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
       <li>
-        <label>隐性</label>
+        <label>Silent</label>
         <becomeVisible>false</becomeVisible>
       </li>
       <li>
         <minSeverity>0.2</minSeverity>
-        <label>轻度</label>
+        <label>Mild</label>
         <partEfficiencyOffset>-0.15</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度</label>
+        <label>Severe</label>
         <partEfficiencyOffset>-0.35</partEfficiencyOffset>
         <painOffset>0.15</painOffset>
       </li>
       <li>
         <minSeverity>0.8</minSeverity>
-        <label>极危</label>
+        <label>Critical</label>
         <partEfficiencyOffset>-0.60</partEfficiencyOffset>
         <painOffset>0.25</painOffset>
       </li>
@@ -38,9 +38,9 @@
 
   <HediffDef>
     <defName>EE_HeartFailure</defName>
-    <label>心力衰竭</label>
-    <labelNoun>心力衰竭</labelNoun>
-    <description>不可逆的心肌衰竭。心脏极其微弱的泵血能力已无法维持正常的全身血液循环。唯有进行器官移植手术才能挽救。</description>
+    <label>Heart failure</label>
+    <labelNoun>heart failure</labelNoun>
+    <description>Irreversible cardiac muscle failure. The heart's extremely weak pumping capacity is unable to maintain circulation. Can only be resolved by organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
@@ -60,31 +60,31 @@
   <!-- ======================== 肺部 (Lungs) ======================== -->
   <HediffDef>
     <defName>EE_AcuteRespiratoryDistress</defName>
-    <label>急性呼吸窘迫</label>
+    <label>Acute respiratory distress</label>
     <labelNoun>ARDS</labelNoun>
-    <description>急性呼吸窘迫综合征（ARDS）。肺泡内充满液体，严重降低氧气交换效率与肺部顺应性（有极高概率自发气胸）。</description>
+    <description>Acute Respiratory Distress Syndrome (ARDS). Alveoli fill with fluid, severely degrading oxygen exchange and lung compliance, with a high chance of spontaneous pneumothorax.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
       <li>
-        <label>隐性</label>
+        <label>Silent</label>
         <becomeVisible>false</becomeVisible>
       </li>
       <li>
         <minSeverity>0.2</minSeverity>
-        <label>轻度</label>
+        <label>Mild</label>
         <partEfficiencyOffset>-0.15</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度</label>
+        <label>Severe</label>
         <partEfficiencyOffset>-0.40</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.8</minSeverity>
-        <label>极危</label>
+        <label>Critical</label>
         <partEfficiencyOffset>-0.65</partEfficiencyOffset>
       </li>
     </stages>
@@ -92,9 +92,9 @@
 
   <HediffDef>
     <defName>EE_RespiratoryFailure</defName>
-    <label>呼吸衰竭</label>
-    <labelNoun>呼吸衰竭</labelNoun>
-    <description>不可逆的呼吸衰竭。肺部已严重纤维化并彻底丧失氧气交换功能。唯有进行器官移植手术才能挽救。</description>
+    <label>Respiratory failure</label>
+    <labelNoun>respiratory failure</labelNoun>
+    <description>Irreversible respiratory failure. Lungs are severely fibrosed and completely unable to exchange gases. Can only be resolved by organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
@@ -114,31 +114,31 @@
   <!-- ======================== 肝脏 (Liver) ======================== -->
   <HediffDef>
     <defName>EE_AcuteLiverInjury</defName>
-    <label>急性肝损伤</label>
-    <labelNoun>急性肝损伤</labelNoun>
-    <description>急性缺血性肝脏损伤（休克肝）。严重影响血液过滤与新陈代谢机能，并损害凝血因子的合成。</description>
+    <label>Acute liver injury</label>
+    <labelNoun>acute liver injury</labelNoun>
+    <description>Acute ischemic liver damage (shock liver). Impairs filtration, metabolic functions, and coagulation factor synthesis.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
       <li>
-        <label>隐性</label>
+        <label>Silent</label>
         <becomeVisible>false</becomeVisible>
       </li>
       <li>
         <minSeverity>0.2</minSeverity>
-        <label>轻度</label>
+        <label>Mild</label>
         <partEfficiencyOffset>-0.20</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度</label>
+        <label>Severe</label>
         <partEfficiencyOffset>-0.45</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.8</minSeverity>
-        <label>极危</label>
+        <label>Critical</label>
         <partEfficiencyOffset>-0.70</partEfficiencyOffset>
       </li>
     </stages>
@@ -146,9 +146,9 @@
 
   <HediffDef>
     <defName>EE_LiverFailure</defName>
-    <label>肝衰竭</label>
-    <labelNoun>肝衰竭</labelNoun>
-    <description>不可逆的肝脏衰竭。肝脏完全丧失合成凝血因子与过滤毒素的能力，全身伤口将极难止血。唯有进行器官移植手术才能挽救。</description>
+    <label>Liver failure</label>
+    <labelNoun>liver failure</labelNoun>
+    <description>Irreversible liver failure. Completely loses the ability to synthesize clotting factors and filter toxins, making wounds extremely hard to clot. Requires organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
@@ -162,31 +162,31 @@
   <!-- ======================== 肾脏 (Kidneys) ======================== -->
   <HediffDef>
     <defName>EE_AcuteKidneyInjury</defName>
-    <label>急性肾损伤</label>
-    <labelNoun>急性肾损伤</labelNoun>
-    <description>因肾血流灌注不足引发的急性肾损伤（AKI）。导致机体血液过滤与排酸能力大幅下降。</description>
+    <label>Acute kidney injury</label>
+    <labelNoun>acute kidney injury</labelNoun>
+    <description>Acute Kidney Injury (AKI) caused by renal hypoperfusion. Severely reduces blood filtration and acid excretion.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
       <li>
-        <label>隐性</label>
+        <label>Silent</label>
         <becomeVisible>false</becomeVisible>
       </li>
       <li>
         <minSeverity>0.2</minSeverity>
-        <label>轻度</label>
+        <label>Mild</label>
         <partEfficiencyOffset>-0.25</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度</label>
+        <label>Severe</label>
         <partEfficiencyOffset>-0.55</partEfficiencyOffset>
       </li>
       <li>
         <minSeverity>0.8</minSeverity>
-        <label>极危</label>
+        <label>Critical</label>
         <partEfficiencyOffset>-0.80</partEfficiencyOffset>
       </li>
     </stages>
@@ -194,9 +194,9 @@
 
   <HediffDef>
     <defName>EE_KidneyFailure</defName>
-    <label>肾衰竭</label>
-    <labelNoun>肾衰竭</labelNoun>
-    <description>不可逆的肾脏衰竭。肾脏完全丧失排泄过滤机能，导致代谢性酸中毒与血液毒素极度失控。唯有进行器官移植手术才能挽救。</description>
+    <label>Kidney failure</label>
+    <labelNoun>kidney failure</labelNoun>
+    <description>Irreversible kidney failure. Completely loses excretion and filtration capacities, causing uncontrolled acidosis and toxic buildup. Requires organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>

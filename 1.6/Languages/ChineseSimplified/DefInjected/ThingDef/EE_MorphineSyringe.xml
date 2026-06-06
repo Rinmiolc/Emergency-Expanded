@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_MorphineSyringe.description>一支装有高浓度吗啡的战地用自动注射器。使用速度极快，注射后能屏蔽小人 85% 以上的剧痛，强行唤醒因剧痛而昏迷休克的重伤员，并减缓心肌梗死（30%）、休克与全身炎症（40%）的恶化速度。同时，吗啡能安抚并深度镇静伤员，使其在进行正骨或石膏包扎手术时对齐质量提高 15%。副作用是导致轻度嗜睡与活动缓慢。连续过量注射会导致严重的呼吸抑制、深度昏迷甚至呼吸骤停。</EE_MorphineSyringe.description>
+  <EE_MorphineSyringe.ingestible.ingestCommandString>注射 {0}</EE_MorphineSyringe.ingestible.ingestCommandString>
+  <EE_MorphineSyringe.ingestible.ingestReportString>正在注射 {0}。</EE_MorphineSyringe.ingestible.ingestReportString>
+  <EE_MorphineSyringe.label>医用吗啡注射器</EE_MorphineSyringe.label>
+</LanguageData>

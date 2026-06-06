@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <AdrenalineBoost.description>小人在受到物理创伤、致命危机刺激或注射针剂时分泌的强力肾上腺素。能显著增强移动、操作和维生器官能力，并极大屏蔽痛觉防止休克。若连续注射过量，会导致严重的交感过载与儿茶酚胺风暴，诱发致命心梗与酸中毒。</AdrenalineBoost.description>
+  <AdrenalineBoost.label>肾上腺素增强</AdrenalineBoost.label>
+  <AdrenalineBoost.stages.0.label>渐弱消退</AdrenalineBoost.stages.0.label>
+  <AdrenalineBoost.stages.1.label>应激爆发</AdrenalineBoost.stages.1.label>
+  <AdrenalineBoost.stages.2.label>强心激发</AdrenalineBoost.stages.2.label>
+  <AdrenalineBoost.stages.3.label>极限突破</AdrenalineBoost.stages.3.label>
+  <AdrenalineBoost.stages.4.label>交感过载 - 药物过量</AdrenalineBoost.stages.4.label>
+  <AdrenalineBoost.stages.5.label>儿茶酚胺风暴 - 致命过量</AdrenalineBoost.stages.5.label>
+</LanguageData>

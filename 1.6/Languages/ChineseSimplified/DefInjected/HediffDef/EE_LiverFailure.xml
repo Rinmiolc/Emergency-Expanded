@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_LiverFailure.description>不可逆的肝脏衰竭。肝脏完全丧失合成凝血因子与过滤毒素的能力，全身伤口将极难止血。唯有进行器官移植手术才能挽救。</EE_LiverFailure.description>
+  <EE_LiverFailure.label>肝衰竭</EE_LiverFailure.label>
+  <EE_LiverFailure.labelNoun>肝衰竭</EE_LiverFailure.labelNoun>
+</LanguageData>

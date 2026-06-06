@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <CerebralHypoxia.description>大脑供血或供氧不足导致的急性神经系统损伤。随着缺氧加剧，意识会逐渐丧失，并伴随不可逆的脑部器质性损伤。如果达到极限，将导致彻底的脑死亡。</CerebralHypoxia.description>
+  <CerebralHypoxia.label>脑缺氧</CerebralHypoxia.label>
+  <CerebralHypoxia.stages.0.label>轻度 - 意识丧失并倒地</CerebralHypoxia.stages.0.label>
+  <CerebralHypoxia.stages.1.label>中度 - 神经紊乱昏迷</CerebralHypoxia.stages.1.label>
+  <CerebralHypoxia.stages.2.label>重度 - 深度昏迷</CerebralHypoxia.stages.2.label>
+  <CerebralHypoxia.stages.3.label>极重度 - 濒临脑死亡</CerebralHypoxia.stages.3.label>
+</LanguageData>

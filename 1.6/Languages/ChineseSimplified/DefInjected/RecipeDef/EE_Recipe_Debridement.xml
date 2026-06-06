@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Recipe_Debridement.description>在无菌病床上通过外科手术切开患处，彻底清除坏死组织、肌肉碎片和深层脏污。可瞬间将伤口污染度清零，并移除坏死状态。代价是该伤口会受到少许额外切割伤害。</EE_Recipe_Debridement.description>
+  <EE_Recipe_Debridement.jobString>正在进行清创术。</EE_Recipe_Debridement.jobString>
+  <EE_Recipe_Debridement.label>清创术</EE_Recipe_Debridement.label>
+</LanguageData>

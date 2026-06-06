@@ -3,14 +3,14 @@
   <JobDef>
     <defName>EE_ApplyFirstAid</defName>
     <driverClass>EmergencyExpanded.JobDriver_ApplyFirstAid</driverClass>
-    <reportString>正在对 {0} 进行紧急处理。</reportString>
+    <reportString>Tending to {0}.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
 
   <JobDef>
     <defName>EE_PerformCPR</defName>
     <driverClass>EmergencyExpanded.JobDriver_PerformCPR</driverClass>
-    <reportString>正在对 {0} 进行心肺复苏。</reportString>
+    <reportString>Performing CPR on {0}.</reportString>
     <casualInterruptible>false</casualInterruptible>
   </JobDef>
 </Defs>

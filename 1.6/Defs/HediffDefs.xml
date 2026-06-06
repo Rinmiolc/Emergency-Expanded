@@ -3,9 +3,9 @@
 
   <HediffDef ParentName="InjuryBase">
     <defName>TissueHypoxia</defName>
-    <label>组织缺氧</label>
-    <labelNoun>缺氧组织</labelNoun>
-    <description>由于严重缺氧和代谢性酸中毒导致的局部组织损伤。像冻伤一样，它会持续破坏组织扣减血量，如果不及早恢复血液循环，会导致部位永久脱落。</description>
+    <label>Tissue hypoxia</label>
+    <labelNoun>hypoxic tissue</labelNoun>
+    <description>Local tissue damage from severe hypoxia and metabolic acidosis. Similar to frostbite, it continuously degrades health; without restored perfusion, the part will necrotize and slough off.</description>
     <hediffClass>EmergencyExpanded.Hediff_TissueHypoxia</hediffClass>
     <initialSeverity>3.0</initialSeverity> 
     <tendable>false</tendable>
@@ -14,15 +14,15 @@
       <painPerSeverity>0.015</painPerSeverity>
       <averagePainPerSeverityPermanent>0.005</averagePainPerSeverityPermanent>
       <canMerge>true</canMerge> 
-      <destroyedLabel>组织坏死</destroyedLabel>
-      <destroyedOutLabel>组织坏死</destroyedOutLabel>
+      <destroyedLabel>tissue necrosis</destroyedLabel>
+      <destroyedOutLabel>tissue necrosis</destroyedOutLabel>
     </injuryProps>
   </HediffDef>
 
   <HediffDef>
     <defName>MetabolicAcidosis</defName>
-    <label>代谢性酸中毒</label>
-    <description>因组织灌注不足导致的酸碱平衡崩盘。系统一旦崩溃，酸中毒将持续恶化啃食机体。发展到晚期时，会引发不可逆的多脏器缺血衰竭并导致死亡。</description>
+    <label>Metabolic acidosis</label>
+    <description>Systemic pH breakdown caused by severe tissue hypoperfusion. Once established, acidosis progressively damages the body, ultimately inducing irreversible multiple organ dysfunction syndrome (MODS) and death.</description>
     <hediffClass>EmergencyExpanded.Hediff_MetabolicAcidosis</hediffClass>
     <defaultLabelColor>(0.8, 0.8, 0.3)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity> 
@@ -39,7 +39,7 @@
     </comps>
     <stages>
       <li>
-        <label>轻度</label>
+        <label>Mild</label>
         <capMods>
           <li><capacity>Breathing</capacity><offset>-0.2</offset></li>
           <li><capacity>BloodPumping</capacity><offset>-0.2</offset></li> 
@@ -47,7 +47,7 @@
       </li>
       <li>
         <minSeverity>0.2</minSeverity>
-        <label>中度</label>
+        <label>Moderate</label>
         <painOffset>0.1</painOffset>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.2</offset></li>
@@ -56,7 +56,7 @@
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度</label>
+        <label>Severe</label>
         <lifeThreatening>true</lifeThreatening>
         <painOffset>0.25</painOffset>
         <capMods>
@@ -75,7 +75,7 @@
       </li>
       <li>
         <minSeverity>0.95</minSeverity>
-        <label>极重度 - 崩溃边缘</label> 
+        <label>Extreme - Near collapse</label> 
         <lifeThreatening>true</lifeThreatening>
         <painOffset>0.40</painOffset>
         <capMods>
@@ -97,15 +97,15 @@
 
   <HediffDef>
     <defName>EE_MyocardialInfarction</defName>
-    <label>心肌梗死</label>
-    <description>由于冠状动脉急性阻塞导致心肌大面积缺血缺氧坏死。会引发毁灭性的泵血与循环功能衰竭，如不及时除颤与抢救，将导致全身多脏器缺氧衰竭而死亡。</description>
+    <label>Myocardial infarction</label>
+    <description>Acute coronary artery occlusion leading to myocardial necrosis. Causes catastrophic pumping and circulatory failure. If not treated with defibrillation/rescue, it triggers systemic hypoxia and death.</description>
     <hediffClass>EmergencyExpanded.Hediff_MyocardialInfarction</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <initialSeverity>0.01</initialSeverity>
     <tendable>false</tendable>
     <stages>
       <li>
-        <label>室颤</label>
+        <label>Ventricular fibrillation</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>BloodPumping</capacity><setMax>0.10</setMax></li> 
@@ -114,7 +114,7 @@
       </li>
       <li>
         <minSeverity>0.60</minSeverity>
-        <label>心跳骤停</label>
+        <label>Cardiac arrest</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>BloodPumping</capacity><setMax>0.01</setMax></li> 
@@ -127,8 +127,8 @@
 
   <HediffDef>
     <defName>CerebralHypoxia</defName>
-    <label>脑缺氧</label>
-    <description>大脑供血或供氧不足导致的急性神经系统损伤。随着缺氧加剧，意识会逐渐丧失，并伴随不可逆的脑部器质性损伤。如果达到极限，将导致彻底的脑死亡。</description>
+    <label>Cerebral hypoxia</label>
+    <description>Acute neurological damage caused by insufficient blood or oxygen supply to the brain. Consciousness decreases as hypoxia worsens, accompanied by irreversible brain damage, culminating in brain death.</description>
     <hediffClass>EmergencyExpanded.Hediff_CerebralHypoxia</hediffClass>
     <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity> 
@@ -138,14 +138,14 @@
     </comps>
     <stages>
       <li>
-        <label>轻度 - 意识丧失并倒地</label>
+        <label>Mild - Unconscious collapse</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.10</setMax></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.25</minSeverity>
-        <label>中度 - 神经紊乱昏迷</label>
+        <label>Moderate - Comatose</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.08</setMax></li>
           <li><capacity>Talking</capacity><setMax>0.5</setMax></li>
@@ -153,14 +153,14 @@
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度 - 深度昏迷</label>
+        <label>Severe - Deep coma</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.05</setMax></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
-        <label>极重度 - 濒临脑死亡</label>
+        <label>Extreme - Near brain death</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.01</setMax></li> 
@@ -171,22 +171,22 @@
 
   <HediffDef>
     <defName>HypoxicBrainDamage</defName>
-    <label>缺氧性脑损伤</label>
-    <description>由于严重脑缺氧导致的不可逆脑组织永久性坏死。这会实质性地且不可逆地摧毁小人的认知、语言和运动运动能力。</description>
+    <label>Hypoxic brain damage</label>
+    <description>Permanent necrosis of brain tissue from severe cerebral hypoxia. Irreversibly impairs cognitive, speech, and motor capabilities.</description>
     <hediffClass>EmergencyExpanded.Hediff_HypoxicBrainDamage</hediffClass>
     <defaultLabelColor>(0.85, 0.3, 0.3)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <isBad>true</isBad>
     <stages>
       <li>
-        <label>轻度神经功能缺损</label>
+        <label>Mild neurological deficit</label>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.25</minSeverity>
-        <label>中度神经功能缺损</label>
+        <label>Moderate neurological deficit</label>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.15</offset></li>
           <li><capacity>Talking</capacity><offset>-0.15</offset></li>
@@ -195,7 +195,7 @@
       </li>
       <li>
         <minSeverity>0.55</minSeverity>
-        <label>重度偏瘫与失语</label>
+        <label>Severe hemiplegia and aphasia</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.50</setMax></li>
           <li><capacity>Talking</capacity><setMax>0.10</setMax></li>
@@ -204,7 +204,7 @@
       </li>
       <li>
         <minSeverity>0.85</minSeverity>
-        <label>濒临全面脑死亡</label>
+        <label>Near total brain death</label>
         <capMods>
           <li><capacity>Consciousness</capacity><setMax>0.35</setMax></li>
           <li><capacity>Talking</capacity><setMax>0.00</setMax></li>
@@ -216,8 +216,8 @@
 
   <HediffDef>
     <defName>VegetativeState</defName>
-    <label>脑死亡 (植物状态)</label>
-    <description>不可逆的广泛性脑神经元坏死。伤者失去了所有高级神经活动，仅依靠脑干维持最基础的心跳和呼吸。如果没有生命维持设备的干预，伤者永远无法醒来。</description>
+    <label>Brain death (Vegetative state)</label>
+    <description>Irreversible extensive neuronal necrosis. The patient loses all higher brain functions, keeping only basic heartbeats and respiration via the brainstem. Cannot awaken without life support.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.4, 0.4, 0.4)</defaultLabelColor>
     <isBad>true</isBad>
@@ -243,9 +243,9 @@
 
   <HediffDef ParentName="InjuryBase">
     <defName>MassiveBleeding</defName>
-    <label>大出血</label>
-    <labelNoun>大出血的伤口</labelNoun>
-    <description>由于主要血管或动脉破损引发的灾难性大出血。如果不立即就地施加压迫包扎或止血带结扎，伤员将在极短时间内死于失血性休克。</description>
+    <label>Massive bleeding</label>
+    <labelNoun>massive bleeding wound</labelNoun>
+    <description>Catastrophic hemorrhage caused by major vessel or arterial rupture. If not compressed or tourniqueted immediately, the pawn will die of hemorrhagic shock in a very short time.</description>
     <hediffClass>Hediff_Injury</hediffClass>
     <defaultLabelColor>(1.0, 0.2, 0.2)</defaultLabelColor> 
     <comps>
@@ -255,14 +255,14 @@
       <painPerSeverity>0.02</painPerSeverity>
       <bleedRate>3.0</bleedRate> 
       <canMerge>false</canMerge>
-      <destroyedLabel>血管彻底断裂</destroyedLabel>
+      <destroyedLabel>ruptured blood vessel</destroyedLabel>
     </injuryProps>
   </HediffDef>
 
   <HediffDef>
     <defName>AdrenalineBoost</defName>
-    <label>肾上腺素增强</label>
-    <description>小人在受到物理创伤、致命危机刺激或注射针剂时分泌的强力肾上腺素。能显著增强移动、操作和维生器官能力，并极大屏蔽痛觉防止休克。若连续注射过量，会导致严重的交感过载与儿茶酚胺风暴，诱发致命心梗与酸中毒。</description>
+    <label>Adrenaline rush</label>
+    <description>Powerful adrenaline response triggered by trauma, crisis, or injections. Boosts moving, manipulation, and vital capacities while blocking pain to prevent shock. Excess doses cause severe sympathetic overload, catecholamine storm, myocardial infarction, and acidosis.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.9, 0.6, 0.2)</defaultLabelColor>
     <maxSeverity>3.0</maxSeverity>
@@ -275,7 +275,7 @@
     </comps>
     <stages>
       <li>
-        <label>渐弱消退</label>
+        <label>Fading</label>
         <painFactor>0.95</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.03</offset></li>
@@ -285,7 +285,7 @@
       </li>
       <li>
         <minSeverity>0.26</minSeverity>
-        <label>应激爆发</label>
+        <label>Stress surge</label>
         <painFactor>0.85</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.07</offset></li>
@@ -302,7 +302,7 @@
       </li>
       <li>
         <minSeverity>0.51</minSeverity>
-        <label>强心激发</label>
+        <label>Cardio-boosted</label>
         <painFactor>0.75</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.10</offset></li>
@@ -319,7 +319,7 @@
       </li>
       <li>
         <minSeverity>0.76</minSeverity>
-        <label>极限突破</label>
+        <label>Extreme breakthrough</label>
         <painFactor>0.50</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>0.15</offset></li>
@@ -336,7 +336,7 @@
       </li>
       <li>
         <minSeverity>1.01</minSeverity>
-        <label>交感过载 - 药物过量</label>
+        <label>Sympathetic overload - Overdose</label>
         <painFactor>0.70</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
@@ -352,7 +352,7 @@
       </li>
       <li>
         <minSeverity>2.01</minSeverity>
-        <label>儿茶酚胺风暴 - 致命过量</label>
+        <label>Catecholamine storm - Fatal overdose</label>
         <painFactor>0.90</painFactor>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
@@ -372,8 +372,8 @@
 
   <HediffDef>
     <defName>AdrenalineCrash</defName>
-    <label>肾上腺素后遗症</label>
-    <description>强烈肾上腺素应激爆发后的崩溃与脱水疲劳期。由于身体机能极度透支以及乳酸的大量堆积，小人的运动能力、操作精度及意识会明显下降，并且创伤的炎性反应使得痛觉感受器变得异常敏感。</description>
+    <label>Adrenaline crash</label>
+    <description>The fatigue and dehydration phase following an adrenaline rush. Due to extreme exertion and lactic acid buildup, moving, manipulation, and consciousness drop significantly, and inflammatory responses make pain receptors highly sensitive.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.5, 0.4, 0.4)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -385,7 +385,7 @@
     </comps>
     <stages>
       <li>
-        <label>逐步缓释</label>
+        <label>Recovering</label>
         <painOffset>0.05</painOffset>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.02</offset></li>
@@ -395,7 +395,7 @@
       </li>
       <li>
         <minSeverity>0.5</minSeverity>
-        <label>重度脱水疲劳</label>
+        <label>Severe fatigue crash</label>
         <painOffset>0.10</painOffset>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.05</offset></li>
@@ -408,23 +408,23 @@
 
   <HediffDef ParentName="InjuryBase">
     <defName>EE_ClosedFracture</defName>
-    <label>闭合性骨折</label>
-    <labelNoun>闭合性骨折的伤口</labelNoun>
-    <description>骨骼断裂但皮肤完整。导致剧烈疼痛和严重的肢体功能损耗。如果不进行固定就移动，会造成内部肌肉血管二次损伤，甚至错位导致畸形愈合。</description>
+    <label>Closed fracture</label>
+    <labelNoun>closed fracture</labelNoun>
+    <description>Bone fracture without skin breach. Causes intense pain and severe functional impairment. Movement without immobilization causes secondary soft tissue damage and risks malunion.</description>
     <hediffClass>EmergencyExpanded.Hediff_Fracture</hediffClass>
     <displayWound>false</displayWound>
     <injuryProps>
       <painPerSeverity>0.04</painPerSeverity>
       <canMerge>false</canMerge>
-      <destroyedLabel>彻底粉碎</destroyedLabel>
+      <destroyedLabel>shattered</destroyedLabel>
     </injuryProps>
   </HediffDef>
 
   <HediffDef ParentName="InjuryBase">
     <defName>EE_OpenFracture</defName>
-    <label>开放性骨折</label>
-    <labelNoun>开放性骨折的伤口</labelNoun>
-    <description>碎骨刺穿皮肤外露。伴随剧烈疼痛、大出血以及极高的伤口感染概率。需要立即进行野外紧急夹板固定并回院手术。</description>
+    <label>Open fracture</label>
+    <labelNoun>open fracture</labelNoun>
+    <description>Bone fracture with bone fragments piercing the skin. Accompanied by intense pain, hemorrhage, and an extremely high risk of infection. Requires immediate field splinting and surgery.</description>
     <hediffClass>EmergencyExpanded.Hediff_Fracture</hediffClass>
     <comps>
       <li Class="HediffCompProperties_TendDuration">
@@ -440,14 +440,14 @@
       <painPerSeverity>0.06</painPerSeverity>
       <bleedRate>1.5</bleedRate>
       <canMerge>false</canMerge>
-      <destroyedLabel>彻底粉碎</destroyedLabel>
+      <destroyedLabel>shattered</destroyedLabel>
     </injuryProps>
   </HediffDef>
 
   <HediffDef>
     <defName>EE_Malunion</defName>
-    <label>畸形愈合</label>
-    <description>骨折后未经过正确的复位固定而愈合，碎骨以错误的姿态长死。使肢体效率永久下降，并伴随慢性疼痛。只能通过畸形接骨重折术进行物理打断并重置治疗。</description>
+    <label>Malunion</label>
+    <description>Fracture healing in an abnormal position due to lack of proper reduction or immobilization. Permanently decreases limb efficiency and causes chronic pain. Can only be corrected via osteotomy surgery.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
     <stages>
@@ -459,8 +459,8 @@
   </HediffDef>
   <HediffDef>
     <defName>Coagulopathy</defName>
-    <label>凝血功能障碍</label>
-    <description>由于严重创伤、失血、失温以及酸中毒引发的致命三联征之一。凝血酶活性被严重抑制，伤口将极难自然愈合，且失血速度显著加快。</description>
+    <label>Coagulopathy</label>
+    <description>A component of the lethal triad triggered by trauma, blood loss, hypothermia, and acidosis. Thrombin activity is severely suppressed, making wounds extremely difficult to clot and accelerating blood loss.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -470,21 +470,21 @@
     </comps>
     <stages>
       <li>
-        <label>轻度</label>
+        <label>Mild</label>
         <statOffsets>
           <MedicalTendQuality>-0.15</MedicalTendQuality>
         </statOffsets>
       </li>
       <li>
         <minSeverity>0.4</minSeverity>
-        <label>中度</label>
+        <label>Moderate</label>
         <statOffsets>
           <MedicalTendQuality>-0.3</MedicalTendQuality>
         </statOffsets>
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
-        <label>重度</label>
+        <label>Severe</label>
         <lifeThreatening>true</lifeThreatening>
         <statOffsets>
           <MedicalTendQuality>-0.5</MedicalTendQuality>
@@ -495,8 +495,8 @@
 
   <HediffDef>
     <defName>SIRS</defName>
-    <label>全身炎症反应综合征</label>
-    <description>大面积组织损伤引发的海量炎症因子释放，导致全身毛细血管扩张与通透性增加。这是多脏器功能障碍的前奏。</description>
+    <label>SIRS</label>
+    <description>Systemic Inflammatory Response Syndrome. A massive cytokine release triggered by extensive tissue damage, causing systemic capillary dilation and permeability. Precursor to MODS.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -506,19 +506,19 @@
     </comps>
     <stages>
       <li>
-        <label>潜伏期</label>
+        <label>Latent</label>
         <becomeVisible>false</becomeVisible>
       </li>
       <li>
         <minSeverity>0.15</minSeverity>
-        <label>早期</label>
+        <label>Early</label>
         <capMods>
           <li><capacity>BloodPumping</capacity><offset>-0.1</offset></li>
         </capMods>
       </li>
       <li>
         <minSeverity>0.4</minSeverity>
-        <label>进展期</label>
+        <label>Progressive</label>
         <capMods>
           <li><capacity>BloodPumping</capacity><offset>-0.2</offset></li>
           <li><capacity>Consciousness</capacity><offset>-0.1</offset></li>
@@ -526,7 +526,7 @@
       </li>
       <li>
         <minSeverity>0.7</minSeverity>
-        <label>晚期 (微循环衰竭)</label>
+        <label>Late (Microcirculatory failure)</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>BloodPumping</capacity><setMax>0.6</setMax></li>
@@ -538,8 +538,8 @@
 
   <HediffDef>
     <defName>MultipleOrganFailure</defName>
-    <label>多器官功能衰竭</label>
-    <description>长时间极低灌注与微循环崩溃导致的不可逆多脏器实质性缺血坏死。如果不迅速扭转循环状态，身体各器官将逐一停工直至死亡。</description>
+    <label>MODS</label>
+    <description>Multiple Organ Dysfunction Syndrome. Irreversible extensive necrosis of vital organs due to prolonged hypoperfusion and microcirculatory collapse. Leads to sequential organ shutdown and death if circulation is not restored.</description>
     <hediffClass>EmergencyExpanded.Hediff_HiddenMultipleOrganFailure</hediffClass>
     <defaultLabelColor>(0.6, 0.2, 0.8)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -552,7 +552,7 @@
     </comps>
     <stages>
       <li>
-        <label>一期</label>
+        <label>Stage I</label>
         <capMods>
           <li><capacity>BloodFiltration</capacity><offset>-0.2</offset></li>
           <li><capacity>Metabolism</capacity><offset>-0.2</offset></li>
@@ -560,7 +560,7 @@
       </li>
       <li>
         <minSeverity>0.4</minSeverity>
-        <label>二期</label>
+        <label>Stage II</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>BloodFiltration</capacity><setMax>0.5</setMax></li>
@@ -569,7 +569,7 @@
       </li>
       <li>
         <minSeverity>0.8</minSeverity>
-        <label>终末期</label>
+        <label>Terminal stage</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>BloodFiltration</capacity><setMax>0.1</setMax></li>
@@ -583,8 +583,8 @@
 
   <HediffDef>
     <defName>EE_CPR_Receiving</defName>
-    <label>心肺复苏中</label>
-    <description>该伤员正在接受持续的人工心肺复苏（CPR）。胸外按压与人工呼吸为其脑部和核心器官提供了最基础的微循环灌注，冻结了脑缺氧与脑损伤的恶化，并能大幅度提高除颤成功率。医生一旦停手该状态将迅速消退。</description>
+    <label>Receiving CPR</label>
+    <description>Pawn is receiving cardiopulmonary resuscitation (CPR). Chest compressions and artificial ventilation provide basic perfusion, freezing cerebral hypoxia/brain damage progression and boosting defibrillation success. Fades quickly if stopped.</description>
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(0.2, 0.8, 0.8)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
@@ -600,8 +600,8 @@
   <!-- ======================== TXA 促凝血状态 (单 Hediff) ======================== -->
   <HediffDef>
     <defName>EE_TxaActive</defName>
-    <label>TXA生效中</label>
-    <description>氨甲环酸在体内发生药效的状态。能够通过抑制纤维蛋白溶解来稳定血栓，将全身物理流血速度折半，解除并预防凝血功能障碍，同时降低受到枪伤/锋利创伤时引发大出血的几率。短时间内过量注射会导致全身微血栓栓塞和神经肌肉抽搐风险。</description>
+    <label>TXA active</label>
+    <description>Tranexamic acid (TXA) is active. Stabilizes blood clots by inhibiting fibrinolysis, halving physical bleeding rate, preventing coagulopathy, and reducing massive bleeding chances. Overdose risks microvascular embolisms and muscle spasms.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
     <maxSeverity>3.0</maxSeverity>
@@ -614,11 +614,11 @@
     </comps>
     <stages>
       <li>
-        <label>安全促凝</label>
+        <label>Safe coagulation</label>
       </li>
       <li>
         <minSeverity>1.01</minSeverity>
-        <label>高凝蓄积 - 药物过量</label>
+        <label>Hypercoagulable accumulation - Overdose</label>
         <capMods>
           <li><capacity>Metabolism</capacity><offset>-0.10</offset></li>
           <li><capacity>Moving</capacity><offset>-0.05</offset></li>
@@ -626,7 +626,7 @@
       </li>
       <li>
         <minSeverity>2.01</minSeverity>
-        <label>危险过量 - 极高危</label>
+        <label>Dangerous overdose - Critical</label>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
           <li><capacity>Metabolism</capacity><offset>-0.20</offset></li>
@@ -640,8 +640,8 @@
   <!-- ======================== TXA 中毒诱发强直性抽搐 ======================== -->
   <HediffDef>
     <defName>EE_TxaSeizure</defName>
-    <label>强直性抽搐 (TXA中毒)</label>
-    <description>由于体内氨甲环酸（TXA）浓度过高，拮抗中枢 GABA-A 受体而引发的兴奋性中毒癫痫。小人会陷入全身强直性肌肉痉挛，暂时失去意识与全部行动能力，并产生剧烈的肌肉撕裂痛。</description>
+    <label>Tonic seizure (TXA toxicity)</label>
+    <description>Excitatory neurotoxic epilepsy caused by excessive TXA levels blocking central GABA-A receptors. Induces generalized tonic muscle spasms, rendering the pawn unconscious and immobilized with intense muscle pain.</description>
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(0.9, 0.3, 0.3)</defaultLabelColor>
     <comps>
@@ -665,8 +665,8 @@
   <!-- ======================== 吗啡生效中 (单 Hediff) ======================== -->
   <HediffDef>
     <defName>EE_MorphineActive</defName>
-    <label>吗啡镇痛中</label>
-    <description>吗啡在体内发生药效的状态。能极大屏蔽痛觉，减缓心肌梗死（30%）、物理休克及全身炎症（40%）的恶化速率，并使骨折接骨/石膏包扎手术成功率提升 15%。副作用是导致轻度嗜睡与活动缓慢。连续过量注射会导致严重的呼吸抑制、深度昏迷甚至呼吸骤停。</description>
+    <label>Morphine active</label>
+    <description>Morphine is active. Blocks pain, slows progression of myocardial infarction (by 30%), shock, and SIRS (by 40%), and increases bone setting/casting success rate by 15%. Causes mild drowsiness and slowed movement. Overdose risks severe respiratory depression, coma, or arrest.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
     <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
     <maxSeverity>3.0</maxSeverity>
@@ -679,7 +679,7 @@
     </comps>
     <stages>
       <li>
-        <label>镇痛治疗</label>
+        <label>Analgesic treatment</label>
         <painFactor>0.15</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.10</offset></li>
@@ -690,7 +690,7 @@
       </li>
       <li>
         <minSeverity>1.01</minSeverity>
-        <label>吗啡过量 - 中枢抑制</label>
+        <label>Morphine overdose - CNS depression</label>
         <painFactor>0.05</painFactor>
         <capMods>
           <li><capacity>Consciousness</capacity><offset>-0.30</offset></li>
@@ -701,7 +701,7 @@
       </li>
       <li>
         <minSeverity>2.01</minSeverity>
-        <label>吗啡中毒 - 深度昏迷</label>
+        <label>Morphine toxicity - Deep coma</label>
         <painFactor>0.00</painFactor>
         <lifeThreatening>true</lifeThreatening>
         <capMods>
@@ -717,8 +717,8 @@
   <!-- ======================== 吗啡中毒诱发呼吸骤停 ======================== -->
   <HediffDef>
     <defName>EE_MorphineRespiratoryArrest</defName>
-    <label>呼吸骤停 (吗啡中毒)</label>
-    <description>由于吗啡等阿片类药物极度过量，深度抑制脑干呼吸中枢引发的急性自主呼吸停止。小人的呼吸能力将瞬间降为 0%，导致严重的脑缺氧与酸中毒。急需安排其他医生进行心肺复苏（CPR）或等待体内吗啡代谢完毕！</description>
+    <label>Respiratory arrest (Morphine toxicity)</label>
+    <description>Acute cessation of voluntary respiration caused by severe opioid overdose suppressing the brainstem respiratory center. Breathing capacity drops to 0%, inducing rapid cerebral hypoxia and acidosis. Immediate CPR is required while morphine metabolizes.</description>
     <hediffClass>HediffWithComps</hediffClass>
     <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
     <comps>

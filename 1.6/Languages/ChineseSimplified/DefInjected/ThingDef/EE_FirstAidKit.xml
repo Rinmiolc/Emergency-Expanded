@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_FirstAidKit.description>内含粗制草药提取液、简易压迫绷带和固定板。专为战地就地抢救设计，包扎速度极快且完全不受野外无医疗床的工作量惩罚，但由于药品条件简陋，处理伤口的品质（Tend Quality）较低。不能用于常规的外科手术。对于大出血，一个急救包最多可尝试包扎 5 次。</EE_FirstAidKit.description>
+  <EE_FirstAidKit.label>急救包</EE_FirstAidKit.label>
+</LanguageData>

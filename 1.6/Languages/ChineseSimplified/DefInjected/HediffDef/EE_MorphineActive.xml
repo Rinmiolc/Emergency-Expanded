@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_MorphineActive.description>吗啡在体内发生药效的状态。能极大屏蔽痛觉，减缓心肌梗死（30%）、物理休克及全身炎症（40%）的恶化速率，并使骨折接骨/石膏包扎手术成功率提升 15%。副作用是导致轻度嗜睡与活动缓慢。连续过量注射会导致严重的呼吸抑制、深度昏迷甚至呼吸骤停。</EE_MorphineActive.description>
+  <EE_MorphineActive.label>吗啡镇痛中</EE_MorphineActive.label>
+  <EE_MorphineActive.stages.0.label>镇痛治疗</EE_MorphineActive.stages.0.label>
+  <EE_MorphineActive.stages.1.label>吗啡过量 - 中枢抑制</EE_MorphineActive.stages.1.label>
+  <EE_MorphineActive.stages.2.label>吗啡中毒 - 深度昏迷</EE_MorphineActive.stages.2.label>
+</LanguageData>

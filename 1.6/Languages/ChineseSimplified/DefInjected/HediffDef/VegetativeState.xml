@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <VegetativeState.description>不可逆的广泛性脑神经元坏死。伤者失去了所有高级神经活动，仅依靠脑干维持最基础的心跳和呼吸。如果没有生命维持设备的干预，伤者永远无法醒来。</VegetativeState.description>
+  <VegetativeState.label>脑死亡 (植物状态)</VegetativeState.label>
+</LanguageData>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_CPR_Receiving.description>该伤员正在接受持续的人工心肺复苏（CPR）。胸外按压与人工呼吸为其脑部和核心器官提供了最基础的微循环灌注，冻结了脑缺氧与脑损伤的恶化，并能大幅度提高除颤成功率。医生一旦停手该状态将迅速消退。</EE_CPR_Receiving.description>
+  <EE_CPR_Receiving.label>心肺复苏中</EE_CPR_Receiving.label>
+</LanguageData>

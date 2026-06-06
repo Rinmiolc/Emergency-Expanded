@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LanguageData>
+  <EE_Bradycardia.description>心搏频率异常减慢（低于 45 BPM）。常见于吗啡过量镇静、极重度失血休克终末期、严重低温症或心脏功能衰竭等病理情况。</EE_Bradycardia.description>
+  <EE_Bradycardia.label>心动过缓</EE_Bradycardia.label>
+</LanguageData>

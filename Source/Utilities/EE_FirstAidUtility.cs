@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -244,7 +244,7 @@ namespace EmergencyExpanded
                             {
                                 patient.health.RemoveHediff(bloodLoss);
                             }
-                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "输血：失血已减轻", EE_Constants.FirstAidMoteDurationCritical);
+                            MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteTransfusionBloodLossReduced".Translate(), EE_Constants.FirstAidMoteDurationCritical);
                         }
                         consumeItem = true;
                     }
@@ -266,7 +266,7 @@ namespace EmergencyExpanded
                         consumed.Destroy();
                     }
                 }
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{labelCap}已使用", EE_Constants.FirstAidMoteDurationStandard);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteItemUsed".Translate(labelCap), EE_Constants.FirstAidMoteDurationStandard);
                 if (doctor.skills != null)
                 {
                     doctor.skills.Learn(SkillDefOf.Medicine, 180f);
@@ -306,7 +306,7 @@ namespace EmergencyExpanded
                     }
                 }
                 patient.Drawer?.renderer?.SetAllGraphicsDirty();
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{targetLimb.Label}已施加止血带", EE_Constants.FirstAidMoteDurationLong);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteTourniquetApplied".Translate(targetLimb.Label), EE_Constants.FirstAidMoteDurationLong);
             }
         }
 
@@ -323,7 +323,7 @@ namespace EmergencyExpanded
                         fracture.alignmentQuality = EE_Constants.PrimitiveSplintAlignmentQuality; // Primitive splint gives 20% alignment quality
                         fracture.Tended(EE_Constants.PrimitiveSplintTendQuality, 1.0f); // Standard tend to trigger the bandage and mote!
                         patient.Drawer?.renderer?.SetAllGraphicsDirty();
-                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"{fracture.Part.Label}已固定夹板", EE_Constants.FirstAidMoteDurationLong);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteSplintApplied".Translate(fracture.Part.Label), EE_Constants.FirstAidMoteDurationLong);
                         break;
                     }
                 }
@@ -347,7 +347,7 @@ namespace EmergencyExpanded
             }
             if (didAnything)
             {
-                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "已野战冲洗伤口", EE_Constants.FirstAidMoteDurationStandard);
+                MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteWoundIrrigatedField".Translate(), EE_Constants.FirstAidMoteDurationStandard);
             }
         }
 
@@ -410,7 +410,7 @@ namespace EmergencyExpanded
                     // 前几次必定失败
                     tendSuccess = false;
                     finalChance = 0f;
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"止血失败 (0%)", EE_Constants.FirstAidMoteDurationLong);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteHemostasisFailZero".Translate(), EE_Constants.FirstAidMoteDurationLong);
                 }
                 else
                 {
@@ -426,12 +426,12 @@ namespace EmergencyExpanded
                     if (Rand.Value <= finalChance)
                     {
                         tendSuccess = true;
-                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"止血成功", EE_Constants.FirstAidMoteDurationLong);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteHemostasisSuccess".Translate(), EE_Constants.FirstAidMoteDurationLong);
                     }
                     else
                     {
                         tendSuccess = false;
-                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, $"止血失败 ({(finalChance * 100f):F0}%)", EE_Constants.FirstAidMoteDurationLong);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteHemostasisFailChance".Translate((finalChance * 100f).ToString("F0")), EE_Constants.FirstAidMoteDurationLong);
                     }
                 }
 
@@ -446,7 +446,7 @@ namespace EmergencyExpanded
                     if (primaryWound.Severity <= 0.001f)
                     {
                         patient.health.RemoveHediff(primaryWound);
-                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "大出血伤口已完全闭合！", EE_Constants.FirstAidMoteDurationCritical);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteMassiveBleedingClosed".Translate(), EE_Constants.FirstAidMoteDurationCritical);
                         return true; // 完全闭合，消耗掉这次使用的物资
                     }
                     else
@@ -466,7 +466,7 @@ namespace EmergencyExpanded
                         item.TakeDamage(new DamageInfo(DamageDefOf.Deterioration, damageAmount));
                         if (item.Destroyed || item.HitPoints <= 0)
                         {
-                            MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "急救包已损坏", EE_Constants.FirstAidMoteDurationStandard);
+                            MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "EE_MoteFirstAidKitDamaged".Translate(), EE_Constants.FirstAidMoteDurationStandard);
                             return true; // 触发销毁逻辑
                         }
                     }
@@ -475,7 +475,7 @@ namespace EmergencyExpanded
                         // 普通医药等无耐久物品，每失败N次强制消耗一个
                         if (currentAttempts % maxAttempts == 0)
                         {
-                            MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, $"{item.LabelCap}已消耗", EE_Constants.FirstAidMoteDurationStandard);
+                            MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "EE_MoteItemConsumed".Translate(item.LabelCap), EE_Constants.FirstAidMoteDurationStandard);
                             return true; // 强制消耗一个
                         }
                     }
@@ -580,17 +580,17 @@ namespace EmergencyExpanded
                 if (isHeartAttack)
                 {
                     patient.health.RemoveHediff(heartAttack);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "电复律成功！已恢复窦性心律", EE_Constants.FirstAidMoteDurationCritical);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteCardioversionSuccess".Translate(), EE_Constants.FirstAidMoteDurationCritical);
                 }
                 else
                 {
                     patient.health.RemoveHediff(vf);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤成功！恢复窦性心律", EE_Constants.FirstAidMoteDurationCritical);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteDefibrillationSuccess".Translate(), EE_Constants.FirstAidMoteDurationCritical);
                     
                     // 如果伴有脑缺氧，飘字提醒
                     if (patient.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia))
                     {
-                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "自主循环已恢复", EE_Constants.FirstAidMoteDurationLong);
+                        MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteRosc".Translate(), EE_Constants.FirstAidMoteDurationLong);
                     }
                 }
                 
@@ -601,11 +601,11 @@ namespace EmergencyExpanded
                 // 电击复苏失败
                 if (isHeartAttack)
                 {
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "电复律失败！", EE_Constants.FirstAidMoteDurationCritical);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteCardioversionFail".Translate(), EE_Constants.FirstAidMoteDurationCritical);
                 }
                 else
                 {
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤未成功！", EE_Constants.FirstAidMoteDurationCritical);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteDefibrillationFail".Translate(), EE_Constants.FirstAidMoteDurationCritical);
                 }
 
                 // 物理副作用：对 Torso（或防守后退部位）造成电击微量灼伤
@@ -630,7 +630,7 @@ namespace EmergencyExpanded
                     burnPart = EE_MedicalUtility.GetNearestNonMissingPart(patient, burnPart);
                     DamageInfo dinfo = new DamageInfo(DamageDefOf.Burn, EE_Constants.DefibFailureBurnDamage, 0f, -1f, doctor, burnPart);
                     patient.TakeDamage(dinfo);
-                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "除颤副作用：轻度皮肤灼伤", EE_Constants.FirstAidMoteDurationLong);
+                    MoteMaker.ThrowText(patient.DrawPos, patient.Map, "EE_MoteDefibSideEffectBurn".Translate(), EE_Constants.FirstAidMoteDurationLong);
                 }
                 
                 // ---- 新增：五次失败消耗逻辑 ----
@@ -641,7 +641,7 @@ namespace EmergencyExpanded
                     
                     if (item.Destroyed || item.HitPoints <= 0)
                     {
-                        MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "除颤仪损毁", EE_Constants.FirstAidMoteDurationStandard);
+                        MoteMaker.ThrowText(doctor.DrawPos, doctor.Map, "EE_MoteDefibrillatorDestroyed".Translate(), EE_Constants.FirstAidMoteDurationStandard);
                         return true; // 视为已消耗（被摧毁）
                     }
                 }

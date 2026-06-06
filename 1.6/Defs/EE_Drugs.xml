@@ -3,8 +3,8 @@
   <!-- 肾上腺素注射器 (Adrenaline Syringe) -->
   <ThingDef ParentName="MakeableDrugBase">
     <defName>EE_AdrenalineSyringe</defName>
-    <label>肾上腺素注射器</label>
-    <description>一支装有高浓度肾上腺素的战地用自动注射器。使用速度极快，注射后能瞬间赋予使用者“极限突破”级别的体能爆发、强心以及痛觉屏蔽效果。它还能强行驱散先前的肾上腺素后遗症状态。由于属于强效应激激素，效果消退后也会迎来强烈的虚弱与疲劳期。连续注射会导致严重的儿茶酚胺风暴与高血压危象，有猝死风险。</description>
+    <label>Adrenaline autoinjector</label>
+    <description>A battlefield autoinjector containing highly concentrated adrenaline. Fast to administer, it instantly boosts physical capabilities, strengthens heart rate, and blocks pain. It also clears previous adrenaline crash states. As a potent stress hormone, its decay triggers a severe fatigue crash. Consecutive injections can lead to fatal catecholamine storms and hypertensive crises.</description>
     <descriptionHyperlinks>
       <HediffDef>AdrenalineBoost</HediffDef>
     </descriptionHyperlinks>
@@ -27,8 +27,8 @@
       <chairSearchRadius>0</chairSearchRadius>
       <ingestSound>Ingest_Pill</ingestSound>
       <ingestHoldUsesTable>false</ingestHoldUsesTable>
-      <ingestCommandString>注射 {0}</ingestCommandString>
-      <ingestReportString>正在注射 {0}。</ingestReportString>
+      <ingestCommandString>Inject {0}</ingestCommandString>
+      <ingestReportString>Injecting {0}.</ingestReportString>
       <outcomeDoers>
         <li Class="EmergencyExpanded.IngestionOutcomeDoer_AdrenalineSyringe">
           <toxicityHediff>AdrenalineBoost</toxicityHediff>
@@ -63,8 +63,8 @@
   <!-- TXA 强效促凝血剂注射器 (TXA Autoinjector) -->
   <ThingDef ParentName="MakeableDrugBase">
     <defName>EE_TxaSyringe</defName>
-    <label>TXA强效促凝血剂注射器</label>
-    <description>一支装有氨甲环酸（TXA）的战地用自动注射器。使用速度极快，注射后能通过抑制纤溶系统稳定血栓，显著减缓失血速度（50%），主动逆转失血性休克和酸中毒引发的凝血功能障碍，并降低受击时大出血发生的几率。连续注射会导致严重高凝状态与神经毒性反应，诱发全身抽搐及器官栓塞坏死。</description>
+    <label>TXA autoinjector</label>
+    <description>A battlefield autoinjector containing tranexamic acid (TXA). Fast to administer, it stabilizes blood clots by inhibiting the fibrinolytic system, reducing bleeding rate by 50%, reversing coagulopathy from hemorrhagic shock and acidosis, and lowering the chance of massive bleeding. Consecutive injections can cause hypercoagulability and neurotoxicity, leading to systemic seizures and organ embolism.</description>
     <descriptionHyperlinks>
       <HediffDef>EE_TxaActive</HediffDef>
     </descriptionHyperlinks>
@@ -87,8 +87,8 @@
       <chairSearchRadius>0</chairSearchRadius>
       <ingestSound>Ingest_Pill</ingestSound>
       <ingestHoldUsesTable>false</ingestHoldUsesTable>
-      <ingestCommandString>注射 {0}</ingestCommandString>
-      <ingestReportString>正在注射 {0}。</ingestReportString>
+      <ingestCommandString>Inject {0}</ingestCommandString>
+      <ingestReportString>Injecting {0}.</ingestReportString>
       <outcomeDoers>
         <li Class="EmergencyExpanded.IngestionOutcomeDoer_TxaSyringe">
           <toxicityHediff>EE_TxaActive</toxicityHediff>
@@ -123,8 +123,8 @@
   <!-- 医用吗啡注射器 (Medical Morphine Autoinjector) -->
   <ThingDef ParentName="MakeableDrugBase">
     <defName>EE_MorphineSyringe</defName>
-    <label>医用吗啡注射器</label>
-    <description>一支装有高浓度吗啡的战地用自动注射器。使用速度极快，注射后能屏蔽小人 85% 以上的剧痛，强行唤醒因剧痛而昏迷休克的重伤员，并减缓心肌梗死（30%）、休克与全身炎症（40%）的恶化速度。同时，吗啡能安抚并深度镇静伤员，使其在进行正骨或石膏包扎手术时对齐质量提高 15%。副作用是导致轻度嗜睡与活动缓慢。连续过量注射会导致严重的呼吸抑制、深度昏迷甚至呼吸骤停。</description>
+    <label>Morphine autoinjector</label>
+    <description>A battlefield autoinjector containing concentrated morphine. Fast to administer, it blocks over 85% of pain, wakes up pawns unconscious from pain shock, and slows the progression of myocardial infarction (by 30%), shock, and systemic inflammation (by 40%). It also sedates the patient, increasing bone setting or plaster casting alignment quality by 15%. Side effects include mild drowsiness and slowed movement. Overdose causes severe respiratory depression, coma, or respiratory arrest.</description>
     <descriptionHyperlinks>
       <HediffDef>EE_MorphineActive</HediffDef>
     </descriptionHyperlinks>
@@ -147,8 +147,8 @@
       <chairSearchRadius>0</chairSearchRadius>
       <ingestSound>Ingest_Pill</ingestSound>
       <ingestHoldUsesTable>false</ingestHoldUsesTable>
-      <ingestCommandString>注射 {0}</ingestCommandString>
-      <ingestReportString>正在注射 {0}。</ingestReportString>
+      <ingestCommandString>Inject {0}</ingestCommandString>
+      <ingestReportString>Injecting {0}.</ingestReportString>
       <outcomeDoers>
         <li Class="EmergencyExpanded.IngestionOutcomeDoer_MorphineSyringe">
           <toxicityHediff>EE_MorphineActive</toxicityHediff>

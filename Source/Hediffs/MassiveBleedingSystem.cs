@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using RimWorld;
 using Verse;
 using System.Linq;
@@ -96,7 +96,7 @@ namespace EmergencyExpanded
                                 // 游戏内抛出红色警示飘字，增强战场视觉反馈
                                 if (pawn.Spawned && pawn.Map != null)
                                 {
-                                    MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "大出血!", UnityEngine.Color.red);
+                                    MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "EE_MoteMassiveBleeding".Translate(), UnityEngine.Color.red);
                                 }
                             }
                         }

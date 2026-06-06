@@ -1,4 +1,4 @@
-using RimWorld;
+﻿using RimWorld;
 using UnityEngine;
 using Verse;
 
@@ -11,8 +11,8 @@ namespace EmergencyExpanded
         public Command_DeclareDeath(Pawn pawn)
         {
             this.patient = pawn;
-            this.defaultLabel = "宣布死亡";
-            this.defaultDesc = "放弃对该伤员的所有抢救尝试，正式宣布其死亡。";
+            this.defaultLabel = "EE_CommandDeclareDeath_Label".Translate();
+            this.defaultDesc = "EE_CommandDeclareDeath_Desc".Translate();
             
             // 使用原版的骷髅头图标或者医疗相关图标
             this.icon = ContentFinder<Texture2D>.Get("UI/Icons/Medical/NoCare", true); 
@@ -24,13 +24,13 @@ namespace EmergencyExpanded
             this.action = delegate ()
             {
                 Find.WindowStack.Add(new Dialog_MessageBox(
-                    $"你确定要对 {patient.NameShortColored} 宣布死亡吗？这将会直接终结该小人的生命。",
-                    "确认",
+                    "EE_ConfirmDeclareDeathDesc".Translate(patient.NameShortColored),
+                    "EE_Confirm".Translate(),
                     delegate ()
                     {
                         ExecuteDeath();
                     },
-                    "取消"
+                    "EE_Cancel".Translate()
                 ));
             };
         }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -30,11 +30,11 @@ namespace EmergencyExpanded
             get
             {
                 string baseLabel = base.Label;
-                if (isInternallyFixed) return baseLabel + " [钢板内固定]";
-                if (isCasted) return baseLabel + " [石膏固定]";
-                if (isStrictBedrest) return baseLabel + " [正骨静卧]";
-                if (isSplinted) return baseLabel + " [骨折环固定]";
-                return baseLabel + " [未固定]";
+                if (isInternallyFixed) return baseLabel + " " + "EE_FractureInternallyFixedTag".Translate();
+                if (isCasted) return baseLabel + " " + "EE_FractureCastedTag".Translate();
+                if (isStrictBedrest) return baseLabel + " " + "EE_FractureStrictBedrestTag".Translate();
+                if (isSplinted) return baseLabel + " " + "EE_FractureSplintedTag".Translate();
+                return baseLabel + " " + "EE_FractureUnfixedTag".Translate();
             }
         }
 
@@ -181,7 +181,7 @@ namespace EmergencyExpanded
                     // 2. 视觉与行为惩罚：剧痛踉跄
                     if (pawn.Spawned && pawn.Map != null)
                     {
-                        MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, $"{pawn.LabelShort} 断骨移位剧痛!", Color.red);
+                        MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "EE_MoteFractureDisplacedPain".Translate(pawn.LabelShort), Color.red);
                     }
 
                     // 瞬间痛觉踉跄
@@ -207,11 +207,11 @@ namespace EmergencyExpanded
                     alignmentQuality = 0f; // 复位质量清零，重新归于错位状态
                     pawn.Drawer?.renderer?.SetAllGraphicsDirty();
                     
-                    Messages.Message($"{pawn.LabelShort} 未遵医嘱绝对静卧，导致传统正骨固定失效，断骨再次发生位移！", pawn, MessageTypeDefOf.NegativeEvent);
+                    Messages.Message("EE_MessageStrictBedrestFail".Translate(pawn.LabelShort), pawn, MessageTypeDefOf.NegativeEvent);
                     
                     if (pawn.Spawned && pawn.Map != null)
                     {
-                        MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "正骨失效!", Color.red);
+                        MoteMaker.ThrowText(pawn.DrawPos, pawn.Map, "EE_MoteBedrestSettingFail".Translate(), Color.red);
                     }
                 }
             }
@@ -256,13 +256,13 @@ namespace EmergencyExpanded
                         Hediff malunion = HediffMaker.MakeHediff(malDef, pawn, Part);
                         pawn.health.AddHediff(malunion, Part);
                         
-                        Messages.Message($"{pawn.LabelShort} 的 {Part.Label} 骨折虽然已闭合，但由于缺乏正确复位与硬化固定，导致骨骼畸形愈合，留下了永久跛行/残疾！", pawn, MessageTypeDefOf.NegativeEvent);
+                        Messages.Message("EE_MessageMalunionCrippled".Translate(pawn.LabelShort, Part.Label), pawn, MessageTypeDefOf.NegativeEvent);
                     }
                 }
             }
             else
             {
-                Messages.Message($"{pawn.LabelShort} 的 {Part.Label} 骨骼愈合完毕，复位对齐良好，肢体功能已完全恢复！", pawn, MessageTypeDefOf.PositiveEvent);
+                Messages.Message("EE_MessageFractureHealedPerfect".Translate(pawn.LabelShort, Part.Label), pawn, MessageTypeDefOf.PositiveEvent);
             }
         }
 
