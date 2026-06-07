@@ -85,10 +85,15 @@
   <EE_PneumothoraxDecompressedTag>&lt;color=#00FF7F&gt;Decompressed&lt;/color&gt;</EE_PneumothoraxDecompressedTag>
   <EE_RemainingCount>{0} (Remaining: {1})</EE_RemainingCount>
   <EE_Settings_AdditionalOptions>Additional Options</EE_Settings_AdditionalOptions>
-  <EE_Settings_DifficultyPresetEasy>Easy - Fewer massive hemorrhages and fractures, more time to rescue</EE_Settings_DifficultyPresetEasy>
+  <EE_Settings_DifficultyPresetEasy_Title>Easy</EE_Settings_DifficultyPresetEasy_Title>
+  <EE_Settings_DifficultyPresetEasy_Desc>Fewer massive hemorrhages and fractures, more time to rescue.</EE_Settings_DifficultyPresetEasy_Desc>
   <EE_Settings_DifficultyPresetGlobal>Global Difficulty Preset</EE_Settings_DifficultyPresetGlobal>
-  <EE_Settings_DifficultyPresetHardcore>Hardcore - Balanced and challenging experience</EE_Settings_DifficultyPresetHardcore>
-  <EE_Settings_DifficultyPresetRealistic>Realistic - Extremely high hemorrhage and fracture rates. Realistic, but are you sure?</EE_Settings_DifficultyPresetRealistic>
+  <EE_Settings_DifficultyPresetGlobal_Desc>Controls global event rates, golden window scaling, and medical urgency.</EE_Settings_DifficultyPresetGlobal_Desc>
+  <EE_Settings_DifficultyPresetHardcore_Title>Hardcore (Recommended)</EE_Settings_DifficultyPresetHardcore_Title>
+  <EE_Settings_DifficultyPresetHardcore_Desc>Balanced and challenging medical emergency experience.</EE_Settings_DifficultyPresetHardcore_Desc>
+  <EE_Settings_DifficultyPresetRealistic_Title>Realistic</EE_Settings_DifficultyPresetRealistic_Title>
+  <EE_Settings_DifficultyPresetRealistic_Desc>Extremely high hemorrhage and fracture rates. Realistic, but are you sure?</EE_Settings_DifficultyPresetRealistic_Desc>
+  <EE_Settings_GameplayMechanics>Gameplay Mechanics</EE_Settings_GameplayMechanics>
   <EE_Settings_EnableDebugMode>Enable Debug Mode</EE_Settings_EnableDebugMode>
   <EE_Settings_EnableDebugModeDesc>Testing only: Forces the rate of major crisis events (bleeding, fractures) to 90%.</EE_Settings_EnableDebugModeDesc>
   <EE_Settings_EnableDynamicMassiveBleeding>Dynamic Massive Bleeding Chance</EE_Settings_EnableDynamicMassiveBleeding>
@@ -129,4 +134,49 @@
   <EE_NonFleshNoMonitor>This biological type does not require vital monitoring.</EE_NonFleshNoMonitor>
   <EE_Settings_UseMlhBleedRateUnit>Vital Monitor Bleed Rate default to ml/h</EE_Settings_UseMlhBleedRateUnit>
   <EE_Settings_UseMlhBleedRateUnitDesc>If enabled, the vital monitor's bleed rate (BldR) displays in milliliters per hour (ml/h). If disabled, reverts to percent per day (%/d).</EE_Settings_UseMlhBleedRateUnitDesc>
+
+  <EE_Settings_Category_Gameplay>Gameplay &amp; Difficulty</EE_Settings_Category_Gameplay>
+  <EE_Settings_Category_HealthUI>Health Panel Settings</EE_Settings_Category_HealthUI>
+  <EE_Settings_ShowBleedRateBanner>Show bottom blood loss warning banner</EE_Settings_ShowBleedRateBanner>
+  <EE_Settings_ShowBleedRateBannerDesc>If enabled, displays a red warning banner at the bottom of the health panel when the pawn is bleeding. Otherwise, it is hidden.</EE_Settings_ShowBleedRateBannerDesc>
+  <EE_Settings_EnableCriticalBlink>Enable flashing red background for critical injuries</EE_Settings_EnableCriticalBlink>
+  <EE_Settings_EnableCriticalBlinkDesc>If enabled, critical/life-threatening health entries (such as cardiac arrest, ventricular fibrillation, shock, massive bleeding, sepsis, and tension pneumothorax) will flash red. Otherwise, they will not flash.</EE_Settings_EnableCriticalBlinkDesc>
+  <EE_NoDefibrillatorAvailable>No doctors are carrying a portable defibrillator!</EE_NoDefibrillatorAvailable>
+
+  <!-- Clinical Diagnosis Translations -->
+  <EE_Diagnosis_Dead>Biological Death</EE_Diagnosis_Dead>
+  <EE_Diagnosis_BrainDeathTimer>Brain death countdown: {0}m</EE_Diagnosis_BrainDeathTimer>
+  <EE_Diagnosis_VegetativeState>Cerebral Necrosis (Vegetative State)</EE_Diagnosis_VegetativeState>
+  <EE_Diagnosis_CerebralHypoxia>Cerebral Hypoxia (Progressive Brain Damage)</EE_Diagnosis_CerebralHypoxia>
+  <EE_Diagnosis_PneumothoraxDecompressed>Pneumothorax (Needle Decompressed)</EE_Diagnosis_PneumothoraxDecompressed>
+  <EE_Diagnosis_PneumothoraxCrisis>Tension Pneumothorax (Asphyxia Crisis)</EE_Diagnosis_PneumothoraxCrisis>
+  <EE_Diagnosis_CardiacArrest>Cardiac Arrest (Flatline)</EE_Diagnosis_CardiacArrest>
+  <EE_Diagnosis_VFib>Ventricular Fibrillation (V-Fib)</EE_Diagnosis_VFib>
+  <EE_Diagnosis_Shock>Shock Crisis</EE_Diagnosis_Shock>
+  <EE_Diagnosis_MassiveBleeding>Active Massive Bleeding!</EE_Diagnosis_MassiveBleeding>
+  <EE_Diagnosis_Sepsis>Severe Sepsis</EE_Diagnosis_Sepsis>
+  <EE_Diagnosis_SIRS>Systemic Inflammation (SIRS)</EE_Diagnosis_SIRS>
+  <EE_Diagnosis_MODS>Multiple Organ Failure (MODS)</EE_Diagnosis_MODS>
+  <EE_Diagnosis_UnfixedFracture>{0} Unfixed Fracture</EE_Diagnosis_UnfixedFracture>
+  <EE_Diagnosis_Tachycardia>Sinus Tachycardia</EE_Diagnosis_Tachycardia>
+  <EE_Diagnosis_Bradycardia>Sinus Bradycardia</EE_Diagnosis_Bradycardia>
+  <EE_Diagnosis_AdrenalineActive>Adrenaline Rush Active</EE_Diagnosis_AdrenalineActive>
+  <EE_Diagnosis_AdrenalineOverdose>Sympathetic Overload (Overdose)</EE_Diagnosis_AdrenalineOverdose>
+  <EE_Diagnosis_AdrenalineFatalOverdose>Catecholamine Storm (Fatal)</EE_Diagnosis_AdrenalineFatalOverdose>
+  <EE_Diagnosis_MorphineActive>Morphine Sedation Active</EE_Diagnosis_MorphineActive>
+  <EE_Diagnosis_MorphineOverdose>CNS Depression (Overdose)</EE_Diagnosis_MorphineOverdose>
+  <EE_Diagnosis_MorphineFatalOverdose>Morphine Toxicity (Coma)</EE_Diagnosis_MorphineFatalOverdose>
+  <EE_Diagnosis_TxaActive>TXA Coagulation Active</EE_Diagnosis_TxaActive>
+  <EE_Diagnosis_TxaOverdose>Hypercoagulable (Overdose)</EE_Diagnosis_TxaOverdose>
+  <EE_Diagnosis_TxaFatalOverdose>TXA Toxicity (Fatal)</EE_Diagnosis_TxaFatalOverdose>
+  <!-- Triage crisis escalation diagnoses -->
+  <EE_Diagnosis_Shock_Irreversible>Shock Crisis (Irreversible Stage)</EE_Diagnosis_Shock_Irreversible>
+  <EE_Diagnosis_Acidosis>Metabolic Acidosis</EE_Diagnosis_Acidosis>
+  <EE_Diagnosis_Acidosis_Extreme>Acidosis Crisis (Severe/Extreme)</EE_Diagnosis_Acidosis_Extreme>
+  <EE_Diagnosis_CerebralHypoxia_Extreme>Severe Hypoxia (Near Brain Death)</EE_Diagnosis_CerebralHypoxia_Extreme>
+  <EE_Diagnosis_Sepsis_Extreme>Severe Sepsis (Pre-shock Stage)</EE_Diagnosis_Sepsis_Extreme>
+  <EE_Diagnosis_SIRS_Late>Late Inflammation (Microcirculatory Failure)</EE_Diagnosis_SIRS_Late>
+  <EE_Diagnosis_MODS_Terminal>Terminal Organ Failure (MODS)</EE_Diagnosis_MODS_Terminal>
+  <EE_Diagnosis_Coagulopathy>Coagulopathy</EE_Diagnosis_Coagulopathy>
+  <EE_Diagnosis_Coagulopathy_Severe>Severe Coagulopathy (Fatal Bleed Risk)</EE_Diagnosis_Coagulopathy_Severe>
 </LanguageData>

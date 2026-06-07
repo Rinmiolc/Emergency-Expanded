@@ -87,7 +87,7 @@
     <label>Broad-spectrum antibiotics</label>
     <description>High concentration of broad-spectrum antibiotics in the bloodstream. Actively fights bacteria, suppressing infections and boosting kidney blood filtration.</description>
     <hediffClass>HediffWithComps</hediffClass>
-    <defaultLabelColor>(0.5, 0.8, 0.9)</defaultLabelColor>
+    <defaultLabelColor>(0.25, 0.68, 0.82)</defaultLabelColor>
     <isBad>false</isBad>
     <maxSeverity>1.0</maxSeverity>
     <comps>

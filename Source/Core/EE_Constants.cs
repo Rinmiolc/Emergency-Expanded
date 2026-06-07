@@ -26,6 +26,10 @@ namespace EmergencyExpanded
         public const float EcgFlatlineThreshold = 0.1f;
         // 血氧饱和度低下报警阈值
         public const float EcgHypoxiaSpO2Threshold = 90f;
+        // 当血氧低于此百分比时，监护仪将无法测出，显示为 "--"
+        public const float SpO2MeasurableThreshold = 20f;
+        // 当收缩压低于此数值 (mmHg) 时，监护仪将无法测出，显示为 "--"
+        public const float BpMeasurableThreshold = 30f;
 
         // ================= 心律状态 Hediff 参数 (Cardiovascular State Hediffs) =================
         // 心动过速触发阈值 (BPM)
@@ -35,7 +39,7 @@ namespace EmergencyExpanded
         // 心律不齐触发的酸中毒严重度阈值
         public const float ArrhythmiaAcidosisThreshold = 0.50f;
         // 心律不齐触发的肾上腺素严重度阈值
-        public const float ArrhythmiaAdrenalineThreshold = 1.0f;
+        public const float ArrhythmiaAdrenalineThreshold = 1.5f;
         // 心律不齐触发的吗啡严重度阈值
         public const float ArrhythmiaMorphineThreshold = 1.0f;
         // 心律不齐触发的脑缺氧严重度阈值
@@ -477,6 +481,7 @@ namespace EmergencyExpanded
 
         // 过量毒性事件触发阈值
         public const float OverdoseToxicityThreshold = 1.0f;          // 过量阈值
+        public const float AdrenalineOverdoseToxicityThreshold = 1.5f; // 肾上腺素过量下限改为 1.5
         public const float OverdoseFatalThreshold = 2.0f;             // 致命阈值
 
         // TXA 毒理事件概率 (基于 RareTick = 250 ticks = 4.16秒)

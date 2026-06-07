@@ -6,7 +6,7 @@
     <label>Pneumothorax</label>
     <description>Air entering the pleural cavity, causing partial or complete lung collapse. Severely impairs breathing and causes acute pain. If it develops into a tension pneumothorax and is not decompressed immediately, it will be fatal.</description>
     <hediffClass>EmergencyExpanded.Hediff_Pneumothorax</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <isBad>true</isBad>
     <tendable>true</tendable>
     <maxSeverity>1.0</maxSeverity>

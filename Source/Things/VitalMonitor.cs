@@ -29,6 +29,10 @@ namespace EmergencyExpanded
         public bool hasMetabolicAcidosis = false;
         public bool hasMyocardialInfarction = false;
         public bool hasArrhythmia = false;
+
+        public float displaypH = 7.40f;
+        public float displayRR = 16f;
+        public float displayTemp = 37.0f;
     }
 
     // ================= 2. 动态生理心搏计算管理器 =================
@@ -166,6 +170,12 @@ namespace EmergencyExpanded
                 }
             }
 
+            // 6. 睡眠状态下心率生理性下降 (约下降 12 bpm)
+            if (!pawn.Awake())
+            {
+                baseHR -= 12f;
+            }
+
             return Mathf.Clamp(baseHR, 0f, 280f);
         }
 
@@ -184,15 +194,46 @@ namespace EmergencyExpanded
                 vitals.hasMyocardialInfarction = pawn.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction);
                 vitals.hasArrhythmia = pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Arrhythmia);
                 
-                if (vitals.heartRate > EE_Constants.EcgFlatlineThreshold)
+                if (pawn.Dead)
                 {
-                    // 添加 ±2 bpm 的正常呼吸性心律不齐波动
-                    vitals.displayHeartRate = vitals.heartRate + Rand.Range(-2f, 2f);
-                    vitals.displayHeartRate = Mathf.Clamp(vitals.displayHeartRate, 10f, 280f);
+                    vitals.displayHeartRate = 0f;
+                    vitals.displaySpO2 = 0f;
+                    vitals.displaypH = 7.0f; // Post-mortem acidosis
+                    vitals.displayRR = 0f;
 
-                    // --- 高拟真电生理 SpO2 血氧饱和度算法 ---
+                    // 尸冷 (Algor Mortis): 尸体温度每2秒向环境温度靠拢 0.1 度
+                    float ambient = pawn.AmbientTemperature;
+                    if (vitals.displayTemp > ambient)
+                    {
+                        vitals.displayTemp = Mathf.Max(vitals.displayTemp - 0.1f, ambient);
+                    }
+                    else if (vitals.displayTemp < ambient)
+                    {
+                        vitals.displayTemp = Mathf.Min(vitals.displayTemp + 0.1f, ambient);
+                    }
+                }
+                else
+                {
+                    // 1. 心率显示与波动
+                    if (vitals.heartRate > EE_Constants.EcgFlatlineThreshold)
+                    {
+                        vitals.displayHeartRate = vitals.heartRate + Rand.Range(-2f, 2f);
+                        vitals.displayHeartRate = Mathf.Clamp(vitals.displayHeartRate, 10f, 280f);
+                    }
+                    else
+                    {
+                        vitals.displayHeartRate = 0f;
+                    }
+
+                    // 2. 高拟真电生理 SpO2 血氧饱和度算法
                     float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-                    float breathingDeficit = Mathf.Clamp01(1f - breathing);
+                    float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+                    
+                    // 如果心搏停止或微弱，则供氧循环也停止
+                    if (vitals.displayHeartRate < EE_Constants.EcgFlatlineThreshold)
+                    {
+                        pumping = 0f;
+                    }
 
                     float acidosisSeverity = 0f;
                     Hediff acidosis = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis);
@@ -201,24 +242,117 @@ namespace EmergencyExpanded
                         acidosisSeverity = acidosis.Severity;
                     }
 
-                    // 健康时血氧并不是定死 100% 而是处于 96% - 99% 这一现实黄金生理健康区间进行微微波动
-                    float baseSpO2 = 97.8f + Rand.Range(-1.2f, 1.2f);
-                    
-                    // 病理惩罚：代谢性酸中毒代表全身微循环低灌注与严重组织乏氧，直接拖累血氧饱和度
-                    baseSpO2 -= acidosisSeverity * 32f; // 重度酸中毒时，直接拖累血氧跌去 32%
-                    
-                    // 呼吸功能缺陷惩罚：如肺部受创直接导致携氧量雪崩
-                    baseSpO2 -= breathingDeficit * 35f;
+                    float capacityIndex = Mathf.Min(Mathf.Clamp01(breathing), Mathf.Clamp01(pumping));
+                    float targetSpO2 = 98f;
 
-                    vitals.displaySpO2 = Mathf.Clamp(baseSpO2, 45f, 99.4f);
-                }
-                else
-                {
-                    vitals.displayHeartRate = 0f;
-                    // 心跳骤停时，指夹式血氧仪测不到波形数据
-                    // 但为了游戏性和拟真，让血氧逐步下降而不是瞬间归零
-                    vitals.displaySpO2 -= 0.5f; 
-                    if (vitals.displaySpO2 < 0f) vitals.displaySpO2 = 0f;
+                    // 建立血氧饱和度与脏器功能 (容量/灌注) 的精细数学模型
+                    if (capacityIndex >= 0.9f)
+                    {
+                        targetSpO2 = Mathf.Lerp(95f, 99f, (capacityIndex - 0.9f) / 0.1f) + Rand.Range(-0.5f, 0.5f);
+                    }
+                    else if (capacityIndex >= 0.75f)
+                    {
+                        targetSpO2 = Mathf.Lerp(90f, 95f, (capacityIndex - 0.75f) / 0.15f);
+                    }
+                    else if (capacityIndex >= 0.5f)
+                    {
+                        targetSpO2 = Mathf.Lerp(75f, 90f, (capacityIndex - 0.5f) / 0.25f);
+                    }
+                    else if (capacityIndex >= 0.3f)
+                    {
+                        targetSpO2 = Mathf.Lerp(50f, 75f, (capacityIndex - 0.3f) / 0.2f);
+                    }
+                    else
+                    {
+                        targetSpO2 = Mathf.Lerp(0f, 50f, capacityIndex / 0.3f);
+                    }
+
+                    targetSpO2 -= acidosisSeverity * 10f; // 酸中毒负荷加重血氧剥离
+                    targetSpO2 = Mathf.Clamp(targetSpO2, 0f, 99.4f);
+
+                    // 逐步拟真向目标值逼近（模拟氧消耗与储备耗尽延迟）
+                    if (vitals.displaySpO2 < targetSpO2)
+                    {
+                        float recoveryRate = 3f; // 2秒回升 3%
+                        vitals.displaySpO2 = Mathf.Min(vitals.displaySpO2 + recoveryRate, targetSpO2);
+                    }
+                    else if (vitals.displaySpO2 > targetSpO2)
+                    {
+                        float diff = vitals.displaySpO2 - targetSpO2;
+                        float declineRate = 2f + (diff * 0.15f); // 差值越大，下降越剧烈，模拟无氧储备瞬间耗尽
+                        vitals.displaySpO2 = Mathf.Max(vitals.displaySpO2 - declineRate, targetSpO2);
+                    }
+
+                    // 3. 计算并缓存血液酸碱度 (pH)
+                    float ph = 7.40f;
+                    if (acidosis != null)
+                    {
+                        ph -= acidosis.Severity * 0.55f;
+                    }
+                    ph += Rand.Range(-0.01f, 0.01f);
+                    vitals.displaypH = Mathf.Clamp(ph, 6.70f, 7.45f);
+
+                    // 4. 计算并缓存呼吸频率 (RR)
+                    float rr = 16f;
+                    if (breathing <= 0.05f)
+                    {
+                        rr = 0f;
+                    }
+                    else
+                    {
+                        rr = 16f * breathing;
+                        if (acidosis != null) rr += acidosis.Severity * 14f;
+                        Hediff morphine = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MorphineActive);
+                        if (morphine != null) rr -= morphine.Severity * 6f;
+                        float totalBleed = pawn.health.hediffSet.BleedRateTotal;
+                        if (totalBleed > 0.1f)
+                        {
+                            rr += Mathf.Clamp(totalBleed * 8f, 0f, 12f);
+                        }
+                        rr += Rand.Range(-1f, 1f);
+                        rr = Mathf.Clamp(rr, 0f, 45f);
+                    }
+                    vitals.displayRR = rr;
+
+                    // 5. 计算并缓存体温 (Body Temperature)
+                    float bodyTemp = 37.0f;
+                    
+                    // 免疫/感染发热
+                    float fever = 0f;
+                    if (pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Sepsis))
+                    {
+                        fever = 1.5f + pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Sepsis).Severity * 1.5f; // +1.5 to +3.0 C
+                    }
+                    else if (pawn.health.hediffSet.HasHediff(HediffDef.Named("Flu")) || pawn.health.hediffSet.HasHediff(HediffDef.Named("Plague")))
+                    {
+                        fever = 1.2f;
+                    }
+                    bodyTemp += fever;
+
+                    // 失温症 (Hypothermia)
+                    Hediff hypothermia = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Hypothermia);
+                    if (hypothermia != null)
+                    {
+                        bodyTemp -= hypothermia.Severity * 12f; // 降至最低 25 C
+                    }
+
+                    // 热射病 (Heatstroke)
+                    Hediff heatstroke = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.Heatstroke);
+                    if (heatstroke != null)
+                    {
+                        bodyTemp += heatstroke.Severity * 5.2f; // 升至最高 42.2 C
+                    }
+
+                    // 肾上腺素轻微升温
+                    if (pawn.health.hediffSet.HasHediff(EE_DefOf.AdrenalineBoost))
+                    {
+                        bodyTemp += pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost).Severity * 0.4f;
+                    }
+
+                    // 随机微小生理波动
+                    bodyTemp += Rand.Range(-0.1f, 0.1f);
+                    bodyTemp = Mathf.Clamp(bodyTemp, 20f, 43f);
+                    vitals.displayTemp = bodyTemp;
                 }
             }
         }
@@ -362,6 +496,26 @@ namespace EmergencyExpanded
 
         public override float GetWidth(float maxWidth) => 175f; // 黄金比例加长型检测仪，优化排版空间
 
+        public override void ProcessInput(Event ev)
+        {
+            base.ProcessInput(ev);
+            if (pawn != null)
+            {
+                if (Find.Selector.SingleSelectedThing != pawn)
+                {
+                    Find.Selector.ClearSelection();
+                    Find.Selector.Select(pawn);
+                }
+                Find.MainTabsRoot.SetCurrentTab(MainButtonDefOf.Inspect);
+                
+                var inspectTab = Find.MainTabsRoot.OpenTab?.TabWindow as MainTabWindow_Inspect;
+                if (inspectTab != null)
+                {
+                    inspectTab.OpenTabType = typeof(ITab_Pawn_Health_EE);
+                }
+            }
+        }
+
         public override GizmoResult GizmoOnGUI(Vector2 topLeft, float maxWidth, GizmoRenderParms parms)
         {
             Rect rect = new Rect(topLeft.x, topLeft.y, GetWidth(maxWidth), 75f);
@@ -378,23 +532,27 @@ namespace EmergencyExpanded
             Color coreColor;
             Color glowColor;
 
+            Color colorCrimson = new Color(0.83f, 0.25f, 0.25f);
+            Color colorAmber = new Color(0.85f, 0.60f, 0.25f);
+            Color colorMint = new Color(0.32f, 0.78f, 0.52f);
+
             if (bpm < EE_Constants.EcgFlatlineThreshold)
             {
-                gridColor = new Color(0.4f, 0.0f, 0.0f, 0.15f);
-                coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);
-                glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);
+                gridColor = new Color(0.40f, 0.0f, 0.0f, 0.15f);
+                coreColor = colorCrimson;
+                glowColor = new Color(0.83f, 0.25f, 0.25f, 0.4f);
             }
-            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < EE_Constants.EcgBradycardiaThreshold || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
+            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f) || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
             {
-                gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);
-                coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);
-                glowColor = new Color(1.0f, 0.5f, 0.0f, 0.4f);
+                gridColor = new Color(0.40f, 0.25f, 0.0f, 0.15f);
+                coreColor = colorAmber;
+                glowColor = new Color(0.85f, 0.60f, 0.25f, 0.4f);
             }
             else
             {
-                gridColor = new Color(0f, 0.4f, 0.4f, 0.15f);
-                coreColor = new Color(0.2f, 1.0f, 0.8f, 1.0f);
-                glowColor = new Color(0.0f, 0.8f, 0.6f, 0.4f);
+                gridColor = new Color(0.12f, 0.38f, 0.22f, 0.15f);
+                coreColor = colorMint;
+                glowColor = new Color(0.32f, 0.78f, 0.52f, 0.4f);
             }
 
             Rect innerScreen = rect.ContractedBy(4f);
@@ -480,7 +638,7 @@ namespace EmergencyExpanded
             // 左上角 ECG 与 心跳闪烁图标
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperLeft;
-            GUI.color = new Color(0.5f, 0.6f, 0.5f, 0.7f);
+            GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
             Widgets.Label(new Rect(innerScreen.x + 4f, innerScreen.y + 2f, 30f, 15f), "ECG");
             
             bool isBlinking = bpm > EE_Constants.EcgFlatlineThreshold && (vitals.phase < 0.15f);
@@ -490,25 +648,25 @@ namespace EmergencyExpanded
             // HR (心率区域)
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.UpperRight;
-            GUI.color = coreColor * new Color(1f, 1f, 1f, 0.75f);
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 2f, rightPanel.width - 2f, 15f), "HR");
+            GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 2f, rightPanel.width - 2f, 15f), "<b>HR</b>");
 
             Text.Font = GameFont.Medium;
             GUI.color = coreColor;
             string bpmStr = Mathf.RoundToInt(bpm).ToString();
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 12f, rightPanel.width - 2f, 26f), bpmStr);
+            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 12f, rightPanel.width - 2f, 26f), "<b>" + bpmStr + "</b>");
 
             // SpO2 (血氧区域)
-            Color spo2Color = new Color(0.2f, 0.8f, 1.0f);
-            if (spo2 < EE_Constants.EcgHypoxiaSpO2Threshold) spo2Color = new Color(1.0f, 0.3f, 0.3f);
+            Color spo2Color = new Color(0.25f, 0.68f, 0.82f); // Cerulean
+            if (spo2 < EE_Constants.EcgHypoxiaSpO2Threshold) spo2Color = colorCrimson;
             
             Text.Font = GameFont.Tiny;
-            GUI.color = spo2Color * new Color(1f, 1f, 1f, 0.75f);
+            GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
             Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 38f, rightPanel.width - 2f, 15f), "SpO2");
 
             Text.Font = GameFont.Small;
             GUI.color = spo2Color;
-            string spo2Str = spo2.ToString() + "%";
+            string spo2Str = (vitals.displaySpO2 < EE_Constants.SpO2MeasurableThreshold) ? "--" : spo2.ToString() + "%";
             Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 50f, rightPanel.width - 2f, 20f), spo2Str);
 
             // 还原状态

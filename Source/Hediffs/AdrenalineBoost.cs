@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -40,7 +40,7 @@ namespace EmergencyExpanded
             if (!Pawn.IsHashIntervalTick(250)) return;
 
             float severity = parent.Severity;
-            if (severity > EE_Constants.OverdoseToxicityThreshold)
+            if (severity >= EE_Constants.AdrenalineOverdoseToxicityThreshold)
             {
                 // 1. 判定急性心肌梗死/室颤
                 float miChance = (severity > EE_Constants.OverdoseFatalThreshold) 

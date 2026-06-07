@@ -191,7 +191,8 @@ namespace EmergencyExpanded
                 // 心动过缓
                 if (EE_DefOf.EE_Bradycardia != null)
                 {
-                    if (bpm <= EE_Constants.BradycardiaMaxBpm && bpm > EE_Constants.EcgFlatlineThreshold)
+                    float bradyMax = pawn.Awake() ? EE_Constants.BradycardiaMaxBpm : 35f;
+                    if (bpm <= bradyMax && bpm > EE_Constants.EcgFlatlineThreshold)
                     {
                         if (!__instance.hediffSet.HasHediff(EE_DefOf.EE_Bradycardia))
                         {

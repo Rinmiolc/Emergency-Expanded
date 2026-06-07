@@ -30,8 +30,7 @@ namespace EmergencyExpanded
         {
             get
             {
-                float width = this.IsNiceHealthTabActive ? 780f : 630f;
-                return new Vector2(width, 700f);
+                return new Vector2(780f, 700f);
             }
         }
 
@@ -47,8 +46,7 @@ namespace EmergencyExpanded
         {
             get
             {
-                float width = this.IsNiceHealthTabActive ? 780f : 630f;
-                return new Vector2(width, 430f);
+                return new Vector2(780f, 430f);
             }
         }
 
@@ -200,19 +198,19 @@ namespace EmergencyExpanded
 
             VitalTracker.UpdateVitalsIfNeed(pawn, vitals);
 
-            // 1. 左侧栏 (宽度 360f)：心电波形图在上，二级体征网格和动作按钮在下
-            Rect leftTopRect = new Rect(inner.x, inner.y, 360f, 95f);
+            // 1. 左侧栏 (宽度 432f)：心电波形图在上，二级体征网格和动作按钮在下 (扩展五分之一/1.2倍)
+            Rect leftTopRect = new Rect(inner.x, inner.y, 432f, 100f);
             DrawMonitorScreen(leftTopRect, pawn, vitals);
 
-            Rect leftBottomRect = new Rect(inner.x, inner.y + 100f, 360f, 90f);
-            Rect gridRect = new Rect(leftBottomRect.x, leftBottomRect.y, leftBottomRect.width, 48f);
+            Rect leftBottomRect = new Rect(inner.x, inner.y + 105f, 432f, 85f);
+            Rect gridRect = new Rect(leftBottomRect.x, leftBottomRect.y, leftBottomRect.width, 42f);
             DrawSecondaryGrid(gridRect, pawn, vitals);
 
-            Rect actionsRect = new Rect(leftBottomRect.x, leftBottomRect.y + 55f, leftBottomRect.width, 35f);
+            Rect actionsRect = new Rect(leftBottomRect.x, leftBottomRect.y + 48f, leftBottomRect.width, 35f);
             DrawQuickActions(actionsRect, pawn);
 
-            // 2. 右侧栏 (宽度 inner.width - 370f，高度 190f)：整合式体征+诊断面板
-            Rect rightColumnRect = new Rect(inner.x + 370f, inner.y, inner.width - 370f, 190f);
+            // 2. 右侧栏 (右移并自适应剩余宽度)：整合式体征+诊断面板
+            Rect rightColumnRect = new Rect(inner.x + 442f, inner.y, inner.width - 442f, 190f);
             DrawRightMonitorPanel(rightColumnRect, pawn, vitals);
         }
 
@@ -221,7 +219,7 @@ namespace EmergencyExpanded
             float colWidth = rect.width / 2f - 4f;
             float rowHeight = rect.height / 2f;
 
-            Rect rrRect = new Rect(rect.x, rect.y, colWidth, rowHeight);
+            Rect tempRect = new Rect(rect.x, rect.y, colWidth, rowHeight);
             Rect phRect = new Rect(rect.x + colWidth + 8f, rect.y, colWidth, rowHeight);
             Rect volRect = new Rect(rect.x, rect.y + rowHeight, colWidth, rowHeight);
             Rect bleedRect = new Rect(rect.x + colWidth + 8f, rect.y + rowHeight, colWidth, rowHeight);
@@ -235,29 +233,9 @@ namespace EmergencyExpanded
             float currentBloodMl = maxBloodMl * bloodVolume;
             float volPct = bloodVolume * 100f;
 
-            float ph = 7.40f;
-            Hediff acidosis = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis);
-            if (acidosis != null) ph -= acidosis.Severity * 0.55f;
-            ph += (Mathf.PingPong(Time.realtimeSinceStartup * 0.05f, 0.02f) - 0.01f);
-            ph = Mathf.Clamp(ph, 6.70f, 7.45f);
-
-            float rr = 16f;
-            if (pawn.Dead) { rr = 0f; }
-            else
-            {
-                float breathing = pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
-                if (breathing <= 0.05f) rr = 0f;
-                else
-                {
-                    rr = 16f * breathing;
-                    if (acidosis != null) rr += acidosis.Severity * 14f;
-                    Hediff morphine = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MorphineActive);
-                    if (morphine != null) rr -= morphine.Severity * 6f;
-                    if (pawn.health.hediffSet.BleedRateTotal > 0.1f) rr += Mathf.Clamp(pawn.health.hediffSet.BleedRateTotal * 8f, 0f, 12f);
-                    rr += Mathf.Sin(Time.realtimeSinceStartup * 0.3f) * 1f;
-                    rr = Mathf.Clamp(rr, 0f, 45f);
-                }
-            }
+            // 读取缓存的体征数据 (2秒一结算)
+            float ph = vitals.displaypH;
+            float temp = vitals.displayTemp;
             
             void DrawGridItem(Rect r, string label, string val, Color valColor)
             {
@@ -275,13 +253,17 @@ namespace EmergencyExpanded
                 Widgets.Label(new Rect(r.x + 45f, r.y, r.width - 47f, r.height), pawn.Dead ? "---" : val);
             }
 
-            Color rrColor = (rr < 8f || rr > 30f) ? Color.red : new Color(0.2f, 1.0f, 0.5f);
-            DrawGridItem(rrRect, "RR", rr.ToString("F0"), rrColor);
+            Color colorCrimson = new Color(0.83f, 0.25f, 0.25f);
+            Color colorAmber = new Color(0.85f, 0.60f, 0.25f);
+            Color colorMint = new Color(0.32f, 0.78f, 0.52f);
 
-            Color phColor = (ph < 7.30f) ? Color.red : new Color(0.2f, 1.0f, 0.5f);
+            Color tempColor = (temp < 35.0f || temp > 38.5f) ? colorCrimson : ((temp < 36.0f || temp > 37.5f) ? colorAmber : colorMint);
+            DrawGridItem(tempRect, "Temp", temp.ToString("F1") + "°C", tempColor);
+
+            Color phColor = (ph < 7.30f) ? colorCrimson : colorMint;
             DrawGridItem(phRect, "pH", ph.ToString("F2"), phColor);
 
-            Color volColor = bloodLoss?.Severity > 0.4f ? Color.red : (bloodLoss?.Severity > 0.15f ? Color.yellow : new Color(0.2f, 1.0f, 0.5f));
+            Color volColor = bloodLoss?.Severity > 0.4f ? colorCrimson : (bloodLoss?.Severity > 0.15f ? colorAmber : colorMint);
             DrawGridItem(volRect, "Vol", volPct.ToString("F0") + "% (" + currentBloodMl.ToString("F0") + "ml)", volColor);
 
             string bleedRateStr;
@@ -291,13 +273,13 @@ namespace EmergencyExpanded
             {
                 float mlPerHour = rawBleedRate * maxBloodMl / 24f;
                 bleedRateStr = mlPerHour.ToString("F0") + " ml/h";
-                bleedColor = rawBleedRate > 1.0f ? Color.red : (rawBleedRate > 0.1f ? Color.yellow : new Color(0.2f, 1.0f, 0.5f));
+                bleedColor = rawBleedRate > 1.0f ? colorCrimson : (rawBleedRate > 0.1f ? colorAmber : colorMint);
             }
             else
             {
                 float bleedRatePercent = rawBleedRate * 100f;
                 bleedRateStr = bleedRatePercent.ToString("F0") + "%/d";
-                bleedColor = bleedRatePercent > 100f ? Color.red : (bleedRatePercent > 10f ? Color.yellow : new Color(0.2f, 1.0f, 0.5f));
+                bleedColor = bleedRatePercent > 100f ? colorCrimson : (bleedRatePercent > 10f ? colorAmber : colorMint);
             }
             DrawGridItem(bleedRect, "BldR", bleedRateStr, bleedColor);
 
@@ -318,14 +300,12 @@ namespace EmergencyExpanded
             if (pawn.Dead) { sbp = 0f; dbp = 0f; }
             else
             {
-                float bloodVolume = 1f;
                 Hediff bloodLoss = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
-                if (bloodLoss != null) bloodVolume = Mathf.Clamp01(1f - bloodLoss.Severity);
-                float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-
-                float bpVolumeFactor = 1.0f - Mathf.Pow(1.0f - bloodVolume, 2f) * 2f;
+                float bloodLossSeverity = bloodLoss?.Severity ?? 0f;
+                float bpVolumeFactor = 1.0f - Mathf.Pow(bloodLossSeverity, 1.5f) * 1.2f;
                 bpVolumeFactor = Mathf.Clamp01(bpVolumeFactor);
 
+                float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
                 float bpPumpingFactor = 1.0f;
                 if (pumping <= 0.05f) bpPumpingFactor = 0f;
                 else bpPumpingFactor = 0.4f + (pumping * 0.6f);
@@ -339,15 +319,20 @@ namespace EmergencyExpanded
                     float bonus = adrenaline.Severity * 15f;
                     sbp += bonus; dbp += bonus * 0.7f;
                 }
-                float noise = Mathf.Sin(Time.realtimeSinceStartup * 0.5f) * 2f;
+                float noise = Mathf.Sin(Find.TickManager.TicksGame * 0.008f) * 2f;
                 sbp += noise; dbp += noise * 0.6f;
                 if (sbp < 0f) sbp = 0f; if (dbp < 0f) dbp = 0f;
                 if (sbp < dbp) dbp = sbp * 0.67f;
             }
 
-            Color hrColor = (bpm < 40f || bpm > 140f) ? Color.red : ((bpm < 60f || bpm > 100f) ? Color.yellow : new Color(0.2f, 1.0f, 0.5f));
-            Color bpColor = (sbp < 90f || sbp > 140f) ? Color.red : new Color(0.2f, 1.0f, 0.5f);
-            Color spo2Color = (spo2 < 85) ? Color.red : ((spo2 < 93) ? Color.yellow : new Color(0.0f, 0.9f, 1.0f));
+            Color colorCrimson = new Color(0.83f, 0.25f, 0.25f);
+            Color colorAmber = new Color(0.85f, 0.60f, 0.25f);
+            Color colorMint = new Color(0.32f, 0.78f, 0.52f);
+            Color colorCerulean = new Color(0.25f, 0.68f, 0.82f);
+
+            Color hrColor = (bpm < (pawn.Awake() ? 40f : 35f) || bpm > 140f) ? colorCrimson : ((bpm < (pawn.Awake() ? 60f : 50f) || bpm > 100f) ? colorAmber : colorMint);
+            Color bpColor = (sbp < 90f || sbp > 140f) ? colorCrimson : colorMint;
+            Color spo2Color = (spo2 < 85) ? colorCrimson : ((spo2 < 93) ? colorAmber : colorCerulean);
 
             Color gridColor;
             Color coreColor;
@@ -355,27 +340,27 @@ namespace EmergencyExpanded
 
             if (bpm < EE_Constants.EcgFlatlineThreshold)
             {
-                gridColor = new Color(0.4f, 0.0f, 0.0f, 0.15f);
-                coreColor = new Color(1.0f, 0.15f, 0.15f, 1.0f);
-                glowColor = new Color(1.0f, 0.0f, 0.0f, 0.4f);
+                gridColor = new Color(0.40f, 0.0f, 0.0f, 0.15f);
+                coreColor = colorCrimson;
+                glowColor = new Color(0.83f, 0.25f, 0.25f, 0.4f);
             }
-            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < EE_Constants.EcgBradycardiaThreshold || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
+            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f) || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
             {
-                gridColor = new Color(0.4f, 0.2f, 0.0f, 0.15f);
-                coreColor = new Color(1.0f, 0.7f, 0.1f, 1.0f);
-                glowColor = new Color(1.0f, 0.5f, 0.0f, 0.4f);
+                gridColor = new Color(0.40f, 0.25f, 0.0f, 0.15f);
+                coreColor = colorAmber;
+                glowColor = new Color(0.85f, 0.60f, 0.25f, 0.4f);
             }
             else
             {
-                gridColor = new Color(0f, 0.4f, 0.4f, 0.15f);
-                coreColor = new Color(0.2f, 1.0f, 0.8f, 1.0f);
-                glowColor = new Color(0.0f, 0.8f, 0.6f, 0.4f);
+                gridColor = new Color(0.12f, 0.38f, 0.22f, 0.15f);
+                coreColor = colorMint;
+                glowColor = new Color(0.32f, 0.78f, 0.52f, 0.4f);
             }
 
             Rect innerScreen = rect.ContractedBy(4f);
 
-            // Left side: ECG wave (width 220f)
-            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 10f, 220f, innerScreen.height - 15f);
+            // Left side: ECG wave (width 300f)
+            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 10f, 300f, innerScreen.height - 15f);
 
             // Draw grid in waveRect
             GUI.color = gridColor * new Color(1f, 1f, 1f, 0.5f);
@@ -455,7 +440,7 @@ namespace EmergencyExpanded
             else if (bpm < EE_Constants.EcgFlatlineThreshold) statusStr = "EE_Status_CardiacArrest".Translate();
             else if (vitals.hasMyocardialInfarction && bpm > 180f) statusStr = "EE_Status_VFib".Translate();
             else if (bpm > EE_Constants.EcgTachycardiaThreshold) statusStr = "EE_Status_Tachycardia".Translate();
-            else if (bpm < EE_Constants.EcgBradycardiaThreshold) statusStr = "EE_Status_Bradycardia".Translate();
+            else if (bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f)) statusStr = "EE_Status_Bradycardia".Translate();
 
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleCenter;
@@ -465,23 +450,30 @@ namespace EmergencyExpanded
             Widgets.DrawBoxSolid(statusRect, new Color(0.1f, 0.1f, 0.1f, 0.8f));
             Widgets.Label(statusRect, statusStr);
 
-            // Draw vertical divider between ECG screen grid and vitals readout
-            float lineX = innerScreen.x + 226f;
+            // Draw vertical divider between ECG screen grid and vitals readout (shifted right)
+            float lineX = innerScreen.x + 308f;
             Widgets.DrawLine(new Vector2(lineX, innerScreen.y + 4f), new Vector2(lineX, innerScreen.yMax - 4f), new Color(0.3f, 0.3f, 0.3f, 0.3f), 1f);
 
-            // Right side inside the monitor screen: Vitals (HR, BP, SpO2)
-            float vitalsX = innerScreen.x + 230f;
-            float vitalsWidth = 118f;
-            float vitalRowHeight = 26f;
+            // Right side inside the monitor screen: Vitals (HR, BP, SpO2, RR)
+            float vitalsX = innerScreen.x + 312f;
+            float vitalsWidth = 108f;
 
-            Rect hrRect = new Rect(vitalsX, innerScreen.y + 4f, vitalsWidth, vitalRowHeight);
-            Rect bpRect = new Rect(vitalsX, innerScreen.y + 4f + vitalRowHeight, vitalsWidth, vitalRowHeight);
-            Rect spo2Rect = new Rect(vitalsX, innerScreen.y + 4f + vitalRowHeight * 2f, vitalsWidth, vitalRowHeight);
+            Rect hrRect = new Rect(vitalsX, innerScreen.y + 2f, vitalsWidth, 21f);
+            Rect bpRect = new Rect(vitalsX, innerScreen.y + 24f, vitalsWidth, 21f);
+            Rect spo2Rect = new Rect(vitalsX, innerScreen.y + 46f, vitalsWidth, 21f);
+            Rect rrRect = new Rect(vitalsX, innerScreen.y + 68f, vitalsWidth, 21f);
+
+            string bpStr = (sbp < EE_Constants.BpMeasurableThreshold) ? "--" : string.Format("{0:F0}/{1:F0}", sbp, dbp);
+            string spo2StrCompact = (vitals.displaySpO2 < EE_Constants.SpO2MeasurableThreshold) ? "--" : spo2.ToString() + "%";
+            float rr = vitals.displayRR;
+            string rrStr = rr.ToString("F0");
+            Color rrColor = (rr < 8f || rr > 30f) ? colorCrimson : colorMint;
 
             TextAnchor origAnchor = Text.Anchor;
-            DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead);
-            DrawVitalVerticalCompact(bpRect, "BP", string.Format("{0:F0}/{1:F0}", sbp, dbp), bpColor, pawn.Dead);
-            DrawVitalVerticalCompact(spo2Rect, "SpO2", spo2.ToString() + "%", spo2Color, pawn.Dead);
+            DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead, GameFont.Medium, true);
+            DrawVitalVerticalCompact(bpRect, "BP", bpStr, bpColor, pawn.Dead, GameFont.Small, false);
+            DrawVitalVerticalCompact(spo2Rect, "SpO2", spo2StrCompact, spo2Color, pawn.Dead, GameFont.Small, false);
+            DrawVitalVerticalCompact(rrRect, "RR", rrStr, rrColor, pawn.Dead, GameFont.Small, false);
             
             Text.Anchor = origAnchor;
             GUI.color = Color.white;
@@ -499,17 +491,23 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Small;
         }
 
-        private void DrawVitalVerticalCompact(Rect r, string label, string val, Color valColor, bool dead)
+        private void DrawVitalVerticalCompact(Rect r, string label, string val, Color valColor, bool dead, GameFont font, bool bold)
         {
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
             GUI.color = new Color(0.5f, 0.7f, 0.8f);
-            Widgets.Label(new Rect(r.x, r.y + 2f, 30f, r.height - 4f), label);
+            Widgets.Label(new Rect(r.x, r.y + 2f, 35f, r.height - 4f), label);
 
-            Text.Font = GameFont.Medium;
+            Text.Font = font;
             Text.Anchor = TextAnchor.MiddleRight;
             GUI.color = valColor;
-            Widgets.Label(new Rect(r.x + 30f, r.y, r.width - 30f, r.height), dead ? "---" : val);
+
+            string displayVal = dead ? "---" : val;
+            if (bold && !dead)
+            {
+                displayVal = "<b>" + displayVal + "</b>";
+            }
+            Widgets.Label(new Rect(r.x + 35f, r.y, r.width - 35f, r.height), displayVal);
         }
 
         private void DrawDiagnosticsInner(Rect rect, Pawn pawn)
@@ -523,33 +521,58 @@ namespace EmergencyExpanded
             List<string> diagnoses = new List<string>();
             List<Color> diagColors = new List<Color>();
 
+            // =========================================================================================
+            // CLINICAL TRIAGE COLOR PALETTE (ESI-based Muted Professional Colors)
+            // 临床分诊低饱和度专业色表：
+            // 1. Level 1 - 红色 (深绯红/Crimson): #D32F2F (0.83f, 0.18f, 0.18f) - 即刻致命危机，需 CPR/除颤/穿刺
+            // 2. Level 2 - 橙色 (暖秋橘/Amber): #D97724 (0.85f, 0.47f, 0.14f) - 系统功能衰竭/重度脑缺氧/休克，需监护抢救
+            // 3. Level 3 - 黄色 (麦草黄/Straw): #C5A028 (0.77f, 0.63f, 0.16f) - 中度异常/骨折/全身炎症/心动过缓/心动过速
+            // 4. Level 4 - 蓝色 (天青蓝/Cerulean): #40A0C0 (0.25f, 0.65f, 0.75f) - 状态受控/已穿刺减压/肾上腺素与吗啡等治疗中
+            // 5. Level 5 - 灰色 (板岩灰/Slate): #707070 (0.44f, 0.44f, 0.44f) - 死亡状态 / 未见明显异常
+            // =========================================================================================
+            Color colCrimson = new Color(0.83f, 0.18f, 0.18f); // Level 1
+            Color colAmber = new Color(0.85f, 0.47f, 0.14f);   // Level 2
+            Color colStraw = new Color(0.77f, 0.63f, 0.16f);   // Level 3
+            Color colCerulean = new Color(0.25f, 0.65f, 0.75f); // Level 4
+            Color colSlate = new Color(0.44f, 0.44f, 0.44f);   // Level 5
+
             if (pawn.Dead)
             {
-                diagnoses.Add("生物学死亡");
-                diagColors.Add(Color.gray);
+                diagnoses.Add("EE_Diagnosis_Dead".Translate());
+                diagColors.Add(colSlate);
             }
             else
             {
-                // 脑死亡倒计时
+                // 脑死亡倒计时 -> Level 1 (即刻致命)
                 Hediff timer = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_BiologicalDeathTimer);
                 if (timer != null)
                 {
                     float remHours = (1.0f - timer.Severity) * 4.0f;
                     int remGameMinutes = Mathf.RoundToInt(remHours * 60f);
-                    diagnoses.Add($"脑死亡倒计时: {remGameMinutes}m");
-                    diagColors.Add(Color.red);
+                    diagnoses.Add("EE_Diagnosis_BrainDeathTimer".Translate(remGameMinutes));
+                    diagColors.Add(colCrimson);
                 }
 
                 // 脑缺氧
                 if (pawn.health.hediffSet.HasHediff(EE_DefOf.VegetativeState))
                 {
-                    diagnoses.Add("脑坏死 (植物人)");
-                    diagColors.Add(Color.red);
+                    // 植物人 -> Level 3 (生命体征稳定，无急性恶化危象)
+                    diagnoses.Add("EE_Diagnosis_VegetativeState".Translate());
+                    diagColors.Add(colStraw);
                 }
                 else if (pawn.health.hediffSet.HasHediff(EE_DefOf.CerebralHypoxia))
                 {
-                    diagnoses.Add("脑缺氧 (进行性神经损伤)");
-                    diagColors.Add(Color.red);
+                    Hediff ch = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.CerebralHypoxia);
+                    if (ch.Severity >= 0.7f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_CerebralHypoxia_Extreme".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_CerebralHypoxia".Translate());
+                        diagColors.Add(colAmber);
+                    }
                 }
 
                 // 气胸
@@ -558,13 +581,15 @@ namespace EmergencyExpanded
                 {
                     if (pneumo.isDecompressed)
                     {
-                        diagnoses.Add("气胸 (已穿刺减压)");
-                        diagColors.Add(Color.green);
+                        // 气胸已减压 -> Level 4 (稳定受控)
+                        diagnoses.Add("EE_Diagnosis_PneumothoraxDecompressed".Translate());
+                        diagColors.Add(colCerulean);
                     }
                     else
                     {
-                        diagnoses.Add("张力性气胸 (窒息危象)");
-                        diagColors.Add(Color.red);
+                        // 张力性气胸危象 -> Level 1 (即刻致命)
+                        diagnoses.Add("EE_Diagnosis_PneumothoraxCrisis".Translate());
+                        diagColors.Add(colCrimson);
                     }
                 }
 
@@ -574,45 +599,116 @@ namespace EmergencyExpanded
                     Hediff mi = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction);
                     if (mi.Severity >= 0.60f)
                     {
-                        diagnoses.Add("心脏骤停 (Flatline)");
-                        diagColors.Add(Color.red);
+                        // 心脏骤停 -> Level 1 (即刻致命)
+                        diagnoses.Add("EE_Diagnosis_CardiacArrest".Translate());
+                        diagColors.Add(colCrimson);
                     }
                     else
                     {
-                        diagnoses.Add("心室颤动 (VFib)");
-                        diagColors.Add(Color.red);
+                        // 心室颤动 -> Level 1 (即刻致命)
+                        diagnoses.Add("EE_Diagnosis_VFib".Translate());
+                        diagColors.Add(colCrimson);
                     }
                 }
 
                 // 休克与大出血
                 if (pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Shock))
                 {
-                    diagnoses.Add("休克危象");
-                    diagColors.Add(Color.red);
+                    Hediff shock = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Shock);
+                    if (shock.Severity >= 0.7f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_Shock_Irreversible".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_Shock".Translate());
+                        diagColors.Add(colAmber);
+                    }
                 }
                 if (pawn.health.hediffSet.HasHediff(EE_DefOf.MassiveBleeding))
                 {
-                    diagnoses.Add("活动性大出血!");
-                    diagColors.Add(Color.red);
+                    // 活动性大出血 -> Level 1 (即刻致命)
+                    diagnoses.Add("EE_Diagnosis_MassiveBleeding".Translate());
+                    diagColors.Add(colCrimson);
+                }
+
+                // 代谢性酸中毒
+                if (pawn.health.hediffSet.HasHediff(EE_DefOf.MetabolicAcidosis))
+                {
+                    Hediff acid = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis);
+                    if (acid.Severity >= 0.5f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_Acidosis_Extreme".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_Acidosis".Translate());
+                        diagColors.Add(colAmber);
+                    }
                 }
 
                 // 败血症与SIRS
                 if (pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Sepsis))
                 {
-                    diagnoses.Add("严重败血症");
-                    diagColors.Add(Color.red);
+                    Hediff sepsis = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Sepsis);
+                    if (sepsis.Severity >= 0.8f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_Sepsis_Extreme".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_Sepsis".Translate());
+                        diagColors.Add(colAmber);
+                    }
                 }
                 else if (pawn.health.hediffSet.HasHediff(EE_DefOf.SIRS))
                 {
-                    diagnoses.Add("全身炎症 (SIRS)");
-                    diagColors.Add(Color.yellow);
+                    Hediff sirs = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.SIRS);
+                    if (sirs.Severity >= 0.7f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_SIRS_Late".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_SIRS".Translate());
+                        diagColors.Add(colStraw);
+                    }
                 }
 
                 // 器官衰竭
                 if (pawn.health.hediffSet.HasHediff(EE_DefOf.MultipleOrganFailure))
                 {
-                    diagnoses.Add("多器官衰竭 (MODS)");
-                    diagColors.Add(Color.red);
+                    Hediff mods = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MultipleOrganFailure);
+                    if (mods.Severity >= 0.8f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_MODS_Terminal".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_MODS".Translate());
+                        diagColors.Add(colAmber);
+                    }
+                }
+
+                // 凝血功能障碍
+                if (pawn.health.hediffSet.HasHediff(EE_DefOf.Coagulopathy))
+                {
+                    Hediff coag = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.Coagulopathy);
+                    if (coag.Severity >= 0.7f)
+                    {
+                        diagnoses.Add("EE_Diagnosis_Coagulopathy_Severe".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else
+                    {
+                        diagnoses.Add("EE_Diagnosis_Coagulopathy".Translate());
+                        diagColors.Add(colAmber);
+                    }
                 }
 
                 // 骨折检查
@@ -623,17 +719,128 @@ namespace EmergencyExpanded
                         bool isFixed = fracture.isSplinted || fracture.isCasted || fracture.isInternallyFixed || fracture.isStrictBedrest;
                         if (!isFixed)
                         {
-                            diagnoses.Add($"{fracture.Part.Label}未固定骨折");
-                            diagColors.Add(Color.red);
+                            // 未固定骨折 -> Level 3 (中度警示)
+                            diagnoses.Add("EE_Diagnosis_UnfixedFracture".Translate(fracture.Part.Label));
+                            diagColors.Add(colStraw);
                         }
+                    }
+                }
+
+                // 动态心律失常检测 -> Level 3 (中度警示)
+                CachedVitals vitals = VitalTracker.GetOrCreateVitals(pawn);
+                if (vitals != null)
+                {
+                    float bpm = vitals.displayHeartRate;
+                    if (bpm >= EE_Constants.EcgFlatlineThreshold)
+                    {
+                        if (bpm > 140f)
+                        {
+                            diagnoses.Add("EE_Diagnosis_Tachycardia".Translate());
+                            diagColors.Add(colStraw);
+                        }
+                        else if (bpm < (pawn.Awake() ? 45f : 35f))
+                        {
+                            diagnoses.Add("EE_Diagnosis_Bradycardia".Translate());
+                            diagColors.Add(colStraw);
+                        }
+                    }
+                }
+
+                // 肾上腺素强化生效状态检测 (包含过量分级)
+                Hediff adrenaline = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
+                if (adrenaline != null)
+                {
+                    float sev = adrenaline.Severity;
+                    if (sev >= 2.0f) // 致命过量 (儿茶酚胺风暴) -> Level 1 (红色危机)
+                    {
+                        diagnoses.Add("EE_Diagnosis_AdrenalineFatalOverdose".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else if (sev >= 1.5f) // 药物过量 (交感过负荷) -> Level 2 (橙色危象)
+                    {
+                        diagnoses.Add("EE_Diagnosis_AdrenalineOverdose".Translate());
+                        diagColors.Add(colAmber);
+                    }
+                    else // 治疗正常生效中 -> Level 4 (天青绿)
+                    {
+                        diagnoses.Add("EE_Diagnosis_AdrenalineActive".Translate());
+                        diagColors.Add(colCerulean);
+                    }
+                }
+
+                // 吗啡治疗生效状态检测 (包含过量分级)
+                Hediff morphine = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MorphineActive);
+                if (morphine != null)
+                {
+                    float sev = morphine.Severity;
+                    if (sev >= 2.0f) // 吗啡中毒 (深昏迷) -> Level 1 (红色危机)
+                    {
+                        diagnoses.Add("EE_Diagnosis_MorphineFatalOverdose".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else if (sev >= 1.0f) // 吗啡过量 (中枢抑制) -> Level 2 (橙色危象)
+                    {
+                        diagnoses.Add("EE_Diagnosis_MorphineOverdose".Translate());
+                        diagColors.Add(colAmber);
+                    }
+                    else // 治疗正常生效中 -> Level 4 (天青绿)
+                    {
+                        diagnoses.Add("EE_Diagnosis_MorphineActive".Translate());
+                        diagColors.Add(colCerulean);
+                    }
+                }
+
+                // 氨甲环酸生效状态检测 (包含过量分级)
+                Hediff txa = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_TxaActive);
+                if (txa != null)
+                {
+                    float sev = txa.Severity;
+                    if (sev >= 2.0f) // 氨甲环酸中毒 (致命血栓/抽搐) -> Level 1 (红色危机)
+                    {
+                        diagnoses.Add("EE_Diagnosis_TxaFatalOverdose".Translate());
+                        diagColors.Add(colCrimson);
+                    }
+                    else if (sev >= 1.0f) // 氨甲环酸过量 (高凝积蓄) -> Level 2 (橙色危象)
+                    {
+                        diagnoses.Add("EE_Diagnosis_TxaOverdose".Translate());
+                        diagColors.Add(colAmber);
+                    }
+                    else // 治疗正常生效中 -> Level 4 (天青绿)
+                    {
+                        diagnoses.Add("EE_Diagnosis_TxaActive".Translate());
+                        diagColors.Add(colCerulean);
                     }
                 }
             }
 
+            // 按照严重度优先级对诊断进行排序：Crimson(1) > Amber(2) > Straw(3) > Cerulean(4) > Slate(5)
+            List<string> sortedDiagnoses = new List<string>();
+            List<Color> sortedColors = new List<Color>();
+            for (int p = 1; p <= 5; p++)
+            {
+                for (int i = 0; i < diagnoses.Count; i++)
+                {
+                    Color col = diagColors[i];
+                    int priority = 5;
+                    if (col == colCrimson) priority = 1;
+                    else if (col == colAmber) priority = 2;
+                    else if (col == colStraw) priority = 3;
+                    else if (col == colCerulean) priority = 4;
+
+                    if (priority == p)
+                    {
+                        sortedDiagnoses.Add(diagnoses[i]);
+                        sortedColors.Add(diagColors[i]);
+                    }
+                }
+            }
+            diagnoses = sortedDiagnoses;
+            diagColors = sortedColors;
+
             if (diagnoses.Count == 0)
             {
                 diagnoses.Add("EE_Diagnosis_None".Translate());
-                diagColors.Add(Color.gray);
+                diagColors.Add(colSlate);
             }
 
             float curX = diagInner.x;
@@ -684,9 +891,10 @@ namespace EmergencyExpanded
             {
                 if (!active)
                 {
-                    Widgets.DrawBoxSolid(btnRect, new Color(0.1f, 0.1f, 0.1f, 0.8f));
+                    // 未激活状态使用极低透明度背景和灰色文字
+                    Widgets.DrawBoxSolid(btnRect, new Color(0.08f, 0.08f, 0.09f, 0.6f));
                     Text.Font = GameFont.Small;
-                    GUI.color = new Color(0.4f, 0.4f, 0.4f);
+                    GUI.color = new Color(0.35f, 0.35f, 0.35f);
                     Text.Anchor = TextAnchor.MiddleCenter;
                     Widgets.Label(btnRect, text);
                     Text.Anchor = TextAnchor.UpperLeft;
@@ -695,12 +903,18 @@ namespace EmergencyExpanded
                 }
 
                 bool clicked = Widgets.ButtonInvisible(btnRect);
-                if (Mouse.IsOver(btnRect)) {
-                    Widgets.DrawBoxSolid(btnRect, new Color(0.18f, 0.18f, 0.19f));
-                } else {
-                    Widgets.DrawBoxSolid(btnRect, new Color(0.12f, 0.12f, 0.13f));
-                }
-                Widgets.DrawBoxSolid(new Rect(btnRect.x, btnRect.y, btnRect.width, 2f), accentColor);
+                
+                // 激活状态背景色 (高对比度深蓝灰)，悬停高亮
+                Color bgCol = Mouse.IsOver(btnRect) ? new Color(0.25f, 0.27f, 0.32f) : new Color(0.18f, 0.19f, 0.22f);
+                Widgets.DrawBoxSolid(btnRect, bgCol);
+                
+                // 底部 2px 装饰彩条
+                Widgets.DrawBoxSolid(new Rect(btnRect.x, btnRect.yMax - 2f, btnRect.width, 2f), accentColor);
+                
+                // 30% 透明度的彩色细边框，提升科技感
+                GUI.color = new Color(accentColor.r, accentColor.g, accentColor.b, 0.3f);
+                Widgets.DrawBox(btnRect, 1);
+                GUI.color = Color.white;
                 
                 Text.Font = GameFont.Small;
                 GUI.color = Color.white;
@@ -725,8 +939,10 @@ namespace EmergencyExpanded
                 }
             }
 
+            Color btnAccentColor = new Color(0.25f, 0.65f, 0.75f);
+
             string cprTxt = "CPR";
-            if (DrawFlatButton(cprBtn, cprTxt, new Color(1.0f, 0.3f, 0.3f), needsCpr))
+            if (DrawFlatButton(cprBtn, cprTxt, btnAccentColor, needsCpr))
             {
                 OrderCPR(patient);
             }
@@ -740,14 +956,14 @@ namespace EmergencyExpanded
             }
 
             string decompTxt = (LanguageDatabase.activeLanguage != null && LanguageDatabase.activeLanguage.LegacyFolderName.Contains("Chinese")) ? "穿刺减压" : "Decompress";
-            if (DrawFlatButton(decompBtn, decompTxt, new Color(1.0f, 0.6f, 0.2f), needsDecomp))
+            if (DrawFlatButton(decompBtn, decompTxt, btnAccentColor, needsDecomp))
             {
                 OrderNeedleDecompression(patient);
             }
 
             // 3. Aid
             string aidTxt = (LanguageDatabase.activeLanguage != null && LanguageDatabase.activeLanguage.LegacyFolderName.Contains("Chinese")) ? "背包急救" : "First Aid";
-            if (DrawFlatButton(aidBtn, aidTxt, new Color(0.2f, 0.8f, 0.4f), !patient.Dead))
+            if (DrawFlatButton(aidBtn, aidTxt, btnAccentColor, !patient.Dead))
             {
                 OrderFastFirstAid(patient);
             }
@@ -759,10 +975,9 @@ namespace EmergencyExpanded
                 needsDefib = true; // For now just enable if MI
             }
             string defibTxt = (LanguageDatabase.activeLanguage != null && LanguageDatabase.activeLanguage.LegacyFolderName.Contains("Chinese")) ? "除颤" : "Defib";
-            if (DrawFlatButton(defibBtn, defibTxt, new Color(0.2f, 0.6f, 1.0f), needsDefib))
+            if (DrawFlatButton(defibBtn, defibTxt, btnAccentColor, needsDefib))
             {
-                // Just use CPR order logic for Defib temporarily as requested
-                OrderCPR(patient);
+                OrderDefib(patient);
             }
         }
 
@@ -797,6 +1012,49 @@ namespace EmergencyExpanded
             else
             {
                 Messages.Message("EE_NoDoctorsAvailable".Translate(), MessageTypeDefOf.RejectInput, false);
+            }
+        }
+
+        private void OrderDefib(Pawn patient)
+        {
+            if (patient == null || patient.Map == null) return;
+            List<FloatMenuOption> options = new List<FloatMenuOption>();
+
+            foreach (Pawn doctor in patient.Map.mapPawns.FreeColonistsSpawned)
+            {
+                if (doctor.Downed || doctor.Dead || !doctor.Faction.IsPlayer) continue;
+                if (!doctor.health.capacities.CapableOf(PawnCapacityDefOf.Manipulation) ||
+                    !doctor.health.capacities.CapableOf(PawnCapacityDefOf.Moving)) continue;
+
+                List<Thing> availableItems = EE_FirstAidUtility.GetUsableItemsInInventory(doctor);
+                Thing defib = availableItems.FirstOrDefault(t => EE_FirstAidUtility.GetEmergencyItemType(t.def) == EmergencyItemType.Defibrillator);
+                if (defib != null)
+                {
+                    string label = doctor.LabelShort;
+                    if (doctor.workSettings != null && doctor.workSettings.WorkIsActive(WorkTypeDefOf.Doctor))
+                    {
+                        label += " (" + "EE_Doctor".Translate() + ")";
+                    }
+                    string optionLabel = $"{doctor.LabelShort} - {"EE_OrderPerformDefibrillation".Translate(patient.LabelShort, defib.stackCount)}";
+
+                    options.Add(new FloatMenuOption(optionLabel, () =>
+                    {
+                        if (doctor.Drafted) doctor.drafter.Drafted = false;
+
+                        Job job = JobMaker.MakeJob(EE_DefOf.EE_ApplyFirstAid, patient, defib);
+                        job.count = 1;
+                        doctor.jobs.TryTakeOrderedJob(job, JobTag.Misc);
+                    }));
+                }
+            }
+
+            if (options.Count > 0)
+            {
+                Find.WindowStack.Add(new FloatMenu(options));
+            }
+            else
+            {
+                Messages.Message("EE_NoDefibrillatorAvailable".Translate(), MessageTypeDefOf.RejectInput, false);
             }
         }
 

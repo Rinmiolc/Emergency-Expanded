@@ -8,7 +8,7 @@
     <labelNoun>myocardial ischemia</labelNoun>
     <description>Acute ischemia of cardiac muscles due to insufficient perfusion. If unresolved, it progresses to heart failure or triggers sudden myocardial infarction.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
@@ -42,7 +42,7 @@
     <labelNoun>heart failure</labelNoun>
     <description>Irreversible cardiac muscle failure. The heart's extremely weak pumping capacity is unable to maintain circulation. Can only be resolved by organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <stages>
       <li>
@@ -64,7 +64,7 @@
     <labelNoun>ARDS</labelNoun>
     <description>Acute Respiratory Distress Syndrome (ARDS). Alveoli fill with fluid, severely degrading oxygen exchange and lung compliance, with a high chance of spontaneous pneumothorax.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
@@ -96,7 +96,7 @@
     <labelNoun>respiratory failure</labelNoun>
     <description>Irreversible respiratory failure. Lungs are severely fibrosed and completely unable to exchange gases. Can only be resolved by organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <stages>
       <li>
@@ -118,7 +118,7 @@
     <labelNoun>acute liver injury</labelNoun>
     <description>Acute ischemic liver damage (shock liver). Impairs filtration, metabolic functions, and coagulation factor synthesis.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
@@ -150,7 +150,7 @@
     <labelNoun>liver failure</labelNoun>
     <description>Irreversible liver failure. Completely loses the ability to synthesize clotting factors and filter toxins, making wounds extremely hard to clot. Requires organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <stages>
       <li>
@@ -166,7 +166,7 @@
     <labelNoun>acute kidney injury</labelNoun>
     <description>Acute Kidney Injury (AKI) caused by renal hypoperfusion. Severely reduces blood filtration and acid excretion.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <maxSeverity>1.0</maxSeverity>
     <stages>
@@ -198,7 +198,7 @@
     <labelNoun>kidney failure</labelNoun>
     <description>Irreversible kidney failure. Completely loses excretion and filtration capacities, causing uncontrolled acidosis and toxic buildup. Requires organ transplant.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <scenarioCanAdd>false</scenarioCanAdd>
     <stages>
       <li>

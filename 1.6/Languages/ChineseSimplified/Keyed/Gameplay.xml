@@ -85,10 +85,15 @@
   <EE_PneumothoraxDecompressedTag>&lt;color=#00FF7F&gt;已减压&lt;/color&gt;</EE_PneumothoraxDecompressedTag>
   <EE_RemainingCount>{0} (剩余: {1})</EE_RemainingCount>
   <EE_Settings_AdditionalOptions>附加选项</EE_Settings_AdditionalOptions>
-  <EE_Settings_DifficultyPresetEasy>简单 - 更少的大出血与骨折，更充裕的抢救时间</EE_Settings_DifficultyPresetEasy>
+  <EE_Settings_DifficultyPresetEasy_Title>简单</EE_Settings_DifficultyPresetEasy_Title>
+  <EE_Settings_DifficultyPresetEasy_Desc>更少的大出血与骨折，更充裕的抢救时间。</EE_Settings_DifficultyPresetEasy_Desc>
   <EE_Settings_DifficultyPresetGlobal>全局难度预设</EE_Settings_DifficultyPresetGlobal>
-  <EE_Settings_DifficultyPresetHardcore>硬核 - 平衡且具有挑战性的体验</EE_Settings_DifficultyPresetHardcore>
-  <EE_Settings_DifficultyPresetRealistic>拟真 - 极高的大出血与骨折率。更符合现实，但你确定要这么做？</EE_Settings_DifficultyPresetRealistic>
+  <EE_Settings_DifficultyPresetGlobal_Desc>控制危机事件发生概率、黄金抢救窗口缩放及伤员容错率。</EE_Settings_DifficultyPresetGlobal_Desc>
+  <EE_Settings_DifficultyPresetHardcore_Title>硬核 (推荐)</EE_Settings_DifficultyPresetHardcore_Title>
+  <EE_Settings_DifficultyPresetHardcore_Desc>平衡且具有挑战性的体验。</EE_Settings_DifficultyPresetHardcore_Desc>
+  <EE_Settings_DifficultyPresetRealistic_Title>拟真</EE_Settings_DifficultyPresetRealistic_Title>
+  <EE_Settings_DifficultyPresetRealistic_Desc>极高的大出血与骨折率。更符合现实，但你确定要选择此难度吗？</EE_Settings_DifficultyPresetRealistic_Desc>
+  <EE_Settings_GameplayMechanics>核心玩法机制</EE_Settings_GameplayMechanics>
   <EE_Settings_EnableDebugMode>开启调试模式 (Debug)</EE_Settings_EnableDebugMode>
   <EE_Settings_EnableDebugModeDesc>测试专用：将大出血、骨折等主要危机事件发生率强制提升至 90%。</EE_Settings_EnableDebugModeDesc>
   <EE_Settings_EnableDynamicMassiveBleeding>动态大出血概率</EE_Settings_EnableDynamicMassiveBleeding>
@@ -129,4 +134,49 @@
   <EE_NonFleshNoMonitor>该生物类型无需生命体征监护。</EE_NonFleshNoMonitor>
   <EE_Settings_UseMlhBleedRateUnit>生命监护仪失血速率默认使用毫升每小时 (ml/h)</EE_Settings_UseMlhBleedRateUnit>
   <EE_Settings_UseMlhBleedRateUnitDesc>若开启，生命监护仪（右上角参数区）中的失血速率（BldR）将以每小时失血毫升数 (ml/h) 为单位显示。若关闭，则恢复为原来的每日失血百分比 (%/d) 显示。</EE_Settings_UseMlhBleedRateUnitDesc>
+
+  <EE_Settings_Category_Gameplay>游戏玩法与难度</EE_Settings_Category_Gameplay>
+  <EE_Settings_Category_HealthUI>健康面板设置</EE_Settings_Category_HealthUI>
+  <EE_Settings_ShowBleedRateBanner>显示底部失血率警示横幅</EE_Settings_ShowBleedRateBanner>
+  <EE_Settings_ShowBleedRateBannerDesc>开启后，当角色处于失血状态时，会在健康面板底部显示一个红色的失血率警告横幅和生存倒计时。若关闭，则不显示。</EE_Settings_ShowBleedRateBannerDesc>
+  <EE_Settings_EnableCriticalBlink>启用致命危机条目的红色闪烁背景</EE_Settings_EnableCriticalBlink>
+  <EE_Settings_EnableCriticalBlinkDesc>开启后，发生心肌梗死、心脏骤停、休克、大出血、败血症或张力性气胸等致命危机条目时，其背景会闪烁红光以示警示。若关闭，则不闪烁。</EE_Settings_EnableCriticalBlinkDesc>
+  <EE_NoDefibrillatorAvailable>没有医生携带可用的便携式除颤仪！</EE_NoDefibrillatorAvailable>
+
+  <!-- 临床诊断翻译 -->
+  <EE_Diagnosis_Dead>生物学死亡</EE_Diagnosis_Dead>
+  <EE_Diagnosis_BrainDeathTimer>脑死亡倒计时: {0}m</EE_Diagnosis_BrainDeathTimer>
+  <EE_Diagnosis_VegetativeState>脑坏死 (植物人)</EE_Diagnosis_VegetativeState>
+  <EE_Diagnosis_CerebralHypoxia>脑缺氧 (进行性神经损伤)</EE_Diagnosis_CerebralHypoxia>
+  <EE_Diagnosis_PneumothoraxDecompressed>气胸 (已穿刺减压)</EE_Diagnosis_PneumothoraxDecompressed>
+  <EE_Diagnosis_PneumothoraxCrisis>张力性气胸 (窒息危象)</EE_Diagnosis_PneumothoraxCrisis>
+  <EE_Diagnosis_CardiacArrest>心脏骤停 (Flatline)</EE_Diagnosis_CardiacArrest>
+  <EE_Diagnosis_VFib>心室颤动 (VFib)</EE_Diagnosis_VFib>
+  <EE_Diagnosis_Shock>休克危象</EE_Diagnosis_Shock>
+  <EE_Diagnosis_MassiveBleeding>活动性大出血!</EE_Diagnosis_MassiveBleeding>
+  <EE_Diagnosis_Sepsis>严重败血症</EE_Diagnosis_Sepsis>
+  <EE_Diagnosis_SIRS>全身炎症 (SIRS)</EE_Diagnosis_SIRS>
+  <EE_Diagnosis_MODS>多器官衰竭 (MODS)</EE_Diagnosis_MODS>
+  <EE_Diagnosis_UnfixedFracture>{0}未固定骨折</EE_Diagnosis_UnfixedFracture>
+  <EE_Diagnosis_Tachycardia>窦性心动过速</EE_Diagnosis_Tachycardia>
+  <EE_Diagnosis_Bradycardia>窦性心动过缓</EE_Diagnosis_Bradycardia>
+  <EE_Diagnosis_AdrenalineActive>肾上腺素强化中</EE_Diagnosis_AdrenalineActive>
+  <EE_Diagnosis_AdrenalineOverdose>交感过负荷 (过量)</EE_Diagnosis_AdrenalineOverdose>
+  <EE_Diagnosis_AdrenalineFatalOverdose>儿茶酚胺风暴 (致命)</EE_Diagnosis_AdrenalineFatalOverdose>
+  <EE_Diagnosis_MorphineActive>吗啡镇痛中</EE_Diagnosis_MorphineActive>
+  <EE_Diagnosis_MorphineOverdose>中枢抑制 (过量)</EE_Diagnosis_MorphineOverdose>
+  <EE_Diagnosis_MorphineFatalOverdose>吗啡中毒 (深昏迷)</EE_Diagnosis_MorphineFatalOverdose>
+  <EE_Diagnosis_TxaActive>氨甲环酸促凝中</EE_Diagnosis_TxaActive>
+  <EE_Diagnosis_TxaOverdose>高凝蓄积 (过量)</EE_Diagnosis_TxaOverdose>
+  <EE_Diagnosis_TxaFatalOverdose>氨甲环酸中毒 (致命)</EE_Diagnosis_TxaFatalOverdose>
+  <!-- 动态危重级别分诊诊断 -->
+  <EE_Diagnosis_Shock_Irreversible>休克危象 (不可逆期)</EE_Diagnosis_Shock_Irreversible>
+  <EE_Diagnosis_Acidosis>代谢性酸中毒</EE_Diagnosis_Acidosis>
+  <EE_Diagnosis_Acidosis_Extreme>酸中毒危象 (重度/极限)</EE_Diagnosis_Acidosis_Extreme>
+  <EE_Diagnosis_CerebralHypoxia_Extreme>重度脑缺氧 (濒临脑死亡)</EE_Diagnosis_CerebralHypoxia_Extreme>
+  <EE_Diagnosis_Sepsis_Extreme>严重败血症 (濒临休克)</EE_Diagnosis_Sepsis_Extreme>
+  <EE_Diagnosis_SIRS_Late>晚期全身炎症 (微循环衰竭)</EE_Diagnosis_SIRS_Late>
+  <EE_Diagnosis_MODS_Terminal>终末期多器官衰竭 (MODS)</EE_Diagnosis_MODS_Terminal>
+  <EE_Diagnosis_Coagulopathy>凝血功能障碍</EE_Diagnosis_Coagulopathy>
+  <EE_Diagnosis_Coagulopathy_Severe>重度凝血障碍 (致命性出血风险)</EE_Diagnosis_Coagulopathy_Severe>
 </LanguageData>

@@ -52,6 +52,8 @@ namespace EmergencyExpanded
         {
             if (pawn == null || pawn.Dead) return;
 
+            if (!EE_Settings.ShowBleedRateBanner) return;
+
             float bleedRate = pawn.health.hediffSet.BleedRateTotal;
             if (bleedRate > 0.01f)
             {
@@ -173,18 +175,13 @@ namespace EmergencyExpanded
                 }
             }
 
-            if (isCritical)
+            if (isCritical && EE_Settings.EnableCriticalBlink)
             {
                 // 使用低透明度红光在 Postfix 覆盖绘制，可获得绝对精准的上下对齐高度 (rowHeight)
                 float pulse = Mathf.PingPong(Time.realtimeSinceStartup * 2f, 1f);
                 float alpha = Mathf.Lerp(0.04f, 0.14f, pulse);
                 Rect rowRect = new Rect(0f, __state, rect.width, rowHeight);
                 Widgets.DrawBoxSolid(rowRect, new Color(1.0f, 0.1f, 0.1f, alpha));
-
-                // 配合 rowLeftPad 决定红线的位置，防止重叠文字 (通常向左缩进并空出 6px)
-                float indicatorX = rect.x + rowLeftPad - 6f;
-                Rect indicatorRect = new Rect(indicatorX, __state + 1f, 3f, rowHeight - 2f);
-                Widgets.DrawBoxSolid(indicatorRect, Color.red);
             }
 
             // 3. 绘制胶囊药丸徽章 (Pill Badges)
@@ -200,27 +197,27 @@ namespace EmergencyExpanded
                     if (fracture.isInternallyFixed)
                     {
                         badgeText = "钢板内固定";
-                        badgeColor = new Color(0.0f, 1.0f, 1.0f); // 青蓝色
+                        badgeColor = new Color(0.35f, 0.62f, 0.70f); // 柔和钢蓝
                     }
                     else if (fracture.isCasted)
                     {
                         badgeText = "石膏固定";
-                        badgeColor = new Color(0.25f, 0.88f, 0.82f); // 亮青色
+                        badgeColor = new Color(0.40f, 0.68f, 0.75f); // 柔和淡青
                     }
                     else if (fracture.isStrictBedrest)
                     {
                         badgeText = "正骨静卧";
-                        badgeColor = new Color(1.0f, 0.65f, 0.0f); // 橙黄色
+                        badgeColor = new Color(0.77f, 0.63f, 0.16f); // 柔和麦黄
                     }
                     else if (fracture.isSplinted)
                     {
                         badgeText = "骨折环固定";
-                        badgeColor = new Color(0.85f, 0.44f, 0.84f); // 浅紫色
+                        badgeColor = new Color(0.65f, 0.50f, 0.70f); // 柔和紫罗兰
                     }
                     else
                     {
                         badgeText = "未固定";
-                        badgeColor = new Color(1.0f, 0.39f, 0.28f); // 亮红色
+                        badgeColor = new Color(0.85f, 0.47f, 0.14f); // 柔和橙色 (ESI 2级)
                     }
 
                     if (!string.IsNullOrEmpty(badgeText))
@@ -246,7 +243,7 @@ namespace EmergencyExpanded
                 else if (h is Hediff_Pneumothorax pneumo && pneumo.isDecompressed)
                 {
                     string badgeText = "已减压";
-                    Color badgeColor = new Color(0.0f, 1.0f, 0.5f); // 翠绿色
+                    Color badgeColor = new Color(0.29f, 0.56f, 0.36f); // 柔和森绿 (ESI 4级)
 
                     if (LanguageDatabase.activeLanguage != null && LanguageDatabase.activeLanguage.LegacyFolderName == "English")
                     {
@@ -289,4 +286,68 @@ namespace EmergencyExpanded
             Text.Anchor = oldAnchor;
             Text.Font = GameFont.Small;
         }
-    }}
+    }
+
+    [HarmonyPatch(typeof(Hediff), "get_LabelColor")]
+    public static class Patch_Hediff_LabelColor
+    {
+        [HarmonyPostfix]
+        public static void Postfix(Hediff __instance, ref Color __result)
+        {
+            if (__instance == null || __instance.def == null) return;
+
+            string defName = __instance.def.defName;
+            float sev = __instance.Severity;
+
+            if (defName == "EE_Shock")
+            {
+                if (sev >= 0.7f) // 不可逆期 (Irreversible) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+            else if (defName == "MetabolicAcidosis")
+            {
+                if (sev >= 0.5f) // 重度/极度 (Severe/Extreme) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+            else if (defName == "CerebralHypoxia")
+            {
+                if (sev >= 0.7f) // 重度/极度 (Severe/Extreme) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+            else if (defName == "MultipleOrganFailure")
+            {
+                if (sev >= 0.8f) // 终末期 (Terminal) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+            else if (defName == "SIRS")
+            {
+                if (sev >= 0.7f) // 晚期 (Late) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+            else if (defName == "Coagulopathy")
+            {
+                if (sev >= 0.7f) // 重度 (Severe) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+            else if (defName == "EE_Sepsis")
+            {
+                if (sev >= 0.8f) // 濒临休克期 (Pre-shock) -> Red
+                {
+                    __result = new Color(0.83f, 0.25f, 0.25f);
+                }
+            }
+        }
+    }
+}

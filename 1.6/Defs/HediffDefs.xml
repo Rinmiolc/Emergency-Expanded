@@ -24,7 +24,7 @@
     <label>Metabolic acidosis</label>
     <description>Systemic pH breakdown caused by severe tissue hypoperfusion. Once established, acidosis progressively damages the body, ultimately inducing irreversible multiple organ dysfunction syndrome (MODS) and death.</description>
     <hediffClass>EmergencyExpanded.Hediff_MetabolicAcidosis</hediffClass>
-    <defaultLabelColor>(0.8, 0.8, 0.3)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity> 
     <initialSeverity>0.1</initialSeverity>
     <makesSickThought>true</makesSickThought>
@@ -100,7 +100,7 @@
     <label>Myocardial infarction</label>
     <description>Acute coronary artery occlusion leading to myocardial necrosis. Causes catastrophic pumping and circulatory failure. If not treated with defibrillation/rescue, it triggers systemic hypoxia and death.</description>
     <hediffClass>EmergencyExpanded.Hediff_MyocardialInfarction</hediffClass>
-    <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <initialSeverity>0.01</initialSeverity>
     <tendable>false</tendable>
     <stages>
@@ -130,7 +130,7 @@
     <label>Cerebral hypoxia</label>
     <description>Acute neurological damage caused by insufficient blood or oxygen supply to the brain. Consciousness decreases as hypoxia worsens, accompanied by irreversible brain damage, culminating in brain death.</description>
     <hediffClass>EmergencyExpanded.Hediff_CerebralHypoxia</hediffClass>
-    <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity> 
     <initialSeverity>0.05</initialSeverity>
     <comps>
@@ -174,7 +174,7 @@
     <label>Hypoxic brain damage</label>
     <description>Permanent necrosis of brain tissue from severe cerebral hypoxia. Irreversibly impairs cognitive, speech, and motor capabilities.</description>
     <hediffClass>EmergencyExpanded.Hediff_HypoxicBrainDamage</hediffClass>
-    <defaultLabelColor>(0.85, 0.3, 0.3)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <isBad>true</isBad>
     <stages>
@@ -219,7 +219,7 @@
     <label>Brain death (Vegetative state)</label>
     <description>Irreversible extensive neuronal necrosis. The patient loses all higher brain functions, keeping only basic heartbeats and respiration via the brainstem. Cannot awaken without life support.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.4, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.44, 0.44, 0.44)</defaultLabelColor>
     <isBad>true</isBad>
     <stages>
       <li>
@@ -247,8 +247,7 @@
     <labelNoun>massive bleeding wound</labelNoun>
     <description>Catastrophic hemorrhage caused by major vessel or arterial rupture. If not compressed or tourniqueted immediately, the pawn will die of hemorrhagic shock in a very short time.</description>
     <hediffClass>Hediff_Injury</hediffClass>
-    <defaultLabelColor>(1.0, 0.2, 0.2)</defaultLabelColor> 
-    <comps>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>    <comps>
       <li Class="EmergencyExpanded.HediffCompProperties_MassiveBleeding" />
     </comps>
     <injuryProps>
@@ -264,7 +263,7 @@
     <label>Adrenaline rush</label>
     <description>Powerful adrenaline response triggered by trauma, crisis, or injections. Boosts moving, manipulation, and vital capacities while blocking pain to prevent shock. Excess doses cause severe sympathetic overload, catecholamine storm, myocardial infarction, and acidosis.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.9, 0.6, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.25, 0.68, 0.82)</defaultLabelColor>
     <maxSeverity>3.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
@@ -335,7 +334,7 @@
         </statOffsets>
       </li>
       <li>
-        <minSeverity>1.01</minSeverity>
+        <minSeverity>1.50</minSeverity>
         <label>Sympathetic overload - Overdose</label>
         <painFactor>0.70</painFactor>
         <capMods>
@@ -375,7 +374,7 @@
     <label>Adrenaline crash</label>
     <description>The fatigue and dehydration phase following an adrenaline rush. Due to extreme exertion and lactic acid buildup, moving, manipulation, and consciousness drop significantly, and inflammatory responses make pain receptors highly sensitive.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.5, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.44, 0.44, 0.44)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
@@ -449,7 +448,7 @@
     <label>Malunion</label>
     <description>Fracture healing in an abnormal position due to lack of proper reduction or immobilization. Permanently decreases limb efficiency and causes chronic pain. Can only be corrected via osteotomy surgery.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.4)</defaultLabelColor>
+    <defaultLabelColor>(0.77, 0.63, 0.16)</defaultLabelColor>
     <stages>
       <li>
         <painOffset>0.10</painOffset>
@@ -462,7 +461,7 @@
     <label>Coagulopathy</label>
     <description>A component of the lethal triad triggered by trauma, blood loss, hypothermia, and acidosis. Thrombin activity is severely suppressed, making wounds extremely difficult to clot and accelerating blood loss.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.1</initialSeverity>
     <comps>
@@ -498,7 +497,7 @@
     <label>SIRS</label>
     <description>Systemic Inflammatory Response Syndrome. A massive cytokine release triggered by extensive tissue damage, causing systemic capillary dilation and permeability. Precursor to MODS.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
+    <defaultLabelColor>(0.77, 0.63, 0.16)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.1</initialSeverity>
     <comps>
@@ -541,7 +540,7 @@
     <label>MODS</label>
     <description>Multiple Organ Dysfunction Syndrome. Irreversible extensive necrosis of vital organs due to prolonged hypoperfusion and microcirculatory collapse. Leads to sequential organ shutdown and death if circulation is not restored.</description>
     <hediffClass>EmergencyExpanded.Hediff_HiddenMultipleOrganFailure</hediffClass>
-    <defaultLabelColor>(0.6, 0.2, 0.8)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.1</initialSeverity>
     <comps>
@@ -586,7 +585,7 @@
     <label>Receiving CPR</label>
     <description>Pawn is receiving cardiopulmonary resuscitation (CPR). Chest compressions and artificial ventilation provide basic perfusion, freezing cerebral hypoxia/brain damage progression and boosting defibrillation success. Fades quickly if stopped.</description>
     <hediffClass>HediffWithComps</hediffClass>
-    <defaultLabelColor>(0.2, 0.8, 0.8)</defaultLabelColor>
+    <defaultLabelColor>(0.25, 0.68, 0.82)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
@@ -603,7 +602,7 @@
     <label>TXA active</label>
     <description>Tranexamic acid (TXA) is active. Stabilizes blood clots by inhibiting fibrinolysis, halving physical bleeding rate, preventing coagulopathy, and reducing massive bleeding chances. Overdose risks microvascular embolisms and muscle spasms.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.4, 0.1)</defaultLabelColor>
+    <defaultLabelColor>(0.25, 0.68, 0.82)</defaultLabelColor>
     <maxSeverity>3.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
@@ -643,7 +642,7 @@
     <label>Tonic seizure (TXA toxicity)</label>
     <description>Excitatory neurotoxic epilepsy caused by excessive TXA levels blocking central GABA-A receptors. Induces generalized tonic muscle spasms, rendering the pawn unconscious and immobilized with intense muscle pain.</description>
     <hediffClass>HediffWithComps</hediffClass>
-    <defaultLabelColor>(0.9, 0.3, 0.3)</defaultLabelColor>
+    <defaultLabelColor>(0.85, 0.47, 0.14)</defaultLabelColor>
     <comps>
       <li Class="HediffCompProperties_Disappears">
         <disappearsAfterTicks>4500~9000</disappearsAfterTicks> <!-- 1.25 到 2.5 小时 -->
@@ -668,7 +667,7 @@
     <label>Morphine active</label>
     <description>Morphine is active. Blocks pain, slows progression of myocardial infarction (by 30%), shock, and SIRS (by 40%), and increases bone setting/casting success rate by 15%. Causes mild drowsiness and slowed movement. Overdose risks severe respiratory depression, coma, or arrest.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.6, 0.4, 0.8)</defaultLabelColor>
+    <defaultLabelColor>(0.25, 0.68, 0.82)</defaultLabelColor>
     <maxSeverity>3.0</maxSeverity>
     <initialSeverity>1.0</initialSeverity>
     <comps>
@@ -720,7 +719,7 @@
     <label>Respiratory arrest (Morphine toxicity)</label>
     <description>Acute cessation of voluntary respiration caused by severe opioid overdose suppressing the brainstem respiratory center. Breathing capacity drops to 0%, inducing rapid cerebral hypoxia and acidosis. Immediate CPR is required while morphine metabolizes.</description>
     <hediffClass>HediffWithComps</hediffClass>
-    <defaultLabelColor>(0.9, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <comps>
       <li Class="HediffCompProperties_Disappears">
         <disappearsAfterTicks>3000~6000</disappearsAfterTicks> <!-- 50 到 100 分钟 -->

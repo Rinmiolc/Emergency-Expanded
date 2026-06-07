@@ -14,6 +14,8 @@ namespace EmergencyExpanded
         public static bool EnableEcgGui => EE_Mod.Settings?.enableEcgGui ?? true;
         public static bool EnableDynamicMassiveBleeding => EE_Mod.Settings?.enableDynamicMassiveBleeding ?? true;
         public static bool UseMlhBleedRateUnit => EE_Mod.Settings?.useMlhBleedRateUnit ?? true;
+        public static bool ShowBleedRateBanner => EE_Mod.Settings?.showBleedRateBanner ?? true;
+        public static bool EnableCriticalBlink => EE_Mod.Settings?.enableCriticalBlink ?? true;
         
         public static DifficultyPreset Difficulty => EE_Mod.Settings?.difficulty ?? DifficultyPreset.Hardcore;
 

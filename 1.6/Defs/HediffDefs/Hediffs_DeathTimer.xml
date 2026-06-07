@@ -6,7 +6,7 @@
     <label>Biological death countdown</label>
     <description>The body has completely lost respiratory and circulatory function, and the central nervous system is dying. Cells are rapidly dying from hypoxia. When the countdown reaches zero, irreversible biological death occurs. CPR suspends this countdown.</description>
     <hediffClass>EmergencyExpanded.Hediff_PercentageDisplay</hediffClass>
-    <defaultLabelColor>(0.8, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.83, 0.25, 0.25)</defaultLabelColor>
     <maxSeverity>1.0</maxSeverity>
     <initialSeverity>0.01</initialSeverity>
     <comps>
@@ -38,7 +38,7 @@
     <label>Biological death</label>
     <description>Absolute cellular death occurring after prolonged absence of circulation and respiration. All resuscitation measures are futile.</description>
     <hediffClass>Hediff</hediffClass>
-    <defaultLabelColor>(0.2, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.44, 0.44, 0.44)</defaultLabelColor>
     <initialSeverity>1.0</initialSeverity>
     <isBad>true</isBad>
     <stages>
@@ -57,7 +57,7 @@
     <label>Declared dead</label>
     <description>Formally declared dead. Rescuers have abandoned all resuscitation attempts on this non-viable body.</description>
     <hediffClass>Hediff</hediffClass>
-    <defaultLabelColor>(0.2, 0.2, 0.2)</defaultLabelColor>
+    <defaultLabelColor>(0.44, 0.44, 0.44)</defaultLabelColor>
     <initialSeverity>1.0</initialSeverity>
     <isBad>true</isBad>
     <stages>
