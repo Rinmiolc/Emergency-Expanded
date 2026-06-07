@@ -253,35 +253,25 @@ namespace EmergencyExpanded
                 Widgets.Label(new Rect(r.x + 45f, r.y, r.width - 47f, r.height), pawn.Dead ? "---" : val);
             }
 
-            Color colorCrimson = new Color(0.83f, 0.25f, 0.25f);
-            Color colorAmber = new Color(0.85f, 0.60f, 0.25f);
-            Color colorMint = new Color(0.32f, 0.78f, 0.52f);
+            DrawGridItem(tempRect, "Temp", temp.ToString("F1") + "°C", Color.white);
 
-            Color tempColor = (temp < 35.0f || temp > 38.5f) ? colorCrimson : ((temp < 36.0f || temp > 37.5f) ? colorAmber : colorMint);
-            DrawGridItem(tempRect, "Temp", temp.ToString("F1") + "°C", tempColor);
+            DrawGridItem(phRect, "pH", ph.ToString("F2"), Color.white);
 
-            Color phColor = (ph < 7.30f) ? colorCrimson : colorMint;
-            DrawGridItem(phRect, "pH", ph.ToString("F2"), phColor);
-
-            Color volColor = bloodLoss?.Severity > 0.4f ? colorCrimson : (bloodLoss?.Severity > 0.15f ? colorAmber : colorMint);
-            DrawGridItem(volRect, "Vol", volPct.ToString("F0") + "% (" + currentBloodMl.ToString("F0") + "ml)", volColor);
+            DrawGridItem(volRect, "Vol", volPct.ToString("F0") + "% (" + currentBloodMl.ToString("F0") + "ml)", Color.white);
 
             string bleedRateStr;
-            Color bleedColor;
             float rawBleedRate = pawn.health.hediffSet.BleedRateTotal;
             if (EE_Settings.UseMlhBleedRateUnit)
             {
                 float mlPerHour = rawBleedRate * maxBloodMl / 24f;
                 bleedRateStr = mlPerHour.ToString("F0") + " ml/h";
-                bleedColor = rawBleedRate > 1.0f ? colorCrimson : (rawBleedRate > 0.1f ? colorAmber : colorMint);
             }
             else
             {
                 float bleedRatePercent = rawBleedRate * 100f;
                 bleedRateStr = bleedRatePercent.ToString("F0") + "%/d";
-                bleedColor = bleedRatePercent > 100f ? colorCrimson : (bleedRatePercent > 10f ? colorAmber : colorMint);
             }
-            DrawGridItem(bleedRect, "BldR", bleedRateStr, bleedColor);
+            DrawGridItem(bleedRect, "BldR", bleedRateStr, Color.white);
 
             Text.Anchor = TextAnchor.UpperLeft;
             GUI.color = Color.white;
@@ -325,37 +315,13 @@ namespace EmergencyExpanded
                 if (sbp < dbp) dbp = sbp * 0.67f;
             }
 
-            Color colorCrimson = new Color(0.83f, 0.25f, 0.25f);
-            Color colorAmber = new Color(0.85f, 0.60f, 0.25f);
-            Color colorMint = new Color(0.32f, 0.78f, 0.52f);
-            Color colorCerulean = new Color(0.25f, 0.68f, 0.82f);
+            Color hrColor = EE_Constants.ColorFluorescentGreen;
+            Color bpColor = Color.white;
+            Color spo2Color = Color.white;
 
-            Color hrColor = (bpm < (pawn.Awake() ? 40f : 35f) || bpm > 140f) ? colorCrimson : ((bpm < (pawn.Awake() ? 60f : 50f) || bpm > 100f) ? colorAmber : colorMint);
-            Color bpColor = (sbp < 90f || sbp > 140f) ? colorCrimson : colorMint;
-            Color spo2Color = (spo2 < 85) ? colorCrimson : ((spo2 < 93) ? colorAmber : colorCerulean);
-
-            Color gridColor;
-            Color coreColor;
-            Color glowColor;
-
-            if (bpm < EE_Constants.EcgFlatlineThreshold)
-            {
-                gridColor = new Color(0.40f, 0.0f, 0.0f, 0.15f);
-                coreColor = colorCrimson;
-                glowColor = new Color(0.83f, 0.25f, 0.25f, 0.4f);
-            }
-            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f) || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
-            {
-                gridColor = new Color(0.40f, 0.25f, 0.0f, 0.15f);
-                coreColor = colorAmber;
-                glowColor = new Color(0.85f, 0.60f, 0.25f, 0.4f);
-            }
-            else
-            {
-                gridColor = new Color(0.12f, 0.38f, 0.22f, 0.15f);
-                coreColor = colorMint;
-                glowColor = new Color(0.32f, 0.78f, 0.52f, 0.4f);
-            }
+            Color gridColor = new Color(0.22f, 1.0f, 0.08f, 0.08f);
+            Color coreColor = EE_Constants.ColorFluorescentGreen;
+            Color glowColor = new Color(0.22f, 1.0f, 0.08f, 0.35f);
 
             Rect innerScreen = rect.ContractedBy(4f);
 
@@ -458,16 +424,16 @@ namespace EmergencyExpanded
             float vitalsX = innerScreen.x + 312f;
             float vitalsWidth = 108f;
 
-            Rect hrRect = new Rect(vitalsX, innerScreen.y + 2f, vitalsWidth, 21f);
-            Rect bpRect = new Rect(vitalsX, innerScreen.y + 24f, vitalsWidth, 21f);
-            Rect spo2Rect = new Rect(vitalsX, innerScreen.y + 46f, vitalsWidth, 21f);
+            Rect hrRect = new Rect(vitalsX, innerScreen.y + 1f, vitalsWidth, 25f);
+            Rect bpRect = new Rect(vitalsX, innerScreen.y + 26f, vitalsWidth, 21f);
+            Rect spo2Rect = new Rect(vitalsX, innerScreen.y + 47f, vitalsWidth, 21f);
             Rect rrRect = new Rect(vitalsX, innerScreen.y + 68f, vitalsWidth, 21f);
 
             string bpStr = (sbp < EE_Constants.BpMeasurableThreshold) ? "--" : string.Format("{0:F0}/{1:F0}", sbp, dbp);
             string spo2StrCompact = (vitals.displaySpO2 < EE_Constants.SpO2MeasurableThreshold) ? "--" : spo2.ToString() + "%";
             float rr = vitals.displayRR;
             string rrStr = rr.ToString("F0");
-            Color rrColor = (rr < 8f || rr > 30f) ? colorCrimson : colorMint;
+            Color rrColor = Color.white;
 
             TextAnchor origAnchor = Text.Anchor;
             DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead, GameFont.Medium, true);

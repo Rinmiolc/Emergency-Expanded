@@ -1,7 +1,13 @@
+using UnityEngine;
+
 namespace EmergencyExpanded
 {
     public static class EE_Constants
     {
+        // ================= UI 颜色 (UI Colors) =================
+        // 荧光绿 (Fluorescent Green / Neon Green)
+        public static readonly Color ColorFluorescentGreen = new Color(0.22f, 1.0f, 0.08f);
+
         #region 1. 基础系统与UI (Core & UI)
 
         // ================= 基础与系统设定 (Base Settings) =================

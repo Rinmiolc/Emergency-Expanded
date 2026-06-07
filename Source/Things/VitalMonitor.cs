@@ -528,32 +528,9 @@ namespace EmergencyExpanded
             float bpm = vitals.displayHeartRate;
             int spo2 = Mathf.RoundToInt(vitals.displaySpO2);
 
-            Color gridColor;
-            Color coreColor;
-            Color glowColor;
-
-            Color colorCrimson = new Color(0.83f, 0.25f, 0.25f);
-            Color colorAmber = new Color(0.85f, 0.60f, 0.25f);
-            Color colorMint = new Color(0.32f, 0.78f, 0.52f);
-
-            if (bpm < EE_Constants.EcgFlatlineThreshold)
-            {
-                gridColor = new Color(0.40f, 0.0f, 0.0f, 0.15f);
-                coreColor = colorCrimson;
-                glowColor = new Color(0.83f, 0.25f, 0.25f, 0.4f);
-            }
-            else if (bpm > EE_Constants.EcgTachycardiaThreshold || bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f) || vitals.hasCerebralHypoxia || vitals.hasMetabolicAcidosis)
-            {
-                gridColor = new Color(0.40f, 0.25f, 0.0f, 0.15f);
-                coreColor = colorAmber;
-                glowColor = new Color(0.85f, 0.60f, 0.25f, 0.4f);
-            }
-            else
-            {
-                gridColor = new Color(0.12f, 0.38f, 0.22f, 0.15f);
-                coreColor = colorMint;
-                glowColor = new Color(0.32f, 0.78f, 0.52f, 0.4f);
-            }
+            Color gridColor = new Color(0.22f, 1.0f, 0.08f, 0.08f);
+            Color coreColor = EE_Constants.ColorFluorescentGreen;
+            Color glowColor = new Color(0.22f, 1.0f, 0.08f, 0.35f);
 
             Rect innerScreen = rect.ContractedBy(4f);
             Widgets.DrawBoxSolid(innerScreen, new Color(0.02f, 0.02f, 0.025f, 1f));
@@ -657,8 +634,7 @@ namespace EmergencyExpanded
             Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 12f, rightPanel.width - 2f, 26f), "<b>" + bpmStr + "</b>");
 
             // SpO2 (血氧区域)
-            Color spo2Color = new Color(0.25f, 0.68f, 0.82f); // Cerulean
-            if (spo2 < EE_Constants.EcgHypoxiaSpO2Threshold) spo2Color = colorCrimson;
+            Color spo2Color = Color.white;
             
             Text.Font = GameFont.Tiny;
             GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
