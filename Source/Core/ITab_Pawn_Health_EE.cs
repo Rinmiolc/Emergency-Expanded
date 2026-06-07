@@ -311,6 +311,43 @@ namespace EmergencyExpanded
             Widgets.DrawBoxSolid(rect, new Color(0.02f, 0.02f, 0.025f, 1f));
 
             float bpm = vitals.displayHeartRate;
+            int spo2 = Mathf.RoundToInt(vitals.displaySpO2);
+
+            // Data calculation logic
+            float sbp = 120f; float dbp = 80f;
+            if (pawn.Dead) { sbp = 0f; dbp = 0f; }
+            else
+            {
+                float bloodVolume = 1f;
+                Hediff bloodLoss = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
+                if (bloodLoss != null) bloodVolume = Mathf.Clamp01(1f - bloodLoss.Severity);
+                float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
+
+                float bpVolumeFactor = 1.0f - Mathf.Pow(1.0f - bloodVolume, 2f) * 2f;
+                bpVolumeFactor = Mathf.Clamp01(bpVolumeFactor);
+
+                float bpPumpingFactor = 1.0f;
+                if (pumping <= 0.05f) bpPumpingFactor = 0f;
+                else bpPumpingFactor = 0.4f + (pumping * 0.6f);
+
+                sbp = 120f * bpVolumeFactor * bpPumpingFactor;
+                dbp = 80f * bpVolumeFactor * bpPumpingFactor;
+
+                Hediff adrenaline = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
+                if (adrenaline != null)
+                {
+                    float bonus = adrenaline.Severity * 15f;
+                    sbp += bonus; dbp += bonus * 0.7f;
+                }
+                float noise = Mathf.Sin(Time.realtimeSinceStartup * 0.5f) * 2f;
+                sbp += noise; dbp += noise * 0.6f;
+                if (sbp < 0f) sbp = 0f; if (dbp < 0f) dbp = 0f;
+                if (sbp < dbp) dbp = sbp * 0.67f;
+            }
+
+            Color hrColor = (bpm < 40f || bpm > 140f) ? Color.red : ((bpm < 60f || bpm > 100f) ? Color.yellow : new Color(0.2f, 1.0f, 0.5f));
+            Color bpColor = (sbp < 90f || sbp > 140f) ? Color.red : new Color(0.2f, 1.0f, 0.5f);
+            Color spo2Color = (spo2 < 85) ? Color.red : ((spo2 < 93) ? Color.yellow : new Color(0.0f, 0.9f, 1.0f));
 
             Color gridColor;
             Color coreColor;
@@ -337,23 +374,25 @@ namespace EmergencyExpanded
 
             Rect innerScreen = rect.ContractedBy(4f);
 
-            // Draw grid
+            // Left side: ECG wave (width 220f)
+            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 10f, 220f, innerScreen.height - 15f);
+
+            // Draw grid in waveRect
             GUI.color = gridColor * new Color(1f, 1f, 1f, 0.5f);
             int horizLines = 5;
             for (int i = 1; i < horizLines; i++)
             {
-                float y = innerScreen.y + (innerScreen.height / horizLines) * i;
-                Widgets.DrawLine(new Vector2(innerScreen.x, y), new Vector2(innerScreen.xMax, y), GUI.color, 1f);
+                float y = waveRect.y + (waveRect.height / horizLines) * i;
+                Widgets.DrawLine(new Vector2(waveRect.x, y), new Vector2(waveRect.xMax, y), GUI.color, 1f);
             }
             int vertLines = 8;
             for (int i = 1; i < vertLines; i++)
             {
-                float x = innerScreen.x + (innerScreen.width / vertLines) * i;
-                Widgets.DrawLine(new Vector2(x, innerScreen.y), new Vector2(x, innerScreen.yMax), GUI.color, 1f);
+                float x = waveRect.x + (waveRect.width / vertLines) * i;
+                Widgets.DrawLine(new Vector2(x, waveRect.y), new Vector2(x, waveRect.yMax), GUI.color, 1f);
             }
             GUI.color = Color.white;
 
-            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 10f, innerScreen.width - 4f, innerScreen.height - 15f);
             float centerY = waveRect.y + waveRect.height / 2f;
             float waveWidthDraw = waveRect.width;
 
@@ -410,6 +449,7 @@ namespace EmergencyExpanded
                 }
             }
 
+            // Draw status text
             string statusStr = "EE_Status_Normal".Translate();
             if (pawn.Dead) statusStr = "BIOLOGICAL DEATH";
             else if (bpm < EE_Constants.EcgFlatlineThreshold) statusStr = "EE_Status_CardiacArrest".Translate();
@@ -424,88 +464,36 @@ namespace EmergencyExpanded
             Rect statusRect = new Rect(waveRect.x + 4f, waveRect.yMax - 18f, size.x + 10f, 16f);
             Widgets.DrawBoxSolid(statusRect, new Color(0.1f, 0.1f, 0.1f, 0.8f));
             Widgets.Label(statusRect, statusStr);
+
+            // Draw vertical divider between ECG screen grid and vitals readout
+            float lineX = innerScreen.x + 226f;
+            Widgets.DrawLine(new Vector2(lineX, innerScreen.y + 4f), new Vector2(lineX, innerScreen.yMax - 4f), new Color(0.3f, 0.3f, 0.3f, 0.3f), 1f);
+
+            // Right side inside the monitor screen: Vitals (HR, BP, SpO2)
+            float vitalsX = innerScreen.x + 230f;
+            float vitalsWidth = 118f;
+            float vitalRowHeight = 26f;
+
+            Rect hrRect = new Rect(vitalsX, innerScreen.y + 4f, vitalsWidth, vitalRowHeight);
+            Rect bpRect = new Rect(vitalsX, innerScreen.y + 4f + vitalRowHeight, vitalsWidth, vitalRowHeight);
+            Rect spo2Rect = new Rect(vitalsX, innerScreen.y + 4f + vitalRowHeight * 2f, vitalsWidth, vitalRowHeight);
+
+            TextAnchor origAnchor = Text.Anchor;
+            DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead);
+            DrawVitalVerticalCompact(bpRect, "BP", string.Format("{0:F0}/{1:F0}", sbp, dbp), bpColor, pawn.Dead);
+            DrawVitalVerticalCompact(spo2Rect, "SpO2", spo2.ToString() + "%", spo2Color, pawn.Dead);
+            
+            Text.Anchor = origAnchor;
+            GUI.color = Color.white;
+            Text.Font = GameFont.Small;
         }
 
         private void DrawRightMonitorPanel(Rect rect, Pawn pawn, CachedVitals vitals)
         {
-            // Draw container box
-            Widgets.DrawBoxSolid(rect, new Color(0.02f, 0.02f, 0.025f, 1f));
-
-            float bpm = vitals.displayHeartRate;
-            int spo2 = Mathf.RoundToInt(vitals.displaySpO2);
-
-            // Data calculation logic
-            float sbp = 120f; float dbp = 80f;
-            if (pawn.Dead) { sbp = 0f; dbp = 0f; }
-            else
-            {
-                float bloodVolume = 1f;
-                Hediff bloodLoss = pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss);
-                if (bloodLoss != null) bloodVolume = Mathf.Clamp01(1f - bloodLoss.Severity);
-                float pumping = pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-
-                float bpVolumeFactor = 1.0f - Mathf.Pow(1.0f - bloodVolume, 2f) * 2f;
-                bpVolumeFactor = Mathf.Clamp01(bpVolumeFactor);
-
-                float bpPumpingFactor = 1.0f;
-                if (pumping <= 0.05f) bpPumpingFactor = 0f;
-                else bpPumpingFactor = 0.4f + (pumping * 0.6f);
-
-                sbp = 120f * bpVolumeFactor * bpPumpingFactor;
-                dbp = 80f * bpVolumeFactor * bpPumpingFactor;
-
-                Hediff adrenaline = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.AdrenalineBoost);
-                if (adrenaline != null)
-                {
-                    float bonus = adrenaline.Severity * 15f;
-                    sbp += bonus; dbp += bonus * 0.7f;
-                }
-                float noise = Mathf.Sin(Time.realtimeSinceStartup * 0.5f) * 2f;
-                sbp += noise; dbp += noise * 0.6f;
-                if (sbp < 0f) sbp = 0f; if (dbp < 0f) dbp = 0f;
-                if (sbp < dbp) dbp = sbp * 0.67f;
-            }
-
-            Color hrColor = (bpm < 40f || bpm > 140f) ? Color.red : ((bpm < 60f || bpm > 100f) ? Color.yellow : new Color(0.2f, 1.0f, 0.5f));
-            Color bpColor = (sbp < 90f || sbp > 140f) ? Color.red : new Color(0.2f, 1.0f, 0.5f);
-            Color spo2Color = (spo2 < 85) ? Color.red : ((spo2 < 93) ? Color.yellow : new Color(0.0f, 0.9f, 1.0f));
-
-            float dividerY = rect.y + 80f;
-            bool isWidescreen = rect.width >= 300f;
+            Widgets.DrawBoxSolid(rect, new Color(0.08f, 0.08f, 0.09f));
 
             TextAnchor origAnchor = Text.Anchor;
-
-            if (isWidescreen)
-            {
-                dividerY = rect.y + 60f;
-                float colWidth = rect.width / 3f;
-                Rect hrRect = new Rect(rect.x, rect.y + 4f, colWidth - 4f, 50f);
-                Rect bpRect = new Rect(rect.x + colWidth, rect.y + 4f, colWidth - 4f, 50f);
-                Rect spo2Rect = new Rect(rect.x + colWidth * 2f, rect.y + 4f, colWidth - 4f, 50f);
-
-                DrawVitalHorizontal(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead);
-                DrawVitalHorizontal(bpRect, "BP", string.Format("{0:F0}/{1:F0}", sbp, dbp), bpColor, pawn.Dead);
-                DrawVitalHorizontal(spo2Rect, "SpO2", spo2.ToString() + "%", spo2Color, pawn.Dead);
-            }
-            else
-            {
-                float rowHeight = 24f;
-                Rect hrRect = new Rect(rect.x + 10f, rect.y + 4f, rect.width - 20f, rowHeight);
-                Rect bpRect = new Rect(rect.x + 10f, rect.y + 4f + rowHeight, rect.width - 20f, rowHeight);
-                Rect spo2Rect = new Rect(rect.x + 10f, rect.y + 4f + rowHeight * 2f, rect.width - 20f, rowHeight);
-
-                DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead);
-                DrawVitalVerticalCompact(bpRect, "BP", string.Format("{0:F0}/{1:F0}", sbp, dbp), bpColor, pawn.Dead);
-                DrawVitalVerticalCompact(spo2Rect, "SpO2", spo2.ToString() + "%", spo2Color, pawn.Dead);
-            }
-
-            // Draw horizontal divider
-            Widgets.DrawLine(new Vector2(rect.x + 6f, dividerY), new Vector2(rect.xMax - 6f, dividerY), new Color(0.3f, 0.3f, 0.3f, 0.25f), 1f);
-
-            // Draw Diagnosis Section
-            Rect diagRect = new Rect(rect.x, dividerY + 1f, rect.width, rect.yMax - dividerY - 1f);
-            DrawDiagnosticsInner(diagRect, pawn);
-
+            DrawDiagnosticsInner(rect, pawn);
             Text.Anchor = origAnchor;
             GUI.color = Color.white;
             Text.Font = GameFont.Small;
@@ -516,25 +504,12 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Tiny;
             Text.Anchor = TextAnchor.MiddleLeft;
             GUI.color = new Color(0.5f, 0.7f, 0.8f);
-            Widgets.Label(new Rect(r.x, r.y + 2f, 40f, r.height - 4f), label);
+            Widgets.Label(new Rect(r.x, r.y + 2f, 30f, r.height - 4f), label);
 
             Text.Font = GameFont.Medium;
             Text.Anchor = TextAnchor.MiddleRight;
             GUI.color = valColor;
-            Widgets.Label(new Rect(r.x + 45f, r.y, r.width - 45f, r.height), dead ? "---" : val);
-        }
-
-        private void DrawVitalHorizontal(Rect r, string label, string val, Color valColor, bool dead)
-        {
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.UpperLeft;
-            GUI.color = new Color(0.5f, 0.7f, 0.8f); // uniform cyan-gray label
-            Widgets.Label(new Rect(r.x, r.y + 2f, r.width, 16f), label);
-
-            Text.Font = GameFont.Medium;
-            Text.Anchor = TextAnchor.MiddleCenter;
-            GUI.color = valColor;
-            Widgets.Label(new Rect(r.x, r.y + 18f, r.width, r.height - 20f), dead ? "---" : val);
+            Widgets.Label(new Rect(r.x + 30f, r.y, r.width - 30f, r.height), dead ? "---" : val);
         }
 
         private void DrawDiagnosticsInner(Rect rect, Pawn pawn)
