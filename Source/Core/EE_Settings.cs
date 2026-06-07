@@ -13,6 +13,7 @@ namespace EmergencyExpanded
         public static bool DebugMode => EE_Mod.Settings?.debugMode ?? false;
         public static bool EnableEcgGui => EE_Mod.Settings?.enableEcgGui ?? true;
         public static bool EnableDynamicMassiveBleeding => EE_Mod.Settings?.enableDynamicMassiveBleeding ?? true;
+        public static bool UseMlhBleedRateUnit => EE_Mod.Settings?.useMlhBleedRateUnit ?? true;
         
         public static DifficultyPreset Difficulty => EE_Mod.Settings?.difficulty ?? DifficultyPreset.Hardcore;
 

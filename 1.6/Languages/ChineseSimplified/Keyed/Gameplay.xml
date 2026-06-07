@@ -127,4 +127,6 @@
   <EE_SelectDoctorForFirstAid>指派医生实施野战急救</EE_SelectDoctorForFirstAid>
   <EE_NeedleDecompressionBillAdded_NoBed>已为 {0} 自动生成胸腔穿刺减压手术法案。伤员必须躺在病床上才能执行手术！</EE_NeedleDecompressionBillAdded_NoBed>
   <EE_NonFleshNoMonitor>该生物类型无需生命体征监护。</EE_NonFleshNoMonitor>
+  <EE_Settings_UseMlhBleedRateUnit>生命监护仪失血速率默认使用毫升每小时 (ml/h)</EE_Settings_UseMlhBleedRateUnit>
+  <EE_Settings_UseMlhBleedRateUnitDesc>若开启，生命监护仪（右上角参数区）中的失血速率（BldR）将以每小时失血毫升数 (ml/h) 为单位显示。若关闭，则恢复为原来的每日失血百分比 (%/d) 显示。</EE_Settings_UseMlhBleedRateUnitDesc>
 </LanguageData>

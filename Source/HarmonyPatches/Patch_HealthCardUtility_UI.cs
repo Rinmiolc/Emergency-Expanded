@@ -125,11 +125,8 @@ namespace EmergencyExpanded
 
             if (diffs == null || !diffs.Any()) return;
 
-            // HealthCardUtility defaults row height to 20f unless overridden. Let's pre-calculate or assume 20f.
-            // A better way is to wait for postfix to know exact height, but we need to draw underneath.
-            // Since we must draw underneath, we draw it now. The background row height is generally 20f.
             float rowHeight = 20f; 
-            Rect rowRect = new Rect(0f, curY, rect.width, rowHeight); // use full width from 0 to rect.width
+            Rect rowRect = new Rect(0f, curY, rect.width, rowHeight);
 
             int rowIndex = GetAndIncrementRowCount();
             if (rowIndex % 2 == 1)
@@ -143,7 +140,16 @@ namespace EmergencyExpanded
                     Widgets.DrawBoxSolid(rowRect, new Color(0f, 0f, 0f, 0.05f));
                 }
             }
+        }
 
+        [HarmonyPostfix]
+        public static void Postfix(Rect rect, Pawn pawn, IEnumerable<Hediff> diffs, ref float curY, float rowLeftPad, float __state)
+        {
+            if (diffs == null || !diffs.Any()) return;
+
+            float rowHeight = curY - __state;
+
+            // 1. 判定是否为致命危机条目
             bool isCritical = false;
             foreach (var h in diffs)
             {
@@ -169,21 +175,25 @@ namespace EmergencyExpanded
 
             if (isCritical)
             {
+                // 使用低透明度红光在 Postfix 覆盖绘制，可获得绝对精准的上下对齐高度 (rowHeight)
                 float pulse = Mathf.PingPong(Time.realtimeSinceStartup * 2f, 1f);
                 float alpha = Mathf.Lerp(0.04f, 0.14f, pulse);
+                Rect rowRect = new Rect(rect.x, __state, rect.width, rowHeight);
                 Widgets.DrawBoxSolid(rowRect, new Color(1.0f, 0.1f, 0.1f, alpha));
 
-                Rect indicatorRect = new Rect(rowRect.x, rowRect.y, 3f, rowRect.height);
+                // 配合 rowLeftPad 决定红线的位置，防止重叠文字 (通常向左缩进并空出 4px)
+                float indicatorX = rect.x + 2f;
+                if (rowLeftPad > 6f)
+                {
+                    indicatorX = rect.x + 4f;
+                }
+                else
+                {
+                    indicatorX = rect.x + 1f;
+                }
+                Rect indicatorRect = new Rect(indicatorX, __state + 1f, 3f, rowHeight - 2f);
                 Widgets.DrawBoxSolid(indicatorRect, Color.red);
             }
-        }
-
-        [HarmonyPostfix]
-        public static void Postfix(Rect rect, Pawn pawn, IEnumerable<Hediff> diffs, ref float curY, float rowLeftPad, float __state)
-        {
-            if (diffs == null || !diffs.Any()) return;
-
-            float rowHeight = curY - __state;
 
             // 3. 绘制胶囊药丸徽章 (Pill Badges)
             foreach (var h in diffs)

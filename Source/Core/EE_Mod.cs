@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using Verse;
 using System.Collections.Generic;
 
@@ -11,6 +11,7 @@ namespace EmergencyExpanded
         public bool enableHealthUiOverhaul = true;
         public bool enableEcgGui = true;
         public bool enableDynamicMassiveBleeding = true;
+        public bool useMlhBleedRateUnit = true;
 
         public override void ExposeData()
         {
@@ -20,6 +21,7 @@ namespace EmergencyExpanded
             Scribe_Values.Look(ref enableHealthUiOverhaul, "enableHealthUiOverhaul", true);
             Scribe_Values.Look(ref enableEcgGui, "enableEcgGui", true);
             Scribe_Values.Look(ref enableDynamicMassiveBleeding, "enableDynamicMassiveBleeding", true);
+            Scribe_Values.Look(ref useMlhBleedRateUnit, "useMlhBleedRateUnit", true);
         }
     }
 
@@ -57,6 +59,7 @@ namespace EmergencyExpanded
             listing.CheckboxLabeled("EE_Settings_EnableHealthUiOverhaul".Translate(), ref Settings.enableHealthUiOverhaul, "EE_Settings_EnableHealthUiOverhaulDesc".Translate());
             listing.CheckboxLabeled("EE_Settings_EnableEcgGui".Translate(), ref Settings.enableEcgGui, "EE_Settings_EnableEcgGuiDesc".Translate());
             listing.CheckboxLabeled("EE_Settings_EnableDynamicMassiveBleeding".Translate(), ref Settings.enableDynamicMassiveBleeding, "EE_Settings_EnableDynamicMassiveBleedingDesc".Translate());
+            listing.CheckboxLabeled("EE_Settings_UseMlhBleedRateUnit".Translate(), ref Settings.useMlhBleedRateUnit, "EE_Settings_UseMlhBleedRateUnitDesc".Translate());
             listing.CheckboxLabeled("EE_Settings_EnableDebugMode".Translate(), ref Settings.debugMode, "EE_Settings_EnableDebugModeDesc".Translate());
 
             listing.End();

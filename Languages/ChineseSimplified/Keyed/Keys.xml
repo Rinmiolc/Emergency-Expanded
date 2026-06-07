@@ -5,4 +5,6 @@
 现已支持与 Nice Health Tab、Health Display、RimHUD 等 UI 模组完美共存。如果关闭此选项，将恢复为原版面板布局。</EE_Setting_EnableHealthUIDesc>
   <EE_Settings_EnableHealthUiOverhaul>启用健康界面大修 (生命监测面板)</EE_Settings_EnableHealthUiOverhaul>
   <EE_Settings_EnableHealthUiOverhaulDesc>如果开启此选项，将在健康面板顶部显示精美的心电监护仪与诊断信息。现已支持与 Nice Health Tab、Health Display、RimHUD 等 UI 模组完美共存。如果关闭此选项，将恢复为原版面板布局。</EE_Settings_EnableHealthUiOverhaulDesc>
+  <EE_Settings_UseMlhBleedRateUnit>生命监护仪失血速率默认使用毫升每小时 (ml/h)</EE_Settings_UseMlhBleedRateUnit>
+  <EE_Settings_UseMlhBleedRateUnitDesc>若开启，生命监护仪（右上角参数区）中的失血速率（BldR）将以每小时失血毫升数 (ml/h) 为单位显示。若关闭，则恢复为原来的每日失血百分比 (%/d) 显示。</EE_Settings_UseMlhBleedRateUnitDesc>
 </LanguageData>

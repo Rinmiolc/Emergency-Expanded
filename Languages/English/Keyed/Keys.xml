@@ -5,4 +5,6 @@
 Fully compatible and co-exists with Nice Health Tab, Health Display, and RimHUD. If disabled, reverts to default style.</EE_Setting_EnableHealthUIDesc>
   <EE_Settings_EnableHealthUiOverhaul>Enable Health UI Overhaul (Vital Monitor)</EE_Settings_EnableHealthUiOverhaul>
   <EE_Settings_EnableHealthUiOverhaulDesc>If enabled, displays a premium medical monitor and diagnostic info at the top of the health tab. Fully compatible and co-exists with Nice Health Tab, Health Display, and RimHUD. If disabled, reverts to default style.</EE_Settings_EnableHealthUiOverhaulDesc>
+  <EE_Settings_UseMlhBleedRateUnit>Vital Monitor Bleed Rate default to ml/h</EE_Settings_UseMlhBleedRateUnit>
+  <EE_Settings_UseMlhBleedRateUnitDesc>If enabled, the vital monitor's bleed rate (BldR) displays in milliliters per hour (ml/h). If disabled, reverts to percent per day (%/d).</EE_Settings_UseMlhBleedRateUnitDesc>
 </LanguageData>

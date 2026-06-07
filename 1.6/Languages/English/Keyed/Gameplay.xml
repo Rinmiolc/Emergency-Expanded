@@ -127,4 +127,6 @@
   <EE_SelectDoctorForFirstAid>Select doctor for field first aid</EE_SelectDoctorForFirstAid>
   <EE_NeedleDecompressionBillAdded_NoBed>Needle decompression surgery bill added for {0}. Patient must be resting in a bed to undergo the surgery!</EE_NeedleDecompressionBillAdded_NoBed>
   <EE_NonFleshNoMonitor>This biological type does not require vital monitoring.</EE_NonFleshNoMonitor>
+  <EE_Settings_UseMlhBleedRateUnit>Vital Monitor Bleed Rate default to ml/h</EE_Settings_UseMlhBleedRateUnit>
+  <EE_Settings_UseMlhBleedRateUnitDesc>If enabled, the vital monitor's bleed rate (BldR) displays in milliliters per hour (ml/h). If disabled, reverts to percent per day (%/d).</EE_Settings_UseMlhBleedRateUnitDesc>
 </LanguageData>
