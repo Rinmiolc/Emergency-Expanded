@@ -178,19 +178,11 @@ namespace EmergencyExpanded
                 // 使用低透明度红光在 Postfix 覆盖绘制，可获得绝对精准的上下对齐高度 (rowHeight)
                 float pulse = Mathf.PingPong(Time.realtimeSinceStartup * 2f, 1f);
                 float alpha = Mathf.Lerp(0.04f, 0.14f, pulse);
-                Rect rowRect = new Rect(rect.x, __state, rect.width, rowHeight);
+                Rect rowRect = new Rect(0f, __state, rect.width, rowHeight);
                 Widgets.DrawBoxSolid(rowRect, new Color(1.0f, 0.1f, 0.1f, alpha));
 
-                // 配合 rowLeftPad 决定红线的位置，防止重叠文字 (通常向左缩进并空出 4px)
-                float indicatorX = rect.x + 2f;
-                if (rowLeftPad > 6f)
-                {
-                    indicatorX = rect.x + 4f;
-                }
-                else
-                {
-                    indicatorX = rect.x + 1f;
-                }
+                // 配合 rowLeftPad 决定红线的位置，防止重叠文字 (通常向左缩进并空出 6px)
+                float indicatorX = rect.x + rowLeftPad - 6f;
                 Rect indicatorRect = new Rect(indicatorX, __state + 1f, 3f, rowHeight - 2f);
                 Widgets.DrawBoxSolid(indicatorRect, Color.red);
             }
