@@ -7,17 +7,14 @@ namespace EmergencyExpanded
     {
         public override void Tick()
         {
-            base.Tick();
-            if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh || pawn.IsShambler) return;
-            
-            if (pawn.IsHashIntervalTick(60))
-            {
-                UpdateShockSeverity();
-            }
+            // Do nothing to prevent double-updating.
+            // Updates are driven by HypoxiaMonitor.RunCrisisMonitor.
         }
 
-        private void UpdateShockSeverity()
+        public void UpdateShockSeverity(float pumping)
         {
+            if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh || pawn.IsShambler) return;
+
             float totalPressure = 0f;
 
             // 1. 低血容量压力 - 失血
@@ -84,24 +81,8 @@ namespace EmergencyExpanded
             }
             else
             {
-                // 压力解除时，身体慢慢代偿恢复
-                this.Severity -= EE_Constants.ShockRecoveryPerDay / 1000f;
-            }
-            
-            // --- 以下是休克诱发的并发症联动 ---
-            
-            // 当进入失代偿期 (0.4以上)，由于灌注不足，开始快速积累代谢性酸中毒
-            if (this.Severity >= EE_Constants.ShockDecompensatedThreshold)
-            {
-                Hediff acidosis = pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis);
-                if (acidosis == null)
-                {
-                    acidosis = HediffMaker.MakeHediff(EE_DefOf.MetabolicAcidosis, pawn, null);
-                    pawn.health.AddHediff(acidosis, null, null, null);
-                }
-                // 酸中毒增加速度由休克深度决定
-                float acidosisIncrease = (this.Severity - EE_Constants.ShockDecompensatedThreshold) * 2.0f / 1000f;
-                acidosis.Severity += acidosisIncrease;
+                // 压力解除时，使用重构常量消退
+                this.Severity -= EE_Constants.ShockRecoveryRateNormal / 1000f;
             }
         }
     }
@@ -118,16 +99,8 @@ namespace EmergencyExpanded
     {
         public override void CompPostTick(ref float severityAdjustment)
         {
-            base.CompPostTick(ref severityAdjustment);
-            if (parent.pawn == null || parent.pawn.Dead) return;
-            if (!parent.pawn.IsHashIntervalTick(120)) return;
-
-            // 当失血量超过20% (Severity > 0.2f) 且没有休克时，引发休克
-            if (parent.Severity > 0.2f && !parent.pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Shock))
-            {
-                Hediff shock = HediffMaker.MakeHediff(EE_DefOf.EE_Shock, parent.pawn, null);
-                parent.pawn.health.AddHediff(shock, null, null, null);
-            }
+            // Do nothing to prevent duplicate shock triggering.
+            // All physiological monitors are now run sequentially by RunCrisisMonitor.
         }
     }
 }

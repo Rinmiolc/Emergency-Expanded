@@ -20,10 +20,6 @@
             <capacity>Consciousness</capacity>
             <offset>-0.05</offset>
           </li>
-          <li>
-            <capacity>BloodPumping</capacity>
-            <offset>-0.10</offset>
-          </li>
         </capMods>
       </li>
       <li>
@@ -33,14 +29,6 @@
           <li>
             <capacity>Consciousness</capacity>
             <offset>-0.25</offset>
-          </li>
-          <li>
-            <capacity>BloodPumping</capacity>
-            <offset>-0.30</offset>
-          </li>
-          <li>
-            <capacity>Breathing</capacity>
-            <offset>-0.15</offset>
           </li>
         </capMods>
       </li>
@@ -52,14 +40,6 @@
           <li>
             <capacity>Consciousness</capacity>
             <offset>-0.45</offset>
-          </li>
-          <li>
-            <capacity>BloodPumping</capacity>
-            <offset>-0.50</offset>
-          </li>
-          <li>
-            <capacity>Breathing</capacity>
-            <offset>-0.30</offset>
           </li>
         </capMods>
       </li>

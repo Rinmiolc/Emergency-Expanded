@@ -20,8 +20,13 @@ namespace EmergencyExpanded
 
         public override void CompPostTick(ref float severityAdjustment)
         {
+            // Do nothing to prevent double-updating.
+            // Updates are driven by HypoxiaMonitor.RunCrisisMonitor.
+        }
+
+        public void UpdateSirsSeverity()
+        {
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
-            if (!Pawn.IsHashIntervalTick(60)) return;
 
             float traumaLoad = EE_MedicalUtility.CalculateTraumaLoad(Pawn);
             
@@ -42,18 +47,11 @@ namespace EmergencyExpanded
                     increment *= EE_Constants.MorphineShockSirsSpeedMultiplier;
                 }
 
-                severityAdjustment += increment;
+                parent.Severity += increment;
             }
             else
             {
-                severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
-            }
-            
-            // 将分布性压力传导给休克机制。如果休克不存在，则主动挂载
-            if (this.parent.Severity > 0.2f && !Pawn.health.hediffSet.HasHediff(EE_DefOf.EE_Shock))
-            {
-                Hediff shock = HediffMaker.MakeHediff(EE_DefOf.EE_Shock, Pawn, null);
-                Pawn.health.AddHediff(shock, null, null, null);
+                parent.Severity -= (Props.severityDecreasePerDay / 1000f);
             }
         }
     }

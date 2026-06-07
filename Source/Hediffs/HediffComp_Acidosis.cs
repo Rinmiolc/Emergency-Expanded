@@ -22,17 +22,25 @@ namespace EmergencyExpanded
 
         public override void CompPostTick(ref float severityAdjustment)
         {
-            if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
-            if (!Pawn.IsHashIntervalTick(60)) return;
+            // Do nothing here to prevent double-updating.
+            // Updates are driven by HypoxiaMonitor.RunCrisisMonitor.
+        }
 
-            float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-            float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing); 
+        public void UpdateAcidosisSeverity(float pumping, float breathing)
+        {
+            if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
+
             float bloodLossSeverity = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.BloodLoss)?.Severity ?? 0f;
 
-            // 触发门槛提高至设定失血阈值 (默认30%, Class III休克)
-            if (pumping <= Props.bloodPumpingThreshold || breathing <= Props.breathingThreshold || bloodLossSeverity > EE_Settings.AcidosisBloodLossThreshold1)
+            // 当出现灌注/呼吸缺口，或者严重失血时累积酸中毒
+            bool hasInsult = pumping <= Props.bloodPumpingThreshold || 
+                             breathing <= Props.breathingThreshold || 
+                             bloodLossSeverity > EE_Settings.AcidosisBloodLossThreshold1;
+
+            if (hasInsult)
             {
-                float severityFactor = 0.05f; // 基础增长极低，拉长游戏时间至 4-8 小时
+                // 积分累积公式
+                float severityFactor = 0.05f; // 基础增长较平缓
 
                 if (bloodLossSeverity > EE_Settings.AcidosisBloodLossThreshold1)
                 {
@@ -47,13 +55,14 @@ namespace EmergencyExpanded
                     }
                 }
 
+                // 累积速率与缺口成正比，引入重构常量
                 if (pumping <= Props.bloodPumpingThreshold)
                 {
-                    severityFactor += (Props.bloodPumpingThreshold - pumping) * 1.5f;
+                    severityFactor += (Props.bloodPumpingThreshold - pumping) * EE_Constants.AcidosisAccumulationFactor;
                 }
                 if (breathing <= Props.breathingThreshold)
                 {
-                    severityFactor += (Props.breathingThreshold - breathing) * 1.5f;
+                    severityFactor += (Props.breathingThreshold - breathing) * EE_Constants.AcidosisAccumulationFactor;
                 }
 
                 // 致命三联征：失温显著加剧酸中毒
@@ -79,11 +88,12 @@ namespace EmergencyExpanded
                     severityFactor *= EE_Settings.VitalCriticalMultiplier;
                 }
 
-                severityAdjustment += (Props.severityIncreasePerDay * severityFactor / 1000f); 
+                parent.Severity += (Props.severityIncreasePerDay * severityFactor / 1000f); 
             }
             else
             {
-                severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
+                // 灌注与失血恢复后，以 XML 配置的消退速率自然清偿消退
+                parent.Severity -= (Props.severityDecreasePerDay / 1000f);
             }
         }
     }

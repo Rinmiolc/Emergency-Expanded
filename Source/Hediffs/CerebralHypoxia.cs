@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using Verse;
 
 namespace EmergencyExpanded
@@ -81,8 +81,13 @@ namespace EmergencyExpanded
 
         public override void CompPostTick(ref float severityAdjustment)
         {
+            // Do nothing to prevent double-updating.
+            // Updates are driven by HypoxiaMonitor.RunCrisisMonitor.
+        }
+
+        public void UpdateCerebralHypoxiaSeverity(float pumping, float breathing)
+        {
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
-            if (!Pawn.IsHashIntervalTick(60)) return;
 
             // 如果已经脑死亡，直接移除脑缺氧状态
             if (Pawn.health.hediffSet.HasHediff(EE_DefOf.VegetativeState, Pawn.health.hediffSet.GetBrain()))
@@ -91,8 +96,6 @@ namespace EmergencyExpanded
                 return;
             }
 
-            float pumping = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
-            float breathing = Pawn.health.capacities.GetLevel(PawnCapacityDefOf.Breathing);
             float overdoseSev = Pawn.health.hediffSet.GetFirstHediffOfDef(HediffDefOf.DrugOverdose)?.Severity ?? 0f;
 
             // 1. 结算缺氧进度（在泵血、呼吸能力低，或者重度药物过量时触发）
@@ -119,11 +122,11 @@ namespace EmergencyExpanded
                     severityFactor += (overdoseSev - EE_Constants.DrugOverdoseHypoxiaThreshold) * EE_Constants.DrugOverdoseHypoxiaSeverityIncrease;
                 }
 
-                severityAdjustment += (Props.hypoxiaPerDay * severityFactor) / 1000f;
+                parent.Severity += (Props.hypoxiaPerDay * severityFactor) / 1000f;
             }
             else
             {
-                severityAdjustment -= Props.recoveryPerDay / 1000f;
+                parent.Severity -= Props.recoveryPerDay / 1000f;
             }
 
             // 2. 只有当脑缺氧进度达到100%（Severity >= 1.0）时，缺氧性脑损伤的进度才会开始累加！

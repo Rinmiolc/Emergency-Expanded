@@ -30,8 +30,13 @@ namespace EmergencyExpanded
 
         public override void CompPostTick(ref float severityAdjustment)
         {
+            // Do nothing to prevent double-updating.
+            // Updates are driven by HypoxiaMonitor.RunCrisisMonitor.
+        }
+
+        public void UpdateModsSeverity()
+        {
             if (Pawn == null || Pawn.Dead || !Pawn.RaceProps.IsFlesh || Pawn.IsShambler) return;
-            if (!Pawn.IsHashIntervalTick(60)) return;
 
             float shockSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_Shock)?.Severity ?? 0f;
             float acidosisSev = Pawn.health.hediffSet.GetFirstHediffOfDef(EE_DefOf.MetabolicAcidosis)?.Severity ?? 0f;
@@ -40,11 +45,11 @@ namespace EmergencyExpanded
             if (shockSev >= EE_Constants.ShockIrreversibleThreshold || acidosisSev >= EE_Constants.AcidosisMidThreshold)
             {
                 float factor = 1.0f + (shockSev - EE_Constants.ShockIrreversibleThreshold) * 3f + acidosisSev;
-                severityAdjustment += (Props.severityIncreasePerDay * factor / 1000f);
+                parent.Severity += (Props.severityIncreasePerDay * factor * EE_Constants.ModsProgressionRate / 1000f);
             }
             else
             {
-                severityAdjustment -= (Props.severityDecreasePerDay / 1000f);
+                parent.Severity -= (Props.severityDecreasePerDay / 1000f);
             }
 
             // MODS 进展期及以后 (Severity > 0.4)，开始造成实质性的核心脏器缺血坏死积累

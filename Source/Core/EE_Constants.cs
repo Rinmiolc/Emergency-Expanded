@@ -238,6 +238,16 @@ namespace EmergencyExpanded
         // 触发失代偿期和不可逆期的严重度阈值
         public const float ShockDecompensatedThreshold = 0.4f;
         public const float ShockIrreversibleThreshold = 0.7f;
+
+        // ================= 重构生理与病理体系常量 (Reconstructed Physiology Constants) =================
+        // 灌注恢复后休克自然消退速率 (每天)
+        public const float ShockRecoveryRateNormal = 2.0f;
+        // 酸中毒根据灌注缺口累积的速率因子
+        public const float AcidosisAccumulationFactor = 3.0f;
+        // 灌注/呼吸恢复后酸中毒的自愈消退速率 (每天)
+        public const float AcidosisRecoveryRateNormal = 2.0f;
+        // 休克/酸中毒转换为 MODS 的速率因子
+        public const float ModsProgressionRate = 1.0f;
         #endregion
 
         #region 5. 骨折机制 (Bone Fracture)
