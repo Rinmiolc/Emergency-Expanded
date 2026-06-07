@@ -1,5 +1,6 @@
 using RimWorld;
 using Verse;
+using System.Linq;
 
 namespace EmergencyExpanded
 {
@@ -25,9 +26,10 @@ namespace EmergencyExpanded
             if (pawn == null) return part;
             
             BodyPartRecord current = part;
+            var notMissingParts = pawn.health.hediffSet.GetNotMissingParts();
             while (current != null)
             {
-                if (!pawn.health.hediffSet.PartIsMissing(current))
+                if (notMissingParts.Contains(current))
                 {
                     return current;
                 }

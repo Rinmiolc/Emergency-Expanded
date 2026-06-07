@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using Verse;
 using UnityEngine;
 using System.Linq;
@@ -35,7 +35,7 @@ namespace EmergencyExpanded
 
             // 2. 核心修复：如果这个部位已经被这次伤害彻底摧毁（生命值为0）或已经缺失，就不应该再添加骨折状态。
             if (pawn.health.hediffSet.GetPartHealth(part) <= 0 || 
-                pawn.health.hediffSet.PartIsMissing(part))
+                !pawn.health.hediffSet.GetNotMissingParts().Contains(part))
             {
                 return;
             }
@@ -137,7 +137,7 @@ namespace EmergencyExpanded
                             // 修复：大出血不应生成在骨头上，而是生成在包裹骨头的血肉（即父节点部位）上
                             BodyPartRecord bleedPart = EE_MedicalUtility.GetNearestNonMissingPart(pawn, part.parent ?? part);
 
-                            if (bleedPart != null && !pawn.health.hediffSet.PartIsMissing(bleedPart))
+                            if (bleedPart != null && pawn.health.hediffSet.GetNotMissingParts().Contains(bleedPart))
                             {
                                 Hediff rupture = HediffMaker.MakeHediff(EE_DefOf.MassiveBleeding, pawn, bleedPart);
                                 rupture.Severity = 1.0f;

@@ -42,4 +42,18 @@ namespace EmergencyExpanded
             EE_GlobalFlags.IsForcingDown = false;
         }
     }
+
+    [HarmonyPatch(typeof(HealthUtility), "DamageUntilDead")]
+    public static class Patch_HealthUtility_DamageUntilDead
+    {
+        public static void Prefix()
+        {
+            EE_GlobalFlags.IsForcingDown = true;
+        }
+
+        public static void Finalizer()
+        {
+            EE_GlobalFlags.IsForcingDown = false;
+        }
+    }
 }

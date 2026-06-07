@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using RimWorld;
 using Verse;
+using System.Linq;
 
 namespace EmergencyExpanded
 {
@@ -134,7 +135,7 @@ namespace EmergencyExpanded
             {
                 foreach (BodyPartRecord part in pumpingSources)
                 {
-                    if (pawn.health.hediffSet.PartIsMissing(part))
+                    if (!pawn.health.hediffSet.GetNotMissingParts().Contains(part))
                     {
                         return true;
                     }

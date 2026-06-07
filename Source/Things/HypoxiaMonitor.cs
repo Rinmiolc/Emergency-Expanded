@@ -2,6 +2,7 @@ using HarmonyLib;
 using RimWorld;
 using Verse;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace EmergencyExpanded
 {
@@ -129,7 +130,7 @@ namespace EmergencyExpanded
             {
                 foreach (BodyPartRecord part in pumpingSources)
                 {
-                    if (__instance.hediffSet.PartIsMissing(part))
+                    if (!__instance.hediffSet.GetNotMissingParts().Contains(part))
                     {
                         isHeartMissing = true;
                         break;

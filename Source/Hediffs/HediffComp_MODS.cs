@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using RimWorld;
 using Verse;
+using System.Linq;
 
 namespace EmergencyExpanded
 {
@@ -107,7 +108,7 @@ namespace EmergencyExpanded
             for (int i = 0; i < parts.Count; i++)
             {
                 BodyPartRecord part = parts[i];
-                if (part.def == null || Pawn.health.hediffSet.PartIsMissing(part)) continue;
+                if (part.def == null || !Pawn.health.hediffSet.GetNotMissingParts().Contains(part)) continue;
                 
                 if (EE_BodyPartCache.IsOrganType(part.def, tag, fallbackKeyword))
                 {

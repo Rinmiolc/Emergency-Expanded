@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Verse;
 using RimWorld;
+using System.Linq;
 
 namespace EmergencyExpanded
 {
@@ -243,7 +244,7 @@ namespace EmergencyExpanded
         // 愈合终期结算畸形愈合
         private void CheckMalunion()
         {
-            if (Part != null && pawn.health.hediffSet.PartIsMissing(Part)) return;
+            if (Part != null && !pawn.health.hediffSet.GetNotMissingParts().Contains(Part)) return;
             
             // 对齐质量过低时（例如没有正骨，仅靠硬夹板或自然愈合），极高概率发生畸形愈合
             if (alignmentQuality < 0.50f)

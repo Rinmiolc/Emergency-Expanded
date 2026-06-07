@@ -64,7 +64,7 @@ namespace EmergencyExpanded
             {
                 for (int i = 0; i < pumpingSources.Count; i++)
                 {
-                    if (pawn.health.hediffSet.PartIsMissing(pumpingSources[i]))
+                    if (!pawn.health.hediffSet.GetNotMissingParts().Contains(pumpingSources[i]))
                     {
                         isHeartMissing = true;
                         break;
