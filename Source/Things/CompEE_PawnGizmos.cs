@@ -57,7 +57,8 @@ namespace EmergencyExpanded
                 !pawn.RaceProps.IsMechanoid && 
                 EE_Settings.EnableEcgGui)
             {
-                if (Find.Selector.SingleSelectedThing == pawn)
+                bool isHealthTabOpen = (UnityEngine.Time.frameCount - Patch_HealthCardUtility_UI.lastHealthTabDrawFrame) <= 2;
+                if (Find.Selector.SingleSelectedThing == pawn && !isHealthTabOpen)
                 {
                     addVitalMonitor = true;
                 }

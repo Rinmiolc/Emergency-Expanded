@@ -33,6 +33,13 @@
     </value>
   </Operation>
 
+  <Operation Class="PatchOperationReplace">
+    <xpath>Defs/WorkGiverDef[defName="DoctorTendToSelf"]/giverClass</xpath>
+    <value>
+      <giverClass>EmergencyExpanded.WorkGiver_TendSelfEE</giverClass>
+    </value>
+  </Operation>
+
   <!-- 3. 将原版烧伤的 hediffClass 替换为自定义的 Hediff_InjuryBurn (如果 hediffClass 不存在则添加，存在则替换) -->
   <Operation Class="PatchOperationConditional">
     <xpath>Defs/HediffDef[defName="Burn"]/hediffClass</xpath>

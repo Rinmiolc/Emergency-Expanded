@@ -21,6 +21,8 @@
     <li>erdelf.HumanoidAlienRaces</li>
     <li>CETeam.CombatExtended</li>
     <li>Uuugggg.SmartMedicine</li>
+    <li>Andromeda.NiceHealthTab</li>
+    <li>GT.Sam.HealthDisplay</li>
   </loadAfter>
   <incompatibleWith>
     <li>Troopersmith1.DeathRattle</li>

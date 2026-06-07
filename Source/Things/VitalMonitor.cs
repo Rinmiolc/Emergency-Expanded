@@ -222,6 +222,130 @@ namespace EmergencyExpanded
                 }
             }
         }
+
+        public static void UpdateWaveform(CachedVitals vitals, float bpm)
+        {
+            float t = Time.realtimeSinceStartup;
+            if (vitals.lastTime < 0f) vitals.lastTime = t;
+            float dt = t - vitals.lastTime;
+            
+            if (dt <= 0f) return; // Already updated this frame
+            if (dt > 0.1f) dt = 0.1f;
+            
+            vitals.lastTime = t;
+
+            float virtualWidth = 160f; // Fixed virtual width for uniform simulation
+
+            float beatDuration = (bpm > EE_Constants.EcgFlatlineThreshold) ? (60f / bpm) : 1f;
+            if (vitals.hasArrhythmia)
+            {
+                beatDuration += Mathf.Sin(t * 3f) * (beatDuration * 0.25f);
+            }
+            float sweepSpeed = virtualWidth / 2.4f;
+            
+            int oldX = Mathf.FloorToInt(vitals.sweepX);
+            vitals.sweepX += dt * sweepSpeed;
+            if (vitals.sweepX >= virtualWidth) vitals.sweepX -= virtualWidth;
+            int newX = Mathf.FloorToInt(vitals.sweepX);
+
+            float phaseDelta = (bpm > EE_Constants.EcgFlatlineThreshold) ? (dt / beatDuration) : 0f;
+            float newPhase = vitals.phase + phaseDelta;
+
+            int stepPixels = newX - oldX;
+            if (stepPixels < 0) stepPixels += Mathf.FloorToInt(virtualWidth);
+
+            if (stepPixels > 0)
+            {
+                for (int step = 1; step <= stepPixels; step++)
+                {
+                    int x = (oldX + step) % Mathf.FloorToInt(virtualWidth);
+                    float fraction = (float)step / stepPixels;
+                    float p = (vitals.phase + phaseDelta * fraction) % 1f;
+                    
+                    float val = 0f;
+                    float timeAtPixel = t - dt * (1f - fraction);
+
+                    if (vitals.lastShockTime > 0f && timeAtPixel >= vitals.lastShockTime && timeAtPixel < vitals.lastShockTime + 0.6f)
+                    {
+                        float shockDt = timeAtPixel - vitals.lastShockTime;
+                        if (shockDt < 0.05f) val = (shockDt / 0.05f) * 2.5f;
+                        else if (shockDt < 0.15f) val = 2.5f - ((shockDt - 0.05f) / 0.1f) * 4.5f;
+                        else if (shockDt < 0.35f) val = -2.0f + ((shockDt - 0.15f) / 0.2f) * 2.0f;
+                        else val = Mathf.Sin((shockDt - 0.35f) * 15f) * 0.1f * (0.6f - shockDt);
+                        
+                        val = Mathf.Clamp(val, -1.15f, 1.15f);
+                    }
+                    else if (bpm < EE_Constants.EcgFlatlineThreshold)
+                    {
+                        val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
+                    }
+                    else if (vitals.hasMyocardialInfarction && bpm > 180f)
+                    {
+                        float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f;
+                        float baseWave = Mathf.Sin(timeAtPixel * 37f) * 0.32f + 
+                                         Mathf.Cos(timeAtPixel * 79f) * 0.18f + 
+                                         Mathf.Sin(timeAtPixel * 131f) * 0.10f;
+                        float noise = Rand.Range(-0.08f, 0.08f);
+                        val = baseWave * amplitudeMod + noise;
+                    }
+                    else
+                    {
+                        bool isHypoxic = vitals.hasCerebralHypoxia || bpm > EE_Constants.EcgTachycardiaThreshold;
+                        val = GetBaseECGValue(p, isHypoxic, vitals.hasMyocardialInfarction, bpm);
+                        
+                        float pPrev = (vitals.phase + phaseDelta * (step - 1f) / stepPixels) % 1f;
+                        if (pPrev < p)
+                        {
+                            float beatDuration_AA = (bpm > 0.1f) ? (60f / bpm) : 1f;
+                            float activeFraction_AA = Mathf.Clamp(0.45f / beatDuration_AA, 0.1f, 0.95f);
+                            float pPeakR = (0.23f / 0.55f) * activeFraction_AA;
+                            float pPeakS = (0.26f / 0.55f) * activeFraction_AA;
+
+                            if (pPrev < pPeakR && p >= pPeakR) val = 1.20f;
+                            else if (pPrev < pPeakS && p >= pPeakS) val = -0.35f;
+                        }
+                    }
+                    if (x >= 0 && x < vitals.waveBuffer.Length)
+                        vitals.waveBuffer[x] = val;
+                }
+            }
+            vitals.phase = newPhase % 1f;
+        }
+
+        public static float GetBaseECGValue(float p, bool isHypoxic, bool isMI, float bpm)
+        {
+            float beatDuration = (bpm > 0.1f) ? (60f / bpm) : 1f;
+            float activeDuration = 0.45f;
+            float activeFraction = Mathf.Clamp(activeDuration / beatDuration, 0.1f, 0.95f);
+            
+            if (p > activeFraction) return 0f;
+            
+            float origP = (p / activeFraction) * 0.55f;
+            
+            if (origP < 0.05f) return 0f;
+            if (origP < 0.13f) return Mathf.Sin(((origP - 0.05f) / 0.08f) * Mathf.PI) * 0.12f;
+            if (origP < 0.18f) return 0f;
+            if (origP < 0.20f) return -((origP - 0.18f) / 0.02f) * 0.15f;
+            if (origP < 0.23f) return -0.15f + ((origP - 0.20f) / 0.03f) * 1.35f;
+            if (origP < 0.26f) return 1.20f - ((origP - 0.23f) / 0.03f) * 1.55f;
+            
+            if (origP < 0.32f) 
+            {
+                float stBase = -0.35f + ((origP - 0.26f) / 0.06f) * 0.35f;
+                if (isMI) return stBase + 0.22f;
+                return isHypoxic ? (stBase - 0.08f) : stBase;
+            }
+            
+            if (origP < 0.55f) 
+            {
+                float tPhase = (origP - 0.32f) / 0.23f;
+                float tWave = Mathf.Pow(Mathf.Sin(tPhase * Mathf.PI), 1.5f) * 0.28f;
+                if (isMI) return tWave * 1.5f + 0.15f;
+                if (isHypoxic) return -tWave * 0.8f - 0.05f; 
+                return tWave;
+            }
+            return 0f;
+        }
     }
 
     // ================= 3. Custom Gizmo 生命体征检测仪 =================
@@ -303,122 +427,41 @@ namespace EmergencyExpanded
             float centerY = waveRect.y + waveRect.height / 2f;
             float waveWidth = waveRect.width;
 
-            float t = Time.realtimeSinceStartup;
-            if (vitals.lastTime < 0f) vitals.lastTime = t;
-            float dt = t - vitals.lastTime;
-            
             if (Event.current.type == EventType.Repaint)
             {
-                vitals.lastTime = t;
-                if (dt > 0.1f) dt = 0.1f;
-
-                float beatDuration = (bpm > EE_Constants.EcgFlatlineThreshold) ? (60f / bpm) : 1f;
-                if (vitals.hasArrhythmia)
-                {
-                    beatDuration += Mathf.Sin(t * 3f) * (beatDuration * 0.25f);
-                }
-                float sweepSpeed = waveWidth / 2.4f;
-                
-                int oldX = Mathf.FloorToInt(vitals.sweepX);
-                vitals.sweepX += dt * sweepSpeed;
-                if (vitals.sweepX >= waveWidth) vitals.sweepX -= waveWidth;
-                int newX = Mathf.FloorToInt(vitals.sweepX);
-
-                float phaseDelta = (bpm > EE_Constants.EcgFlatlineThreshold) ? (dt / beatDuration) : 0f;
-                float newPhase = vitals.phase + phaseDelta;
-
-                int stepPixels = newX - oldX;
-                if (stepPixels < 0) stepPixels += Mathf.FloorToInt(waveWidth);
-
-                if (stepPixels > 0)
-                {
-                    for (int step = 1; step <= stepPixels; step++)
-                    {
-                        int x = (oldX + step) % Mathf.FloorToInt(waveWidth);
-                        float fraction = (float)step / stepPixels;
-                        float p = (vitals.phase + phaseDelta * fraction) % 1f;
-                        
-                        float val = 0f;
-                        float timeAtPixel = t - dt * (1f - fraction);
-
-                        if (vitals.lastShockTime > 0f && timeAtPixel >= vitals.lastShockTime && timeAtPixel < vitals.lastShockTime + 0.6f)
-                        {
-                            // 电复律波峰模拟
-                            float shockDt = timeAtPixel - vitals.lastShockTime;
-                            if (shockDt < 0.05f) val = (shockDt / 0.05f) * 2.5f;
-                            else if (shockDt < 0.15f) val = 2.5f - ((shockDt - 0.05f) / 0.1f) * 4.5f;
-                            else if (shockDt < 0.35f) val = -2.0f + ((shockDt - 0.15f) / 0.2f) * 2.0f;
-                            else val = Mathf.Sin((shockDt - 0.35f) * 15f) * 0.1f * (0.6f - shockDt);
-                            
-                            // 限制最大振幅，防止溢出 GUI 界面
-                            val = Mathf.Clamp(val, -1.15f, 1.15f);
-                        }
-                        else if (bpm < EE_Constants.EcgFlatlineThreshold)
-                        {
-                            val = Mathf.Sin(timeAtPixel * 1.8f) * 0.024f + Rand.Range(-0.02f, 0.02f);
-                        }
-                        else if (vitals.hasMyocardialInfarction && bpm > 180f)
-                        {
-                            float amplitudeMod = 0.75f + Mathf.Sin(timeAtPixel * 7.5f) * 0.25f;
-                            float baseWave = Mathf.Sin(timeAtPixel * 37f) * 0.32f + 
-                                             Mathf.Cos(timeAtPixel * 79f) * 0.18f + 
-                                             Mathf.Sin(timeAtPixel * 131f) * 0.10f;
-                            float noise = Rand.Range(-0.08f, 0.08f);
-                            val = baseWave * amplitudeMod + noise;
-                        }
-                        else
-                        {
-                            bool isHypoxic = vitals.hasCerebralHypoxia || bpm > EE_Constants.EcgTachycardiaThreshold;
-                            val = GetBaseECGValue(p, isHypoxic, vitals.hasMyocardialInfarction, bpm);
-                            
-                            // 反走样峰值捕捉：如果在这两帧相位之间跨越了波峰或波谷，强制该像素显示极限值
-                            float pPrev = (vitals.phase + phaseDelta * (step - 1f) / stepPixels) % 1f;
-                            if (pPrev < p)
-                            {
-                                float beatDuration_AA = (bpm > 0.1f) ? (60f / bpm) : 1f;
-                                float activeFraction_AA = Mathf.Clamp(0.45f / beatDuration_AA, 0.1f, 0.95f);
-                                float pPeakR = (0.23f / 0.55f) * activeFraction_AA;
-                                float pPeakS = (0.26f / 0.55f) * activeFraction_AA;
-
-                                if (pPrev < pPeakR && p >= pPeakR) val = 1.20f;
-                                else if (pPrev < pPeakS && p >= pPeakS) val = -0.35f;
-                            }
-                        }
-                        if (x >= 0 && x < vitals.waveBuffer.Length)
-                            vitals.waveBuffer[x] = val;
-                    }
-                }
-                vitals.phase = newPhase % 1f;
+                VitalTracker.UpdateWaveform(vitals, bpm);
             }
 
-            // 绘制波形线段 (亚像素平滑绘制，弃用 FloorToInt)
-            int drawPoints = Mathf.FloorToInt(waveWidth);
+            int bufferLen = vitals.waveBuffer.Length;
+            float scaleX = waveWidth / (bufferLen - 1);
+
+            int drawPoints = bufferLen - 1;
             for (int i = 0; i < drawPoints; i++)
             {
-                float distToSweep = i - vitals.sweepX;
-                if (distToSweep < 0f) distToSweep += waveWidth;
+                float virtualWaveWidth = 160f;
+                float distToSweep = (i * (virtualWaveWidth / bufferLen)) - vitals.sweepX;
+                if (distToSweep < 0f) distToSweep += virtualWaveWidth;
                 
                 float alpha = 1f;
-                // 拉长尾部的阴影渐隐区，视觉更柔和
                 if (distToSweep < 14f)
                 {
                     alpha = distToSweep / 14f; 
                 }
                 
-                if (i + 1 > vitals.sweepX && i <= vitals.sweepX) continue;
+                float currentSweepIndex = vitals.sweepX * (bufferLen / virtualWaveWidth);
+                if (i + 1 > currentSweepIndex && i <= currentSweepIndex) continue;
                 
                 float v1 = vitals.waveBuffer[i];
                 float v2 = vitals.waveBuffer[i + 1];
                 
-                float screenX1 = waveRect.x + i;
+                float screenX1 = waveRect.x + i * scaleX;
                 float screenY1 = centerY - v1 * (waveRect.height * 0.42f);
-                float screenX2 = waveRect.x + i + 1;
+                float screenX2 = waveRect.x + (i + 1) * scaleX;
                 float screenY2 = centerY - v2 * (waveRect.height * 0.42f);
                 
                 Vector2 pt1 = new Vector2(screenX1, screenY1);
                 Vector2 pt2 = new Vector2(screenX2, screenY2);
                 
-                // 延长线段以使其首尾互相重叠，消除像素渲染产生的虚线间隙现象
                 Vector2 dir = (pt2 - pt1).normalized;
                 pt1 -= dir * 0.1f;
                 pt2 += dir * 0.6f;
@@ -479,71 +522,6 @@ namespace EmergencyExpanded
             }
 
             return new GizmoResult(GizmoState.Clear);
-        }
-
-        // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
-        // 极度还原临床心电图 Lead-II 波形函数 (P-QRS-T)
-        // 包含心肌缺血/缺氧时的 ST段压低 与 T波倒置 拟真病理改变
-        private float GetBaseECGValue(float p, bool isHypoxic, bool isMI, float bpm)
-        {
-            float beatDuration = (bpm > 0.1f) ? (60f / bpm) : 1f;
-            float activeDuration = 0.45f;
-            // 限制活跃部分比例，确保波形不会在极高心率下互相重叠超过界限
-            float activeFraction = Mathf.Clamp(activeDuration / beatDuration, 0.1f, 0.95f);
-            
-            if (p > activeFraction) return 0f; // TP段基线
-            
-            // 将 p 映射到标准的 0~0.55 区间，保证 P-QRS-T 波形在物理时间（屏幕宽度）上的一致性
-            float origP = (p / activeFraction) * 0.55f;
-            
-            if (origP < 0.05f) return 0f;
-            // P波 (心房除极)
-            if (origP < 0.13f) 
-                return Mathf.Sin(((origP - 0.05f) / 0.08f) * Mathf.PI) * 0.12f;
-            // PR段
-            if (origP < 0.18f) 
-                return 0f;
-            // Q波 (室间隔除极)
-            if (origP < 0.20f) 
-                return -((origP - 0.18f) / 0.02f) * 0.15f;
-            // R波 (心室主除极 - 极速上升)
-            if (origP < 0.23f) 
-                return -0.15f + ((origP - 0.20f) / 0.03f) * 1.35f; // R波顶峰 1.20
-            // S波 (心室基底除极 - 极速下降)
-            if (origP < 0.26f) 
-                return 1.20f - ((origP - 0.23f) / 0.03f) * 1.55f; // S波谷底 -0.35
-            
-            // ST段 (缓慢回基线)
-            if (origP < 0.32f) 
-            {
-                float stBase = -0.35f + ((origP - 0.26f) / 0.06f) * 0.35f;
-                if (isMI)
-                {
-                    // 临床室性心肌梗死：ST段抬高 (ST Elevation) 并形成典型的单相曲线
-                    return stBase + 0.22f;
-                }
-                // 脑部窒息缺氧或重度低血容量休克时：发生 ST段压低 (ST Depression) 0.08 像素单位
-                return isHypoxic ? (stBase - 0.08f) : stBase;
-            }
-            
-            // T波 (心室复极 - 不对称宽波)
-            if (origP < 0.55f) 
-            {
-                float tPhase = (origP - 0.32f) / 0.23f;
-                float tWave = Mathf.Pow(Mathf.Sin(tPhase * Mathf.PI), 1.5f) * 0.28f;
-                if (isMI)
-                {
-                    // 心梗超急性期：高耸 T 波，且随 ST 抬高连贯过渡
-                    return tWave * 1.5f + 0.15f;
-                }
-                if (isHypoxic)
-                {
-                    // 缺氧病理：T波对称性倒置 (T Wave Inversion)
-                    return -tWave * 0.8f - 0.05f; 
-                }
-                return tWave;
-            }
-            return 0f;
         }
     }
 

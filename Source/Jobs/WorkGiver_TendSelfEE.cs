@@ -4,11 +4,10 @@ using Verse.AI;
 
 namespace EmergencyExpanded
 {
-    public class WorkGiver_TendEE : WorkGiver_TendOther
+    public class WorkGiver_TendSelfEE : WorkGiver_TendSelf
     {
         public override bool HasJobOnThing(Pawn pawn, Thing t, bool forced = false)
         {
-            // First call base class implementation
             if (!base.HasJobOnThing(pawn, t, forced))
             {
                 return false;
@@ -39,7 +38,6 @@ namespace EmergencyExpanded
                     }
                     else
                     {
-                        // If there are other standard wounds that need tending, allow normal tending
                         return false;
                     }
                 }

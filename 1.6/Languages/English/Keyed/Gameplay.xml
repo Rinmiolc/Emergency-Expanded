@@ -16,11 +16,11 @@
   <EE_ConfirmDeclareDeathDesc>Are you sure you want to declare {0} dead? This will immediately terminate their life.</EE_ConfirmDeclareDeathDesc>
   <EE_ContaminationDegree>Contamination: {0}%</EE_ContaminationDegree>
   <EE_Doctor>doctor</EE_Doctor>
-  <EE_FractureCastedTag>[Casted]</EE_FractureCastedTag>
-  <EE_FractureInternallyFixedTag>[ORIF Fixed]</EE_FractureInternallyFixedTag>
-  <EE_FractureSplintedTag>[Splinted]</EE_FractureSplintedTag>
-  <EE_FractureStrictBedrestTag>[Bedrest]</EE_FractureStrictBedrestTag>
-  <EE_FractureUnfixedTag>[Unfixed]</EE_FractureUnfixedTag>
+  <EE_FractureCastedTag>&lt;color=#40E0D0&gt;[Casted]&lt;/color&gt;</EE_FractureCastedTag>
+  <EE_FractureInternallyFixedTag>&lt;color=#00FFFF&gt;[ORIF Fixed]&lt;/color&gt;</EE_FractureInternallyFixedTag>
+  <EE_FractureSplintedTag>&lt;color=#DA70D6&gt;[Splinted]&lt;/color&gt;</EE_FractureSplintedTag>
+  <EE_FractureStrictBedrestTag>&lt;color=#FFA500&gt;[Bedrest]&lt;/color&gt;</EE_FractureStrictBedrestTag>
+  <EE_FractureUnfixedTag>&lt;color=#FF6347&gt;[Unfixed]&lt;/color&gt;</EE_FractureUnfixedTag>
   <EE_LetterBrainDeathMods_Desc>{0} has suffered irreversible brain death due to severe cerebral necrosis from multiple organ failure, entering a permanent vegetative state.</EE_LetterBrainDeathMods_Desc>
   <EE_LetterBrainDeath_Desc>{0} has suffered irreversible brain death due to prolonged cerebral hypoxia and severe brain damage, entering a permanent vegetative state.</EE_LetterBrainDeath_Desc>
   <EE_LetterBrainDeath_Label>Brain Death</EE_LetterBrainDeath_Label>
@@ -82,7 +82,7 @@
   <EE_OrderPerformDefibrillation>Use defibrillator on {0} (Remaining: {1})</EE_OrderPerformDefibrillation>
   <EE_OrderPickupToInventory>Pick up {0} to inventory</EE_OrderPickupToInventory>
   <EE_OrderUseItemOn>Use {1} on {0} (Remaining: {2})</EE_OrderUseItemOn>
-  <EE_PneumothoraxDecompressedTag>Decompressed</EE_PneumothoraxDecompressedTag>
+  <EE_PneumothoraxDecompressedTag>&lt;color=#00FF7F&gt;Decompressed&lt;/color&gt;</EE_PneumothoraxDecompressedTag>
   <EE_RemainingCount>{0} (Remaining: {1})</EE_RemainingCount>
   <EE_Settings_AdditionalOptions>Additional Options</EE_Settings_AdditionalOptions>
   <EE_Settings_DifficultyPresetEasy>Easy - Fewer massive hemorrhages and fractures, more time to rescue</EE_Settings_DifficultyPresetEasy>
@@ -95,7 +95,36 @@
   <EE_Settings_EnableDynamicMassiveBleedingDesc>When enabled, single high-damage hits significantly increase the chance of massive bleeding. When disabled, uses a fixed base chance.</EE_Settings_EnableDynamicMassiveBleedingDesc>
   <EE_Settings_EnableEcgGui>Show ECG Monitor (ECG GUI)</EE_Settings_EnableEcgGui>
   <EE_Settings_EnableEcgGuiDesc>Display real-time dynamic ECG and SpO2 at the bottom when a pawn is selected.</EE_Settings_EnableEcgGuiDesc>
+  <EE_Settings_EnableHealthUiOverhaul>Enable Health UI Overhaul (Vital Monitor)</EE_Settings_EnableHealthUiOverhaul>
+  <EE_Settings_EnableHealthUiOverhaulDesc>If enabled, displays a premium medical monitor and diagnostic info at the top of the health tab. Fully compatible and co-exists with Nice Health Tab, Health Display, and RimHUD. If disabled, reverts to default style.</EE_Settings_EnableHealthUiOverhaulDesc>
   <EE_WoundContaminationDegree>Wound Contamination: {0}%</EE_WoundContaminationDegree>
   <EE_WoundContaminationRisk>Wound at risk of infection.</EE_WoundContaminationRisk>
   <EE_WoundContaminationWarningHigh>WARNING: High contamination. Extremely prone to severe infection. Debridement is highly recommended!</EE_WoundContaminationWarningHigh>
+
+  <EE_TabMedicalMonitor>Monitor</EE_TabMedicalMonitor>
+  <EE_TabMedicalMonitor_Title>Real-time Vital Sign Monitor</EE_TabMedicalMonitor_Title>
+  <EE_Vital_HR>Heart Rate (HR)</EE_Vital_HR>
+  <EE_Vital_SpO2>Blood Oxygen (SpO2)</EE_Vital_SpO2>
+  <EE_Vital_BP>Blood Pressure (BP)</EE_Vital_BP>
+  <EE_Vital_BloodVol>Blood Vol</EE_Vital_BloodVol>
+  <EE_Vital_pH>Blood pH (pH)</EE_Vital_pH>
+  <EE_Vital_RR>Respiratory Rate (RR)</EE_Vital_RR>
+  <EE_Vital_Temp>Core Temp (Temp)</EE_Vital_Temp>
+  <EE_Diagnosis_Title>Clinical Diagnosis &amp; Syndromes</EE_Diagnosis_Title>
+  <EE_OrderQuickActions>Quick Emergency Orders (One-click Assign)</EE_OrderQuickActions>
+  <EE_OrderPerformCPR_Tab>Perform CPR</EE_OrderPerformCPR_Tab>
+  <EE_OrderNeedleDecompression_Tab>Needle Decompression</EE_OrderNeedleDecompression_Tab>
+  <EE_OrderFastFirstAid_Tab>Apply Inventory First Aid</EE_OrderFastFirstAid_Tab>
+  <EE_NoDoctorsAvailable>No available doctors</EE_NoDoctorsAvailable>
+  <EE_Status_VFib>Ventricular Fibrillation (V-Fib)</EE_Status_VFib>
+  <EE_Status_CardiacArrest>Cardiac Arrest (Flatline)</EE_Status_CardiacArrest>
+  <EE_Status_Normal>Sinus Rhythm</EE_Status_Normal>
+  <EE_Status_Tachycardia>Sinus Tachycardia</EE_Status_Tachycardia>
+  <EE_Status_Bradycardia>Sinus Bradycardia</EE_Status_Bradycardia>
+  <EE_Diagnosis_None>No significant crisis syndromes observed</EE_Diagnosis_None>
+  <EE_SelectDoctorForCPR>Select doctor to perform CPR</EE_SelectDoctorForCPR>
+  <EE_SelectDoctorForNeedle>Select doctor for needle decompression</EE_SelectDoctorForNeedle>
+  <EE_SelectDoctorForFirstAid>Select doctor for field first aid</EE_SelectDoctorForFirstAid>
+  <EE_NeedleDecompressionBillAdded_NoBed>Needle decompression surgery bill added for {0}. Patient must be resting in a bed to undergo the surgery!</EE_NeedleDecompressionBillAdded_NoBed>
+  <EE_NonFleshNoMonitor>This biological type does not require vital monitoring.</EE_NonFleshNoMonitor>
 </LanguageData>

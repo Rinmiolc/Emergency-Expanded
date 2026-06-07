@@ -8,6 +8,7 @@ namespace EmergencyExpanded
     {
         public DifficultyPreset difficulty = DifficultyPreset.Hardcore;
         public bool debugMode = false;
+        public bool enableHealthUiOverhaul = true;
         public bool enableEcgGui = true;
         public bool enableDynamicMassiveBleeding = true;
 
@@ -16,6 +17,7 @@ namespace EmergencyExpanded
             base.ExposeData();
             Scribe_Values.Look(ref difficulty, "difficulty", DifficultyPreset.Hardcore);
             Scribe_Values.Look(ref debugMode, "debugMode", false);
+            Scribe_Values.Look(ref enableHealthUiOverhaul, "enableHealthUiOverhaul", true);
             Scribe_Values.Look(ref enableEcgGui, "enableEcgGui", true);
             Scribe_Values.Look(ref enableDynamicMassiveBleeding, "enableDynamicMassiveBleeding", true);
         }
@@ -52,6 +54,7 @@ namespace EmergencyExpanded
             listing.Label("EE_Settings_AdditionalOptions".Translate());
             Text.Font = GameFont.Small;
 
+            listing.CheckboxLabeled("EE_Settings_EnableHealthUiOverhaul".Translate(), ref Settings.enableHealthUiOverhaul, "EE_Settings_EnableHealthUiOverhaulDesc".Translate());
             listing.CheckboxLabeled("EE_Settings_EnableEcgGui".Translate(), ref Settings.enableEcgGui, "EE_Settings_EnableEcgGuiDesc".Translate());
             listing.CheckboxLabeled("EE_Settings_EnableDynamicMassiveBleeding".Translate(), ref Settings.enableDynamicMassiveBleeding, "EE_Settings_EnableDynamicMassiveBleedingDesc".Translate());
             listing.CheckboxLabeled("EE_Settings_EnableDebugMode".Translate(), ref Settings.debugMode, "EE_Settings_EnableDebugModeDesc".Translate());

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Verse;
@@ -30,6 +30,10 @@ namespace EmergencyExpanded
             get
             {
                 string baseLabel = base.Label;
+                if (Patch_HealthCardUtility_UI.isDrawingHealthTab)
+                {
+                    return baseLabel;
+                }
                 if (isInternallyFixed) return baseLabel + " " + "EE_FractureInternallyFixedTag".Translate();
                 if (isCasted) return baseLabel + " " + "EE_FractureCastedTag".Translate();
                 if (isStrictBedrest) return baseLabel + " " + "EE_FractureStrictBedrestTag".Translate();

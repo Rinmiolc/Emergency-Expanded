@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EE_Setting_EnableHealthUI>Enable Health UI Overhaul (Vital Monitor)</EE_Setting_EnableHealthUI>
+  <EE_Setting_EnableHealthUIDesc>If enabled, displays a premium medical monitor and diagnostic info at the top of the health tab.
+Fully compatible and co-exists with Nice Health Tab, Health Display, and RimHUD. If disabled, reverts to default style.</EE_Setting_EnableHealthUIDesc>
+  <EE_Settings_EnableHealthUiOverhaul>Enable Health UI Overhaul (Vital Monitor)</EE_Settings_EnableHealthUiOverhaul>
+  <EE_Settings_EnableHealthUiOverhaulDesc>If enabled, displays a premium medical monitor and diagnostic info at the top of the health tab. Fully compatible and co-exists with Nice Health Tab, Health Display, and RimHUD. If disabled, reverts to default style.</EE_Settings_EnableHealthUiOverhaulDesc>
+</LanguageData>

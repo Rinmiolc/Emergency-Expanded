@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <EE_Setting_EnableHealthUI>启用健康界面大修 (生命监测面板)</EE_Setting_EnableHealthUI>
+  <EE_Setting_EnableHealthUIDesc>如果开启此选项，将在健康面板顶部显示精美的心电监护仪与诊断信息。
+现已支持与 Nice Health Tab、Health Display、RimHUD 等 UI 模组完美共存。如果关闭此选项，将恢复为原版面板布局。</EE_Setting_EnableHealthUIDesc>
+  <EE_Settings_EnableHealthUiOverhaul>启用健康界面大修 (生命监测面板)</EE_Settings_EnableHealthUiOverhaul>
+  <EE_Settings_EnableHealthUiOverhaulDesc>如果开启此选项，将在健康面板顶部显示精美的心电监护仪与诊断信息。现已支持与 Nice Health Tab、Health Display、RimHUD 等 UI 模组完美共存。如果关闭此选项，将恢复为原版面板布局。</EE_Settings_EnableHealthUiOverhaulDesc>
+</LanguageData>

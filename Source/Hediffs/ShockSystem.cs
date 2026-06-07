@@ -3,7 +3,7 @@ using Verse;
 
 namespace EmergencyExpanded
 {
-    public class Hediff_Shock : HediffWithComps
+    public class Hediff_Shock : Hediff_PercentageDisplay
     {
         public override void Tick()
         {

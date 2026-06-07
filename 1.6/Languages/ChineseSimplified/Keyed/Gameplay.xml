@@ -16,11 +16,11 @@
   <EE_ConfirmDeclareDeathDesc>你确定要对 {0} 宣布死亡吗？这将会直接终结该小人的生命。</EE_ConfirmDeclareDeathDesc>
   <EE_ContaminationDegree>污染度: {0}%</EE_ContaminationDegree>
   <EE_Doctor>医生</EE_Doctor>
-  <EE_FractureCastedTag>[石膏固定]</EE_FractureCastedTag>
-  <EE_FractureInternallyFixedTag>[钢板内固定]</EE_FractureInternallyFixedTag>
-  <EE_FractureSplintedTag>[骨折环固定]</EE_FractureSplintedTag>
-  <EE_FractureStrictBedrestTag>[正骨静卧]</EE_FractureStrictBedrestTag>
-  <EE_FractureUnfixedTag>[未固定]</EE_FractureUnfixedTag>
+  <EE_FractureCastedTag>&lt;color=#40E0D0&gt;[石膏固定]&lt;/color&gt;</EE_FractureCastedTag>
+  <EE_FractureInternallyFixedTag>&lt;color=#00FFFF&gt;[钢板内固定]&lt;/color&gt;</EE_FractureInternallyFixedTag>
+  <EE_FractureSplintedTag>&lt;color=#DA70D6&gt;[骨折环固定]&lt;/color&gt;</EE_FractureSplintedTag>
+  <EE_FractureStrictBedrestTag>&lt;color=#FFA500&gt;[正骨静卧]&lt;/color&gt;</EE_FractureStrictBedrestTag>
+  <EE_FractureUnfixedTag>&lt;color=#FF6347&gt;[未固定]&lt;/color&gt;</EE_FractureUnfixedTag>
   <EE_LetterBrainDeathMods_Desc>{0} 因多脏器功能衰竭导致严重脑部坏死，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。</EE_LetterBrainDeathMods_Desc>
   <EE_LetterBrainDeath_Desc>{0} 因长时间脑部缺氧与严重脑损伤，已经发生了不可逆的脑死亡，陷入了永久的植物人状态。</EE_LetterBrainDeath_Desc>
   <EE_LetterBrainDeath_Label>脑死亡</EE_LetterBrainDeath_Label>
@@ -82,7 +82,7 @@
   <EE_OrderPerformDefibrillation>使用除颤仪为 {0} 除颤 (剩余: {1})</EE_OrderPerformDefibrillation>
   <EE_OrderPickupToInventory>拾取 {0} 到背包</EE_OrderPickupToInventory>
   <EE_OrderUseItemOn>对 {0} 使用 {1} (剩余: {2})</EE_OrderUseItemOn>
-  <EE_PneumothoraxDecompressedTag>已减压</EE_PneumothoraxDecompressedTag>
+  <EE_PneumothoraxDecompressedTag>&lt;color=#00FF7F&gt;已减压&lt;/color&gt;</EE_PneumothoraxDecompressedTag>
   <EE_RemainingCount>{0} (剩余: {1})</EE_RemainingCount>
   <EE_Settings_AdditionalOptions>附加选项</EE_Settings_AdditionalOptions>
   <EE_Settings_DifficultyPresetEasy>简单 - 更少的大出血与骨折，更充裕的抢救时间</EE_Settings_DifficultyPresetEasy>
@@ -95,7 +95,36 @@
   <EE_Settings_EnableDynamicMassiveBleedingDesc>开启后，受到高额单次伤害时大出血几率显著提升。关闭则使用固定基础几率（防止高伤武器次次大出血）。</EE_Settings_EnableDynamicMassiveBleedingDesc>
   <EE_Settings_EnableEcgGui>显示心电图监测仪 (ECG GUI)</EE_Settings_EnableEcgGui>
   <EE_Settings_EnableEcgGuiDesc>选中目标时在底部显示实时动态心电图与血氧饱和度。</EE_Settings_EnableEcgGuiDesc>
+  <EE_Settings_EnableHealthUiOverhaul>启用健康界面大修 (生命监测面板)</EE_Settings_EnableHealthUiOverhaul>
+  <EE_Settings_EnableHealthUiOverhaulDesc>如果开启此选项，将在健康面板顶部显示精美的心电监护仪与诊断信息。现已支持与 Nice Health Tab、Health Display、RimHUD 等 UI 模组完美共存。如果关闭此选项，将恢复为原版面板布局。</EE_Settings_EnableHealthUiOverhaulDesc>
   <EE_WoundContaminationDegree>伤口污染度: {0}%</EE_WoundContaminationDegree>
   <EE_WoundContaminationRisk>伤口有感染风险。</EE_WoundContaminationRisk>
   <EE_WoundContaminationWarningHigh>警告：高污染度，极易引发严重感染，建议立即进行清创！</EE_WoundContaminationWarningHigh>
+
+  <EE_TabMedicalMonitor>监护</EE_TabMedicalMonitor>
+  <EE_TabMedicalMonitor_Title>实时生命体征监护仪</EE_TabMedicalMonitor_Title>
+  <EE_Vital_HR>心率 (HR)</EE_Vital_HR>
+  <EE_Vital_SpO2>血氧饱和度 (SpO2)</EE_Vital_SpO2>
+  <EE_Vital_BP>血压 (BP)</EE_Vital_BP>
+  <EE_Vital_BloodVol>血容量 (Vol)</EE_Vital_BloodVol>
+  <EE_Vital_pH>血液酸碱度 (pH)</EE_Vital_pH>
+  <EE_Vital_RR>呼吸频率 (RR)</EE_Vital_RR>
+  <EE_Vital_Temp>核心体温 (Temp)</EE_Vital_Temp>
+  <EE_Diagnosis_Title>临床诊断与症候群</EE_Diagnosis_Title>
+  <EE_OrderQuickActions>快捷抢救指令 (一键派工)</EE_OrderQuickActions>
+  <EE_OrderPerformCPR_Tab>实施心肺复苏 (CPR)</EE_OrderPerformCPR_Tab>
+  <EE_OrderNeedleDecompression_Tab>胸腔穿刺减压</EE_OrderNeedleDecompression_Tab>
+  <EE_OrderFastFirstAid_Tab>使用背包急救品</EE_OrderFastFirstAid_Tab>
+  <EE_NoDoctorsAvailable>没有可用的医生</EE_NoDoctorsAvailable>
+  <EE_Status_VFib>室颤 (V-Fib)</EE_Status_VFib>
+  <EE_Status_CardiacArrest>心跳骤停 (Flatline)</EE_Status_CardiacArrest>
+  <EE_Status_Normal>窦性心律</EE_Status_Normal>
+  <EE_Status_Tachycardia>窦性心动过速</EE_Status_Tachycardia>
+  <EE_Status_Bradycardia>窦性心动过缓</EE_Status_Bradycardia>
+  <EE_Diagnosis_None>未见明显危机症候群</EE_Diagnosis_None>
+  <EE_SelectDoctorForCPR>指派医生进行心肺复苏</EE_SelectDoctorForCPR>
+  <EE_SelectDoctorForNeedle>指派医生进行胸腔穿刺减压</EE_SelectDoctorForNeedle>
+  <EE_SelectDoctorForFirstAid>指派医生实施野战急救</EE_SelectDoctorForFirstAid>
+  <EE_NeedleDecompressionBillAdded_NoBed>已为 {0} 自动生成胸腔穿刺减压手术法案。伤员必须躺在病床上才能执行手术！</EE_NeedleDecompressionBillAdded_NoBed>
+  <EE_NonFleshNoMonitor>该生物类型无需生命体征监护。</EE_NonFleshNoMonitor>
 </LanguageData>

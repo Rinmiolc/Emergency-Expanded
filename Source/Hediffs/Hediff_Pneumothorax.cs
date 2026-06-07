@@ -1,4 +1,4 @@
-﻿using RimWorld;
+using RimWorld;
 using Verse;
 using UnityEngine;
 
@@ -14,6 +14,10 @@ namespace EmergencyExpanded
         {
             get
             {
+                if (Patch_HealthCardUtility_UI.isDrawingHealthTab)
+                {
+                    return base.LabelInBrackets;
+                }
                 if (isDecompressed)
                 {
                     return "EE_PneumothoraxDecompressedTag".Translate();

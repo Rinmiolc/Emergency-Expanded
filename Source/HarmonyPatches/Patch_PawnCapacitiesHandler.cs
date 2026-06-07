@@ -58,4 +58,28 @@ namespace EmergencyExpanded
             }
         }
     }
+
+    [HarmonyPatch(typeof(PawnCapacitiesHandler), "CapableOf")]
+    public static class Patch_PawnCapacitiesHandler_CapableOf
+    {
+        [HarmonyPostfix]
+        public static void Postfix(PawnCapacitiesHandler __instance, PawnCapacityDef capacity, ref bool __result, Pawn ___pawn)
+        {
+            if (capacity != PawnCapacityDefOf.BloodPumping && 
+                capacity != PawnCapacityDefOf.Breathing && 
+                capacity != PawnCapacityDefOf.Consciousness && 
+                capacity != PawnCapacityDefOf.BloodFiltration) 
+                return;
+
+            if (___pawn == null || ___pawn.Dead || !___pawn.RaceProps.IsFlesh) return;
+
+            // 彻底切断原版致死判定：即使 GetLevel/CalculateCapacityLevel 返回了 0，
+            // CapableOf 也会被强制修正为 true。
+            // 这确保小人绝对不会因为 Shock 或失血等单纯的 capacity 归零而暴毙。
+            if (!__result)
+            {
+                __result = true;
+            }
+        }
+    }
 }
