@@ -39,6 +39,38 @@ namespace EmergencyExpanded
         }
 
         /// <summary>
+        /// 判定身体部位或其任何祖先部位是否已被彻底摧毁（生命值 <= 0）或已缺失。
+        /// 采用直接扫描 hediffs 列表和 GetPartHealth 的方式，不依赖缓存，能够安全规避 RimWorld 的缓存延迟问题。
+        /// </summary>
+        public static bool IsPartOrAnyAncestorDestroyedOrMissing(Pawn pawn, BodyPartRecord part)
+        {
+            if (part == null || pawn == null || pawn.health == null || pawn.health.hediffSet == null) return false;
+
+            System.Collections.Generic.List<Hediff> hediffs = pawn.health.hediffSet.hediffs;
+            BodyPartRecord current = part;
+            while (current != null)
+            {
+                // 1. 检查部位或祖先的实时生命值是否 <= 0
+                if (pawn.health.hediffSet.GetPartHealth(current) <= 0f)
+                {
+                    return true;
+                }
+
+                // 2. 检查部位或祖先是否在 hediffs 中有缺失部位的记录 (不依赖 cache)
+                for (int i = 0; i < hediffs.Count; i++)
+                {
+                    if (hediffs[i] is Hediff_MissingPart && hediffs[i].Part == current)
+                    {
+                        return true;
+                    }
+                }
+
+                current = current.parent;
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 计算全身系统性炎性负载 (Trauma Load)。
         /// 融合了缺氧、外伤、败血症、坏死等因素，用于判定 SIRS 的触发与演进。
         /// 过滤了 Severity <= 3.0f 的微型擦伤/伤口，并进行平滑过渡。

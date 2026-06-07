@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using HarmonyLib;
 using RimWorld;
 using Verse;
@@ -18,6 +18,12 @@ namespace EmergencyExpanded
 
             Pawn pawn = ___pawn;
             if (pawn == null || pawn.Dead || !pawn.RaceProps.IsFlesh) return true;
+
+            BodyPartRecord checkPart = part ?? hediff.Part;
+            if (checkPart != null && EE_MedicalUtility.IsPartOrAnyAncestorDestroyedOrMissing(pawn, checkPart))
+            {
+                return false;
+            }
 
             // ================= 1. 烧伤融合机制 (Burn Merging) =================
             if (hediff.def == EE_DefOf.Burn)
