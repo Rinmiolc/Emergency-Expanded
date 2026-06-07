@@ -56,26 +56,48 @@ namespace EmergencyExpanded
             }
         }
 
+        public static bool IsHeartBlinking(CachedVitals vitals, float bpm)
+        {
+            if (vitals == null || bpm <= EE_Constants.EcgFlatlineThreshold) return false;
+            float beatDuration = 60f / bpm;
+            float activeFraction = Mathf.Clamp(0.45f / beatDuration, 0.1f, 0.95f);
+            if (vitals.phase <= activeFraction)
+            {
+                float origP = (vitals.phase / activeFraction) * 0.55f;
+                return origP >= 0.18f && origP <= 0.32f;
+            }
+            return false;
+        }
+
         // 动态生理计算心率
         public static float CalculateDynamicHeartRate(Pawn pawn)
         {
             if (pawn == null || pawn.Dead) return 0f;
 
-            // 0. 优先短路：如果心脏物理缺失，则心搏立刻归零 (Flatline)
-            var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
-            bool isHeartMissing = false;
-            if (pumpingSources != null)
+            // 0. 优先短路：如果心脏物理缺失或受损，且该种族有心脏，则心搏立刻归零 (Flatline)
+            BodyPartRecord heartPart = EE_BodyPartCache.GetHeartPart(pawn);
+            if (heartPart != null)
             {
-                for (int i = 0; i < pumpingSources.Count; i++)
+                if (EE_MedicalUtility.IsPartOrAnyAncestorDestroyedOrMissing(pawn, heartPart))
                 {
-                    if (!pawn.health.hediffSet.GetNotMissingParts().Contains(pumpingSources[i]))
+                    return 0f;
+                }
+            }
+            else
+            {
+                // 如果没有明确的心脏，但有其他的泵血源物理缺失，也归零
+                var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
+                if (pumpingSources != null && pumpingSources.Count > 0)
+                {
+                    for (int i = 0; i < pumpingSources.Count; i++)
                     {
-                        isHeartMissing = true;
-                        break;
+                        if (!pawn.health.hediffSet.GetNotMissingParts().Contains(pumpingSources[i]))
+                        {
+                            return 0f;
+                        }
                     }
                 }
             }
-            if (isHeartMissing) return 0f;
 
             // 1. 根据生理年龄计算基准静息心率 (年轻略快，老年略慢)
             float bioAge = pawn.ageTracker.AgeBiologicalYearsFloat;
@@ -248,7 +270,7 @@ namespace EmergencyExpanded
                     // 建立血氧饱和度与脏器功能 (容量/灌注) 的精细数学模型
                     if (capacityIndex >= 0.9f)
                     {
-                        targetSpO2 = Mathf.Lerp(95f, 99f, (capacityIndex - 0.9f) / 0.1f) + Rand.Range(-0.5f, 0.5f);
+                        targetSpO2 = Mathf.Lerp(EE_Constants.SpO2HealthyBaseMin, EE_Constants.SpO2HealthyBaseMax, (capacityIndex - 0.9f) / 0.1f) + Rand.Range(-EE_Constants.SpO2HealthyRandomRange, EE_Constants.SpO2HealthyRandomRange);
                     }
                     else if (capacityIndex >= 0.75f)
                     {
@@ -618,20 +640,71 @@ namespace EmergencyExpanded
             GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
             Widgets.Label(new Rect(innerScreen.x + 4f, innerScreen.y + 2f, 30f, 15f), "ECG");
             
-            bool isBlinking = bpm > EE_Constants.EcgFlatlineThreshold && (vitals.phase < 0.15f);
+            bool isBlinking = VitalTracker.IsHeartBlinking(vitals, bpm);
             GUI.color = isBlinking ? coreColor : coreColor * new Color(1f, 1f, 1f, 0.2f);
             Widgets.Label(new Rect(innerScreen.x + 28f, innerScreen.y + 2f, 15f, 15f), "♥");
 
-            // HR (心率区域)
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.UpperRight;
-            GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 2f, rightPanel.width - 2f, 15f), "<b>HR</b>");
+            // HR (心率区域) - 结合大心电图的双级警告闪烁逻辑
+            int alertLevel = 0;
+            if (!pawn.Dead)
+            {
+                if (bpm < EE_Constants.EcgFlatlineThreshold)
+                {
+                    alertLevel = 2; // Critical: Cardiac Arrest
+                }
+                else if (vitals.hasMyocardialInfarction && bpm > 180f)
+                {
+                    alertLevel = 2; // Critical: VFib
+                }
+                else if (bpm > EE_Constants.EcgTachycardiaThreshold)
+                {
+                    alertLevel = 1; // Danger: Tachycardia
+                }
+                else if (bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f))
+                {
+                    alertLevel = 1; // Danger: Bradycardia
+                }
+            }
 
-            Text.Font = GameFont.Medium;
-            GUI.color = coreColor;
-            string bpmStr = Mathf.RoundToInt(bpm).ToString();
-            Widgets.Label(new Rect(rightPanel.x, rightPanel.y + 12f, rightPanel.width - 2f, 26f), "<b>" + bpmStr + "</b>");
+            bool isBrightCycle = alertLevel > 0 && (Time.realtimeSinceStartup % 0.8f) < 0.4f;
+            Rect hrRect = new Rect(rightPanel.x, rightPanel.y + 2f, rightPanel.width - 2f, 36f);
+
+            if (isBrightCycle)
+            {
+                Color alertBgColor = (alertLevel == 1) ? Color.yellow : Color.red;
+                Color alertTextColor = (alertLevel == 1) ? Color.black : Color.white;
+
+                // 绘制警报背景与边框
+                Widgets.DrawBoxSolid(hrRect, alertBgColor);
+                GUI.color = alertBgColor;
+                Widgets.DrawBox(hrRect, 1);
+                GUI.color = Color.white;
+
+                // 绘制 HR 标签
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.UpperRight;
+                GUI.color = alertTextColor;
+                Widgets.Label(new Rect(hrRect.x + 2f, hrRect.y, hrRect.width - 4f, 15f), "<b>HR</b>");
+
+                // 绘制心率数值
+                Text.Font = GameFont.Medium;
+                GUI.color = alertTextColor;
+                string bpmStr = Mathf.RoundToInt(bpm).ToString();
+                Widgets.Label(new Rect(hrRect.x + 2f, hrRect.y + 10f, hrRect.width - 4f, 26f), "<b>" + bpmStr + "</b>");
+            }
+            else
+            {
+                // 正常/暗循环状态
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.UpperRight;
+                GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
+                Widgets.Label(new Rect(hrRect.x + 2f, hrRect.y, hrRect.width - 4f, 15f), "<b>HR</b>");
+
+                Text.Font = GameFont.Medium;
+                GUI.color = coreColor;
+                string bpmStr = Mathf.RoundToInt(bpm).ToString();
+                Widgets.Label(new Rect(hrRect.x + 2f, hrRect.y + 10f, hrRect.width - 4f, 26f), "<b>" + bpmStr + "</b>");
+            }
 
             // SpO2 (血氧区域)
             Color spo2Color = Color.white;

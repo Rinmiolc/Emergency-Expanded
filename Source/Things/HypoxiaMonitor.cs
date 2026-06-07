@@ -10,6 +10,25 @@ namespace EmergencyExpanded
     {
         public static void RunCrisisMonitor(Pawn_HealthTracker __instance, Pawn pawn)
         {
+            // 0. 优先心肌梗死与心脏状态强校验：如果该种族有心脏，且心脏受损或物理缺失，直接施加 100% 进度的心脏骤停
+            BodyPartRecord heart = EE_BodyPartCache.GetHeartPart(pawn);
+            if (heart != null && EE_MedicalUtility.IsPartOrAnyAncestorDestroyedOrMissing(pawn, heart))
+            {
+                if (EE_DefOf.EE_MyocardialInfarction != null)
+                {
+                    Hediff mi = __instance.hediffSet.GetFirstHediffOfDef(EE_DefOf.EE_MyocardialInfarction);
+                    if (mi == null)
+                    {
+                        mi = HediffMaker.MakeHediff(EE_DefOf.EE_MyocardialInfarction, pawn, heart);
+                        mi.Severity = 1.0f;
+                        __instance.AddHediff(mi, heart, null, null);
+                    }
+                    else if (mi.Severity < 1.0f)
+                    {
+                        mi.Severity = 1.0f;
+                    }
+                }
+            }
 
             float pumping = __instance.capacities.GetLevel(PawnCapacityDefOf.BloodPumping);
             float breathing = __instance.capacities.GetLevel(PawnCapacityDefOf.Breathing);
@@ -138,7 +157,8 @@ namespace EmergencyExpanded
                 }
             }
 
-            bool maskHeartRateHediffs = isMI || isDeathTimer || isHeartMissing;
+            bool isHeartDestroyedOrMissing = (heart != null && EE_MedicalUtility.IsPartOrAnyAncestorDestroyedOrMissing(pawn, heart)) || isHeartMissing;
+            bool maskHeartRateHediffs = isMI || isDeathTimer || isHeartDestroyedOrMissing;
 
             if (maskHeartRateHediffs)
             {
@@ -160,8 +180,6 @@ namespace EmergencyExpanded
             }
             else
             {
-                BodyPartRecord heart = EE_BodyPartCache.GetHeartPart(pawn);
-
                 float bpm = VitalTracker.CalculateDynamicHeartRate(pawn);
 
                 // 心动过速

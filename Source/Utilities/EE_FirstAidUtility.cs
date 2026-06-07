@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using RimWorld;
 using Verse;
@@ -92,9 +92,16 @@ namespace EmergencyExpanded
                     return false;
 
                 case EmergencyItemType.Defibrillator:
-                    // 除颤仪：目标必须具有心室颤动 (VF) 或原版心脏病发作 (HeartAttack) 状态，且未死亡
-                    return (EE_DefOf.EE_MyocardialInfarction != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction)) ||
-                           (EE_DefOf.HeartAttack != null && patient.health.hediffSet.HasHediff(EE_DefOf.HeartAttack));
+                    // 除颤仪：目标必须具有心室颤动 (VF) 或原版心脏病发作 (HeartAttack) 状态，且未死亡；并且如果种族有心脏，心脏不能物理缺失或彻底摧毁
+                    {
+                        BodyPartRecord heartPart = EE_BodyPartCache.GetHeartPart(patient);
+                        if (heartPart != null && EE_MedicalUtility.IsPartOrAnyAncestorDestroyedOrMissing(patient, heartPart))
+                        {
+                            return false;
+                        }
+                        return (EE_DefOf.EE_MyocardialInfarction != null && patient.health.hediffSet.HasHediff(EE_DefOf.EE_MyocardialInfarction)) ||
+                               (EE_DefOf.HeartAttack != null && patient.health.hediffSet.HasHediff(EE_DefOf.HeartAttack));
+                    }
                     
                 case EmergencyItemType.Irrigation:
                     // 生理盐水冲洗：目标必须有包含污染度的开放伤口

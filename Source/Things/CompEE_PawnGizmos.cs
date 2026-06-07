@@ -129,15 +129,26 @@ namespace EmergencyExpanded
                 return true;
             }
 
-            // 4. 如果没找到满级的心肌梗死，遍历检查心脏是否物理缺失
-            var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
-            if (pumpingSources != null)
+            // 4. 如果没找到满级的心肌梗死，遍历检查心脏是否物理缺失或彻底受损
+            BodyPartRecord heartPart = EE_BodyPartCache.GetHeartPart(pawn);
+            if (heartPart != null)
             {
-                foreach (BodyPartRecord part in pumpingSources)
+                if (EE_MedicalUtility.IsPartOrAnyAncestorDestroyedOrMissing(pawn, heartPart))
                 {
-                    if (!pawn.health.hediffSet.GetNotMissingParts().Contains(part))
+                    return true;
+                }
+            }
+            else
+            {
+                var pumpingSources = EE_BodyPartCache.GetBloodPumpingSources(pawn);
+                if (pumpingSources != null)
+                {
+                    foreach (BodyPartRecord part in pumpingSources)
                     {
-                        return true;
+                        if (!pawn.health.hediffSet.GetNotMissingParts().Contains(part))
+                        {
+                            return true;
+                        }
                     }
                 }
             }

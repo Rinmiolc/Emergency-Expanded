@@ -37,6 +37,22 @@ namespace EmergencyExpanded
         // 当收缩压低于此数值 (mmHg) 时，监护仪将无法测出，显示为 "--"
         public const float BpMeasurableThreshold = 30f;
 
+        // 心电图大面板垂直分割线的 X 轴偏移量 (相对于 innerScreen.x)
+        public const float EcgPanelLineXOffset = 316f;
+        // 心电图大面板数值区域的 X 轴偏移量 (相对于 innerScreen.x)
+        public const float EcgPanelVitalsXOffset = 326f;
+        // 心电图大面板数值区域的宽度
+        public const float EcgPanelVitalsWidth = 94f;
+        // 心电波形图向下平移的像素值 (用于视觉居中)
+        public const float EcgPanelYOffset = 4f;
+
+        // 健康状态下 SpO2 (血氧) 波动基准最小值 (当 capacityIndex = 0.9f 时)
+        public const float SpO2HealthyBaseMin = 96.0f;
+        // 健康状态下 SpO2 (血氧) 波动基准最大值 (当 capacityIndex = 1.0f 时)
+        public const float SpO2HealthyBaseMax = 98.5f;
+        // 健康状态下 SpO2 (血氧) 的随机波动半幅 (即 +-1.5f)
+        public const float SpO2HealthyRandomRange = 1.5f;
+
         // ================= 心律状态 Hediff 参数 (Cardiovascular State Hediffs) =================
         // 心动过速触发阈值 (BPM)
         public const float TachycardiaMinBpm = 140f;

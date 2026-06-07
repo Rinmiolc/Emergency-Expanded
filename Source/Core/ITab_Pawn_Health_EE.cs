@@ -325,8 +325,25 @@ namespace EmergencyExpanded
 
             Rect innerScreen = rect.ContractedBy(4f);
 
-            // Left side: ECG wave (width 300f)
-            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 10f, 300f, innerScreen.height - 15f);
+            // 左上角 ECG 与 心跳闪烁图标 (大心电图)
+            TextAnchor origAnchorForEcg = Text.Anchor;
+            GameFont origFontForEcg = Text.Font;
+            Text.Font = GameFont.Tiny;
+            Text.Anchor = TextAnchor.UpperLeft;
+            GUI.color = new Color(0.5f, 0.7f, 0.8f, 0.8f);
+            Widgets.Label(new Rect(innerScreen.x + 6f, innerScreen.y + 2f, 30f, 15f), "ECG");
+            
+            bool isBlinking = VitalTracker.IsHeartBlinking(vitals, bpm);
+            GUI.color = isBlinking ? coreColor : coreColor * new Color(1f, 1f, 1f, 0.2f);
+            Widgets.Label(new Rect(innerScreen.x + 30f, innerScreen.y + 2f, 15f, 15f), "♥");
+            
+            Text.Anchor = origAnchorForEcg;
+            Text.Font = origFontForEcg;
+            GUI.color = Color.white;
+
+            // Left side: ECG wave (extends to the divider line on the right, leaving a 2px gap)
+            float waveWidth = EE_Constants.EcgPanelLineXOffset - 4f;
+            Rect waveRect = new Rect(innerScreen.x + 2f, innerScreen.y + 10f, waveWidth, innerScreen.height - 15f);
 
             // Draw grid in waveRect
             GUI.color = gridColor * new Color(1f, 1f, 1f, 0.5f);
@@ -344,7 +361,7 @@ namespace EmergencyExpanded
             }
             GUI.color = Color.white;
 
-            float centerY = waveRect.y + waveRect.height / 2f;
+            float centerY = waveRect.y + waveRect.height / 2f + EE_Constants.EcgPanelYOffset;
             float waveWidthDraw = waveRect.width;
 
             if (Event.current.type == EventType.Repaint)
@@ -417,12 +434,12 @@ namespace EmergencyExpanded
             Widgets.Label(statusRect, statusStr);
 
             // Draw vertical divider between ECG screen grid and vitals readout (shifted right)
-            float lineX = innerScreen.x + 308f;
+            float lineX = innerScreen.x + EE_Constants.EcgPanelLineXOffset;
             Widgets.DrawLine(new Vector2(lineX, innerScreen.y + 4f), new Vector2(lineX, innerScreen.yMax - 4f), new Color(0.3f, 0.3f, 0.3f, 0.3f), 1f);
 
             // Right side inside the monitor screen: Vitals (HR, BP, SpO2, RR)
-            float vitalsX = innerScreen.x + 312f;
-            float vitalsWidth = 108f;
+            float vitalsX = innerScreen.x + EE_Constants.EcgPanelVitalsXOffset;
+            float vitalsWidth = EE_Constants.EcgPanelVitalsWidth;
 
             Rect hrRect = new Rect(vitalsX, innerScreen.y + 1f, vitalsWidth, 25f);
             Rect bpRect = new Rect(vitalsX, innerScreen.y + 26f, vitalsWidth, 21f);
@@ -435,11 +452,32 @@ namespace EmergencyExpanded
             string rrStr = rr.ToString("F0");
             Color rrColor = Color.white;
 
+            int alertLevel = 0;
+            if (!pawn.Dead)
+            {
+                if (bpm < EE_Constants.EcgFlatlineThreshold)
+                {
+                    alertLevel = 2; // Critical: Cardiac Arrest
+                }
+                else if (vitals.hasMyocardialInfarction && bpm > 180f)
+                {
+                    alertLevel = 2; // Critical: VFib
+                }
+                else if (bpm > EE_Constants.EcgTachycardiaThreshold)
+                {
+                    alertLevel = 1; // Danger: Tachycardia
+                }
+                else if (bpm < (pawn.Awake() ? EE_Constants.EcgBradycardiaThreshold : 35f))
+                {
+                    alertLevel = 1; // Danger: Bradycardia
+                }
+            }
+
             TextAnchor origAnchor = Text.Anchor;
-            DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead, GameFont.Medium, true);
-            DrawVitalVerticalCompact(bpRect, "BP", bpStr, bpColor, pawn.Dead, GameFont.Small, false);
-            DrawVitalVerticalCompact(spo2Rect, "SpO2", spo2StrCompact, spo2Color, pawn.Dead, GameFont.Small, false);
-            DrawVitalVerticalCompact(rrRect, "RR", rrStr, rrColor, pawn.Dead, GameFont.Small, false);
+            DrawVitalVerticalCompact(hrRect, "HR", bpm.ToString("F0"), hrColor, pawn.Dead, GameFont.Medium, true, alertLevel);
+            DrawVitalVerticalCompact(bpRect, "BP", bpStr, bpColor, pawn.Dead, GameFont.Small, false, 0);
+            DrawVitalVerticalCompact(spo2Rect, "SpO2", spo2StrCompact, spo2Color, pawn.Dead, GameFont.Small, false, 0);
+            DrawVitalVerticalCompact(rrRect, "RR", rrStr, rrColor, pawn.Dead, GameFont.Small, false, 0);
             
             Text.Anchor = origAnchor;
             GUI.color = Color.white;
@@ -457,23 +495,61 @@ namespace EmergencyExpanded
             Text.Font = GameFont.Small;
         }
 
-        private void DrawVitalVerticalCompact(Rect r, string label, string val, Color valColor, bool dead, GameFont font, bool bold)
+        private void DrawVitalVerticalCompact(Rect r, string label, string val, Color valColor, bool dead, GameFont font, bool bold, int alertLevel = 0)
         {
-            Text.Font = GameFont.Tiny;
-            Text.Anchor = TextAnchor.MiddleLeft;
-            GUI.color = new Color(0.5f, 0.7f, 0.8f);
-            Widgets.Label(new Rect(r.x, r.y + 2f, 35f, r.height - 4f), label);
+            // Alternating bright/dark cycle every 0.8s (0.4s bright, 0.4s dark)
+            bool isBrightCycle = alertLevel > 0 && (Time.realtimeSinceStartup % 0.8f) < 0.4f;
 
-            Text.Font = font;
-            Text.Anchor = TextAnchor.MiddleRight;
-            GUI.color = valColor;
-
-            string displayVal = dead ? "---" : val;
-            if (bold && !dead)
+            if (isBrightCycle)
             {
-                displayVal = "<b>" + displayVal + "</b>";
+                Color alertBgColor = (alertLevel == 1) ? Color.yellow : Color.red;
+                Color alertTextColor = (alertLevel == 1) ? Color.black : Color.white;
+
+                // Draw solid background
+                Widgets.DrawBoxSolid(r, alertBgColor);
+
+                // Draw solid border (same color as background)
+                GUI.color = alertBgColor;
+                Widgets.DrawBox(r, 1);
+                GUI.color = Color.white;
+
+                // Draw label on left (indented slightly by 2px)
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                GUI.color = alertTextColor;
+                Widgets.Label(new Rect(r.x + 2f, r.y + 2f, 28f, r.height - 4f), label);
+
+                // Draw value on right
+                Text.Font = font;
+                Text.Anchor = TextAnchor.MiddleRight;
+                GUI.color = alertTextColor;
+                string displayVal = dead ? "---" : val;
+                if (bold && !dead)
+                {
+                    displayVal = "<b>" + displayVal + "</b>";
+                }
+                Widgets.Label(new Rect(r.x + 30f, r.y, r.width - 32f, r.height), displayVal);
             }
-            Widgets.Label(new Rect(r.x + 35f, r.y, r.width - 35f, r.height), displayVal);
+            else
+            {
+                // Dark cycle or normal healthy state
+                // Draw label on left (indented slightly by 2px to align perfectly with flashing state)
+                Text.Font = GameFont.Tiny;
+                Text.Anchor = TextAnchor.MiddleLeft;
+                GUI.color = new Color(0.5f, 0.7f, 0.8f);
+                Widgets.Label(new Rect(r.x + 2f, r.y + 2f, 28f, r.height - 4f), label);
+
+                // Draw value on right
+                Text.Font = font;
+                Text.Anchor = TextAnchor.MiddleRight;
+                GUI.color = valColor;
+                string displayVal = dead ? "---" : val;
+                if (bold && !dead)
+                {
+                    displayVal = "<b>" + displayVal + "</b>";
+                }
+                Widgets.Label(new Rect(r.x + 30f, r.y, r.width - 32f, r.height), displayVal);
+            }
         }
 
         private void DrawDiagnosticsInner(Rect rect, Pawn pawn)
